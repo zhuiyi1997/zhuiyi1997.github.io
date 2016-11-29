@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>世间自古有情痴</title>
+ <link href="https://zhuiyi1997.github.io//atom.xml" rel="self"/>
+ <link href="https://zhuiyi1997.github.io/"/>
+ <updated>2016-11-29T16:26:04+08:00</updated>
+ <id>https://zhuiyi1997.github.io//</id>
+ <author>
+   <name>追憶</name>
+ </author>
+
+ 
+ <entry>
+   <title>用github page和jekyll搭建个人静态博客</title>
+   <link href="https://zhuiyi1997.github.io//2015/12/31/1.html"/>
+   <updated>2015-12-31T00:00:00+08:00</updated>
+   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/media/files/2015/12/31/shadow.jpg&quot; alt=&quot;Shadow&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;githubgithubio&quot;&gt;1.在个人github上建立一个用户名.github.io格式的版本库&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/media/files/2015/12/31/1.png&quot; alt=&quot;image01&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;ruby&quot;&gt;2.安装ruby运行环境&lt;/h3&gt;
+&lt;p&gt;到&lt;a href=&quot;http://rubyinstaller.org/&quot; title=&quot;点下去哦&quot;&gt;http://rubyinstaller.org/&lt;/a&gt;下载ruby安装包；我这里是2.2.5&lt;br /&gt;
+安装完毕后配置环境变量。如果命令行运行ruby –v可以显示版本号，则说明安装配置成功。&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;gem&quot;&gt;3．更换gem源&lt;/h3&gt;
+&lt;p&gt;gem sources -a http://gems.ruby-china.org/&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;4.安装需要包&lt;/h3&gt;
+&lt;p&gt;gem install Jekyll –v ‘3.0’&lt;br /&gt;
+gem install minima&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;jekyll&quot;&gt;5.创建jekyll项目&lt;/h3&gt;
+&lt;p&gt;项目目录路径不要有中文&lt;br /&gt;
+Jekyll new blog&lt;br /&gt;
+这样就在根目录下创建了一个blog文件夹&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;blogjekyll-serve&quot;&gt;6.进入blog文件夹，运行jekyll serve&lt;/h3&gt;
+&lt;p&gt;访问localhost:4000&lt;br /&gt;
+可以看到&lt;br /&gt;
+&lt;img src=&quot;/media/files/2015/12/31/2.png&quot; alt=&quot;image02&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;7.然后将它与刚创建的远程版本库相关联&lt;/h3&gt;
+&lt;p&gt;在blog目录运行&lt;br /&gt;
+git init&lt;br /&gt;
+git remote add origin git@github.com:/zhuiyi1997/zhuyi1997.github.io &lt;br /&gt;
+git add * -f&lt;br /&gt;
+git commit –m ‘1’&lt;br /&gt;
+git push origin master&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;提交成功后，访问&lt;a href=&quot;http://zhuiyi1997.github.io&quot; title=&quot;点下去哦&quot;&gt;http://zhuiyi1997.github.io&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>mysql锁</title>
+   <link href="https://zhuiyi1997.github.io//2014/03/03/1.html"/>
+   <updated>2014-03-03T00:00:00+08:00</updated>
+   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
+   <content type="html">&lt;p&gt;什么是锁&lt;/p&gt;
+
+&lt;p&gt;锁是计算机协调多个进程或纯线程并发访问某一资源的机制。在数据库中，除传统的计算资源（CPU、RAM、I/O）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所在有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。 相对其他数据库而言，MySQL的锁机制比较简单，其最显著的特点是不同的存储引擎支持不同的锁机制。&lt;/p&gt;
+
+&lt;p&gt;MySQL大致可归纳为以下3种锁：&lt;/p&gt;
+
+&lt;p&gt;表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最高，并发度最低。&lt;/p&gt;
+
+&lt;p&gt;行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最低，并发度也最高。&lt;/p&gt;
+
+&lt;p&gt;页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表锁和行锁之间，并发度一般。&lt;/p&gt;
+
+&lt;p&gt;mysql表级锁有两种模式：表共享锁和表独占写锁。&lt;/p&gt;
+
+&lt;p&gt;对MyISAM的读操作，不会阻塞其他用户对同一表请求，但会阻塞对同一表的写请求；&lt;/p&gt;
+
+&lt;p&gt;对MyISAM的写操作，则会阻塞其他用户对同一表的读和写操作；&lt;/p&gt;
+
+&lt;p&gt;MyISAM表的读操作和写操作之间，以及写操作之间是串行的。&lt;/p&gt;
+
+&lt;p&gt;当一个线程获得对一个表的写锁后，只有持有锁线程可以对表进行更新操作。其他线程的读、写操作都会等待，直到锁被释放为止。&lt;/p&gt;
+
+&lt;p&gt;如何加表锁&lt;/p&gt;
+
+&lt;p&gt;MyISAM在执行查询语句前，会自动给涉及的所有表加读锁，在执行更新操作前，会自动给涉及的表加写锁，这个过程不需要用户干预，因此 用户一般不需要直接用LOCK TABLE命令给MyISAM表显式加锁。&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>php的底层实现</title>
+   <link href="https://zhuiyi1997.github.io//2014/03/02/1.html"/>
+   <updated>2014-03-02T00:00:00+08:00</updated>
+   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
+   <content type="html">&lt;p&gt;PHP的底层实现&lt;/p&gt;
+
+&lt;p&gt;PHP代码的执行过程&lt;/p&gt;
+
+&lt;p&gt;编译型语言:&lt;/p&gt;
+
+&lt;p&gt;对于C语言,C++, 编译成机器码(二进制)来运行.&lt;/p&gt;
+
+&lt;p&gt;java语言, 把.java编译成 .class,称为bytecode, 由jvm来运行.&lt;/p&gt;
+
+&lt;p&gt;解释语言:&lt;/p&gt;
+
+&lt;p&gt;解释器解释执行. 典型的如 linux shell.&lt;/p&gt;
+
+&lt;p&gt;解释器逐行来执行命令.&lt;/p&gt;
+
+&lt;p&gt;PHP稍有特殊之处,虽然是一个脚本语言,但不是靠解释器解释.&lt;/p&gt;
+
+&lt;p&gt;而是 zend 虚拟机,屏蔽了操作系统的区别.&lt;/p&gt;
+
+&lt;p&gt;php代码编译成opcode, 由zend虚拟机来执行opcode.&lt;/p&gt;
+
+&lt;p&gt;但是—opcode, PHP脚本一结束,opcode就清除了.&lt;/p&gt;
+
+&lt;p&gt;思考:opcode能否缓存?&lt;/p&gt;
+
+&lt;p&gt;PHP本身不支持,但是apc,xcache等加速器,实现了这样的效果.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/1.png&quot; alt=&quot;image01&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;PHP底层用C语言来实现的,C语言是强类型,而PHP是弱类型语言.&lt;/p&gt;
+
+&lt;p&gt;是如何实现的呢?&lt;/p&gt;
+
+&lt;p&gt;PHP变量的底层实现:&lt;/p&gt;
+
+&lt;p&gt;我们解压PHP的源码包, 看到如下的目录&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/2.png&quot; alt=&quot;image02&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中,&lt;/p&gt;
+
+&lt;p&gt;最核心的—Zend目录, 这是zend虚拟的实现. 包括栈,数据类型,编译器等,都在这实现.&lt;/p&gt;
+
+&lt;p&gt;最主要的main –PHP的一些内建函数,最主要函数都在这里放着.&lt;/p&gt;
+
+&lt;p&gt;最大的一个目录 ext – PHP的扩展.&lt;/p&gt;
+
+&lt;p&gt;PHP的大部分功能,都是以extenstion形式来完成的.&lt;/p&gt;
+
+&lt;p&gt;如果你开发了一个扩展,也放在ext目录下.&lt;/p&gt;
+
+&lt;p&gt;Zend对变量的表示:&lt;/p&gt;
+
+&lt;p&gt;答: zend实现了 zval结构体
+{
+value: [联合体] ,联合体的内容可能是C语言中的long,double,hashtable…&lt;/p&gt;
+
+&lt;p&gt;type: 变量类型 , IS_NULL,IS_BOOL,IS_STRING…… IS_RESOURCE&lt;/p&gt;
+
+&lt;p&gt;refcount_gc&lt;/p&gt;
+
+&lt;p&gt;is_ref_gc&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;如:&lt;/p&gt;
+
+&lt;p&gt;$a = 3;&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;value : [long lval = 3]&lt;/p&gt;
+
+&lt;p&gt;type: IS_LONG&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;$a = 3.5&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;value: [double dval = 3.5]&lt;/p&gt;
+
+&lt;p&gt;type:IS_DOUBLE&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/3.png&quot; alt=&quot;image03&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;疑问 :&lt;/p&gt;
+
+&lt;p&gt;PHP中有8种数据类型,为什么zval-&amp;gt;value 联合体中,只有5种?&lt;/p&gt;
+
+&lt;p&gt;答:&lt;/p&gt;
+
+&lt;p&gt;1: NULL,直接 zval-&amp;gt;type = IS_NULL,就可以表示,不必设置  value的值.&lt;/p&gt;
+
+&lt;p&gt;2: BOOL型 , zval-&amp;gt;type = IS_BOOL, 再设置 zval.value.lval = 1/0;&lt;/p&gt;
+
+&lt;p&gt;3: Resourc型 ,资源型 往往是服务器上打开的一个接口,如果 文件读取接口.&lt;/p&gt;
+
+&lt;p&gt;zval-&amp;gt;type = IS_RESOURCE, zval-&amp;gt;tyoe.lval = 服务器上打开的接口的编号&lt;/p&gt;
+
+&lt;p&gt;发现:&lt;/p&gt;
+
+&lt;p&gt;PHP中,字符串类型,长度是已经缓存的,调用strlen时,系统可以直接返回其长度,不必计算.&lt;/p&gt;
+
+&lt;p&gt;符号表 — 变量的花名册&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/4.png&quot; alt=&quot;image04&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;变量的赋值与引用&lt;/p&gt;
+
+&lt;p&gt;注意:&lt;/p&gt;
+
+&lt;p&gt;在传值赋值时,&lt;/p&gt;
+
+&lt;p&gt;以: $a = 3 ; $b = $a为例,&lt;/p&gt;
+
+&lt;p&gt;并没有再次产生结构体,而是2个变量共用1个结构体.&lt;/p&gt;
+
+&lt;p&gt;此时,2个变量,指向同1个结构体,&lt;/p&gt;
+
+&lt;p&gt;refcount_gc 值为2&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/5.png&quot; alt=&quot;image05&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;思考: a, b指向同一个结构体, 那么,修改a,或b ,对方会不会受干扰?&lt;/p&gt;
+
+&lt;p&gt;答: 不会,&lt;/p&gt;
+
+&lt;p&gt;因为2者,有一方修改时,将会造成结构体的分裂.&lt;/p&gt;
+
+&lt;p&gt;结构体一开始共用, 到某一方要修改值时,才分裂.&lt;/p&gt;
+
+&lt;p&gt;这种特点,称为cow , copy on write ,&lt;/p&gt;
+
+&lt;p&gt;如下图:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/6.png&quot; alt=&quot;image06&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;当引用赋值时, 双方共用一个结构体(is_ref_gc=1)&lt;/p&gt;
+
+&lt;p&gt;发生如下图的变化&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/7.png&quot; alt=&quot;image07&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;引用时的一些怪现象&lt;/p&gt;
+
+&lt;p&gt;函数执行时的栈变化&lt;/p&gt;
+
+&lt;p&gt;当函数调用时,为此函数生成了一个”执行环境变量”的结构体,里面存储了当前函数的名称,参数,对应的类….等等信息.&lt;/p&gt;
+
+&lt;p&gt;称为_zend_execute_data {}结构体&lt;/p&gt;
+
+&lt;p&gt;这个结构体中,还有2个重要的信息:&lt;/p&gt;
+
+&lt;p&gt;{&lt;/p&gt;
+
+&lt;p&gt;*op_array ——&amp;gt;是函数的执行步骤&lt;/p&gt;
+
+&lt;p&gt;*hash_table—-&amp;gt;symbol_table 这个函数对应的符号表&lt;/p&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+
+&lt;p&gt;思考一下: 1个函数,递归调用自己3次, 如t&lt;/p&gt;
+
+&lt;p&gt;在栈上,肯定要有3个 execute_data生成.&lt;/p&gt;
+
+&lt;p&gt;但是,这3个execute_data—&amp;gt;对应几个*op_array;&lt;/p&gt;
+
+&lt;p&gt;答:函数编译完了,生成一份*op_array,因为函数的执行逻辑是固定的.&lt;/p&gt;
+
+&lt;p&gt;再问:生成了几个 symbol_table?&lt;/p&gt;
+
+&lt;p&gt;答:生成3个符号表.&lt;/p&gt;
+
+&lt;p&gt;函数中的静态变量是如何形成的.&lt;/p&gt;
+
+&lt;p&gt;t() {&lt;/p&gt;
+
+&lt;p&gt;} 自身调用3次&lt;/p&gt;
+
+&lt;p&gt;[t_3 execute_data] —-&amp;gt;[symbol_table_3]&lt;/p&gt;
+
+&lt;p&gt;[t_2 execute_data] —-&amp;gt;[symbol_table_2]&lt;/p&gt;
+
+&lt;p&gt;[t_1 execute_data] —-&amp;gt;[symbol_table_1]&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;em&gt;op_array-&amp;gt;&lt;/em&gt;静态变量表&lt;/p&gt;
+
+&lt;p&gt;安装PHP扩展的注意事项&lt;/p&gt;
+</content>
+ </entry>
+ 
+ 
+</feed>

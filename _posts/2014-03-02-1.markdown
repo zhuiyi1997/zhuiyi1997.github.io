@@ -1,0 +1,208 @@
+---
+title: php的底层实现
+layout: post
+guid: urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc
+tags:
+  - php
+---
+
+PHP的底层实现
+
+PHP代码的执行过程
+
+编译型语言:
+
+对于C语言,C++, 编译成机器码(二进制)来运行.
+
+java语言, 把.java编译成 .class,称为bytecode, 由jvm来运行.
+
+解释语言:
+
+解释器解释执行. 典型的如 linux shell.
+
+解释器逐行来执行命令.
+
+PHP稍有特殊之处,虽然是一个脚本语言,但不是靠解释器解释.
+
+而是 zend 虚拟机,屏蔽了操作系统的区别.
+
+php代码编译成opcode, 由zend虚拟机来执行opcode.
+
+但是---opcode, PHP脚本一结束,opcode就清除了.
+
+思考:opcode能否缓存? 
+
+PHP本身不支持,但是apc,xcache等加速器,实现了这样的效果.
+
+![image01](/media/files/2014/03/02/1.png)<br/>
+
+PHP底层用C语言来实现的,C语言是强类型,而PHP是弱类型语言.
+
+是如何实现的呢?
+
+PHP变量的底层实现:
+
+我们解压PHP的源码包, 看到如下的目录
+ 
+![image02](/media/files/2014/03/02/2.png)<br/>
+
+其中,
+
+最核心的---Zend目录, 这是zend虚拟的实现. 包括栈,数据类型,编译器等,都在这实现.
+
+最主要的main --PHP的一些内建函数,最主要函数都在这里放着.
+
+最大的一个目录 ext -- PHP的扩展.
+
+PHP的大部分功能,都是以extenstion形式来完成的.
+
+如果你开发了一个扩展,也放在ext目录下.
+
+Zend对变量的表示:
+
+答: zend实现了 zval结构体
+{
+value: [联合体] ,联合体的内容可能是C语言中的long,double,hashtable...
+
+type: 变量类型 , IS_NULL,IS_BOOL,IS_STRING...... IS_RESOURCE
+
+refcount_gc
+
+is_ref_gc 
+
+}
+
+如:
+
+$a = 3;
+
+{
+
+value : [long lval = 3]
+
+type: IS_LONG
+
+}
+
+$a = 3.5
+
+{
+
+value: [double dval = 3.5]
+
+type:IS_DOUBLE
+ 
+}
+
+![image03](/media/files/2014/03/02/3.png)<br/>
+
+疑问 :
+
+PHP中有8种数据类型,为什么zval->value 联合体中,只有5种?
+
+答:
+
+1: NULL,直接 zval->type = IS_NULL,就可以表示,不必设置  value的值.
+
+2: BOOL型 , zval->type = IS_BOOL, 再设置 zval.value.lval = 1/0;
+
+3: Resourc型 ,资源型 往往是服务器上打开的一个接口,如果 文件读取接口.
+
+zval->type = IS_RESOURCE, zval->tyoe.lval = 服务器上打开的接口的编号
+
+发现:
+
+PHP中,字符串类型,长度是已经缓存的,调用strlen时,系统可以直接返回其长度,不必计算.
+ 
+符号表 --- 变量的花名册
+
+![image04](/media/files/2014/03/02/4.png)<br/>
+  
+变量的赋值与引用
+
+注意:
+
+在传值赋值时, 
+
+以: $a = 3 ; $b = $a为例,
+
+并没有再次产生结构体,而是2个变量共用1个结构体.
+
+此时,2个变量,指向同1个结构体,
+
+refcount_gc 值为2
+
+![image05](/media/files/2014/03/02/5.png)<br/>
+
+思考: a, b指向同一个结构体, 那么,修改a,或b ,对方会不会受干扰?
+
+答: 不会,
+
+因为2者,有一方修改时,将会造成结构体的分裂.
+
+结构体一开始共用, 到某一方要修改值时,才分裂. 
+
+这种特点,称为cow , copy on write ,
+
+如下图:
+
+![image06](/media/files/2014/03/02/6.png)<br/>
+ 
+当引用赋值时, 双方共用一个结构体(is_ref_gc=1)
+
+发生如下图的变化
+
+![image07](/media/files/2014/03/02/7.png)<br/>
+ 
+引用时的一些怪现象 
+
+函数执行时的栈变化
+
+当函数调用时,为此函数生成了一个”执行环境变量”的结构体,里面存储了当前函数的名称,参数,对应的类....等等信息.
+
+称为_zend_execute_data {}结构体
+
+这个结构体中,还有2个重要的信息:
+
+{
+
+*op_array ------>是函数的执行步骤
+
+*hash_table---->symbol_table 这个函数对应的符号表
+
+}
+
+思考一下: 1个函数,递归调用自己3次, 如t
+
+在栈上,肯定要有3个 execute_data生成.
+
+但是,这3个execute_data--->对应几个*op_array;
+
+答:函数编译完了,生成一份*op_array,因为函数的执行逻辑是固定的.
+
+再问:生成了几个 symbol_table?
+
+答:生成3个符号表.
+
+函数中的静态变量是如何形成的.
+
+t() {
+
+} 自身调用3次
+
+
+[t_3 execute_data] ---->[symbol_table_3]
+
+[t_2 execute_data] ---->[symbol_table_2]
+
+[t_1 execute_data] ---->[symbol_table_1]
+
+|
+
+|
+
+|
+
+*op_array->*静态变量表 
+
+安装PHP扩展的注意事项

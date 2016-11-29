@@ -1,0 +1,44 @@
+---
+title: 用github page和jekyll搭建个人静态博客
+layout: post
+guid: urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc
+tags:
+  - jekyll
+  - perl
+---
+
+![Shadow](/media/files/2015/12/31/shadow.jpg)
+
+###1.在个人github上建立一个用户名.github.io格式的版本库
+![image01](/media/files/2015/12/31/1.png)<br/>
+
+###2.安装ruby运行环境
+到[http://rubyinstaller.org/](http://rubyinstaller.org/ "点下去哦")下载ruby安装包；我这里是2.2.5<br/>
+安装完毕后配置环境变量。如果命令行运行ruby –v可以显示版本号，则说明安装配置成功。<br/>
+
+###3．更换gem源
+gem sources -a http://gems.ruby-china.org/<br/>
+
+###4.安装需要包
+gem install Jekyll –v ‘3.0’<br/>
+gem install minima<br/>
+
+###5.创建jekyll项目
+项目目录路径不要有中文<br/>
+Jekyll new blog<br/>
+这样就在根目录下创建了一个blog文件夹<br/>
+
+###6.进入blog文件夹，运行jekyll serve
+访问localhost:4000<br/>
+可以看到<br/>
+![image02](/media/files/2015/12/31/2.png)
+
+###7.然后将它与刚创建的远程版本库相关联
+在blog目录运行<br/>
+git init<br/>
+git remote add origin git@github.com:/zhuiyi1997/zhuyi1997.github.io <br/>
+git add * -f<br/>
+git commit –m ‘1’<br/>
+git push origin master<br/>
+
+提交成功后，访问[http://zhuiyi1997.github.io](http://zhuiyi1997.github.io "点下去哦")

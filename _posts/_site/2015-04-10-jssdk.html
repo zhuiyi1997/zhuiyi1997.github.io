@@ -1,0 +1,144 @@
+<p>一、JSSDK类定义
+复制代码</p>
+
+<p>[php]</p>
+
+<pre><code>&lt;?php  
+class JSSDK {  
+  private $appId;  
+  private $appSecret;  
+  
+  public function __construct($appId, $appSecret) {  
+    $this-&gt;appId = $appId;  
+    $this-&gt;appSecret = $appSecret;  
+  }  
+  
+  public function getSignPackage() {  
+    $jsapiTicket = $this-&gt;getJsApiTicket();  
+    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  
+    $timestamp = time();  
+    $nonceStr = $this-&gt;createNonceStr();  
+  
+    // 这里参数的顺序要按照 key 值 ASCII 码升序排序  
+    $string = "jsapi_ticket=$jsapiTicket&amp;noncestr=$nonceStr×tamp=$timestamp&amp;url=$url";  
+  
+    $signature = sha1($string);  
+  
+    $signPackage = array(  
+      "appId"     =&gt; $this-&gt;appId,  
+      "nonceStr"  =&gt; $nonceStr,  
+      "timestamp" =&gt; $timestamp,  
+      "url"       =&gt; $url,  
+      "signature" =&gt; $signature,  
+      "rawString" =&gt; $string  
+    );  
+    return $signPackage;   
+  }  
+  
+  private function createNonceStr($length = 16) {  
+    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
+    $str = "";  
+    for ($i = 0; $i &lt; $length; $i++) {  
+      $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);  
+    }  
+    return $str;  
+  }  
+  
+  private function getJsApiTicket() {  
+    // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例  
+    $data = json_decode(file_get_contents("jsapi_ticket.json"));  
+    if ($data-&gt;expire_time &lt; time()) {  
+      $accessToken = $this-&gt;getAccessToken();  
+      $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&amp;access_token=$accessToken";  
+      $res = json_decode($this-&gt;httpGet($url));  
+      $ticket = $res-&gt;ticket;  
+      if ($ticket) {  
+        $data-&gt;expire_time = time() + 7000;  
+        $data-&gt;jsapi_ticket = $ticket;  
+        $fp = fopen("jsapi_ticket.json", "w");  
+        fwrite($fp, json_encode($data));  
+        fclose($fp);  
+      }  
+    } else {  
+      $ticket = $data-&gt;jsapi_ticket;  
+    }  
+  
+    return $ticket;  
+  }  
+  
+  private function getAccessToken() {  
+    // access_token 应该全局存储与更新，以下代码以写入到文件中做示例  
+    $data = json_decode(file_get_contents("access_token.json"));  
+    if ($data-&gt;expire_time &lt; time()) {  
+      $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=$this-&gt;appId&amp;secret=$this-&gt;appSecret";  
+      $res = json_decode($this-&gt;httpGet($url));  
+      $access_token = $res-&gt;access_token;  
+      if ($access_token) {  
+        $data-&gt;expire_time = time() + 7000;  
+        $data-&gt;access_token = $access_token;  
+        $fp = fopen("access_token.json", "w");  
+        fwrite($fp, json_encode($data));  
+        fclose($fp);  
+      }  
+    } else {  
+      $access_token = $data-&gt;access_token;  
+    }  
+    return $access_token;  
+  }  
+  
+  private function httpGet($url) {  
+    $curl = curl_init();  
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);  
+    curl_setopt($curl, CURLOPT_TIMEOUT, 500);  
+    curl_setopt($curl, CURLOPT_URL, $url);  
+  
+    $res = curl_exec($curl);  
+    curl_close($curl);  
+  
+    return $res;  
+  }  
+}  
+</code></pre>
+
+<p>复制代码</p>
+
+<p>二、类调用
+复制代码</p>
+
+<p>[php]</p>
+
+<pre><code>&lt;?php  
+require_once "jssdk.php";  
+$jssdk = new JSSDK("yourAppID", "yourAppSecret");  
+$signPackage = $jssdk-&gt;GetSignPackage();  
+?&gt;  
+&lt;!DOCTYPE html&gt;  
+&lt;html lang="en"&gt;  
+&lt;head&gt;  
+  &lt;meta charset="UTF-8"&gt;  
+  &lt;title&gt;&lt;/title&gt;  
+&lt;/head&gt;  
+&lt;body&gt;  
+    
+&lt;/body&gt;  
+&lt;script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"&gt;&lt;/script&gt;  
+&lt;script&gt;  
+  // 注意：所有的JS接口只能在公众号绑定的域名下调用，公众号开发者需要先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。   
+  // 如果发现在 Android 不能分享自定义内容，请到官网下载最新的包覆盖安装，Android 自定义分享接口需升级至 6.0.2.58 版本及以上。  
+  // 完整 JS-SDK 文档地址：http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html  
+  wx.config({  
+    appId: '&lt;?php echo $signPackage["appId"];?&gt;',  
+    timestamp: &lt;?php echo $signPackage["timestamp"];?&gt;,  
+    nonceStr: '&lt;?php echo $signPackage["nonceStr"];?&gt;',  
+    signature: '&lt;?php echo $signPackage["signature"];?&gt;',  
+    jsApiList: [  
+      // 所有要调用的 API 都要加到这个列表中  
+    ]  
+  });  
+  wx.ready(function () {  
+    // 在这里调用 API  
+  });  
+&lt;/script&gt;  
+&lt;/html&gt;  
+</code></pre>
+

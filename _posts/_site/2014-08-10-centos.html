@@ -1,0 +1,72 @@
+<p>安装memcached
+```php
+yum install memcached</p>
+
+<p><code>
+启动 memcached
+</code>php
+/usr/bin/memcached -d -m 64M -u root -l 192.168.1.118 -p 11211 -c 256 -P /tmp/memcached.pid
+<code>
+查看进程
+</code>php
+ps  -aux |grep memcached
+<code>
+使用memcached
+</code>php
+yum install telnet
+```
+telnet  192.168.1.118 11211</p>
+
+<p>测试
+```php
+set runoob 0 900 9
+memcached
+STORED</p>
+
+<p>get runoob
+VALUE runoob 0 9
+memcached</p>
+
+<p>wget http://pecl.php.net/get/memcache-2.2.7.tgz             <br />
+tar -zxvf memcache-2.2.7.tgz
+cd memcache-2.2.7
+/usr/local/php/bin/phpize
+./configure –with-php-config=/usr/local/php/bin/php-config
+make &amp;&amp; make install
+```
+END</p>
+
+<p>恭喜你memcached安装成功了.</p>
+
+<p>memcached 扩展
+PHP 连接 Memcached 服务
+PHP memcache 扩展包下载地址：http://pecl.php.net/package/memcache，你可以下载最新稳定包</p>
+
+<p>```php
+wget http://pecl.php.net/get/memcache-2.2.7.tgz             <br />
+tar -zxvf memcache-2.2.7.tgz
+cd memcache-2.2.7
+/usr/bin/phpize
+./configure –with-php-config=/usr/bin/php-config
+(如果失败重新来换作)
+./configure –enable-memcache –with-php-config=/usr/bin/php-config –with-zlib-dir</p>
+
+<p>make &amp;&amp; make install</p>
+
+<p>(如果make失败,yum install -y zlib.x86_64 zlib-devel.x86_64)
+```</p>
+
+<p>修改php文件
+<code>php
+vi /etc/php.ini
+</code>
+添加
+```php
+extension = memcache.so</p>
+
+<p><code>
+重启 apache
+</code>php
+systemctl restart httpd.service #重启apache 
+```</p>
+

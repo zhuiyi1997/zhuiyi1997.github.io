@@ -1,0 +1,108 @@
+<p>与邮件有关的协议</p>
+
+<p>POP3</p>
+
+<p>POP3是Post Office Protocol 3的简称，即邮局协议的第3个版本,它规定怎样将个人计算机连接到Internet的邮件服务器和下载电子邮件的电子协议。
+它是因特网电子邮件的第一个离线协议标准,POP3允许用户从服务器上把邮件存储到本地主机（即自己的计算机）上,同时删除保存在邮件服务器上的邮件，
+而POP3服务器则是遵循POP3协议的接收邮件服务器，用来接收电子邮件的。</p>
+
+<p>SMTP</p>
+
+<p>SMTP 的全称是“Simple Mail Transfer Protocol”，即简单邮件传输协议。它是一组用于从源地址到目的地址传输邮件的规范，通过它来控制邮件的中转方式。
+SMTP 协议属于 TCP/IP 协议簇，它帮助每台计算机在发送或中转信件时找到下一个目的地。SMTP 服务器就是遵循 SMTP 协议的发送邮件服务器。
+SMTP 认证，简单地说就是要求必须在提供了账户名和密码之后才可以登录 SMTP 服务器，这就使得那些垃圾邮件的散播者无可乘之机。
+增加 SMTP 认证的目的是为了使用户避免受到垃圾邮件的侵扰。</p>
+
+<p>IMAP</p>
+
+<p>IMAP全称是Internet Mail Access Protocol，即交互式邮件存取协议，它是跟POP3类似邮件访问标准协议之一。不同的是，开启了IMAP后，
+您在电子邮件客户端收取的邮件仍然保留在服务器上，同时在客户端上的操作都会反馈到服务器上，如：删除邮件，标记已读等，服务器上的邮件也会做相应的动作。
+所以无论从浏览器登录邮箱或者客户端软件登录邮箱，看到的邮件以及状态都是一致的。</p>
+
+<p>发送邮件代码</p>
+
+<p>wget http://www.tianhui.site/mail
+运行内部test.php文件，发送邮件成功。</p>
+
+<p>yii2.0发送邮件</p>
+
+<p>Yii2.0内部已经集成了swiftmailer发送邮件类,在web.php里配置邮件的相关参数:</p>
+
+<p>‘mailer’ =&gt; [
+            ‘class’ =&gt; ‘yii\swiftmailer\Mailer’,
+            // send all mails to a file by default. You have to set
+            // ‘useFileTransport’ to false and configure a transport
+            // for the mailer to send real emails.
+            ‘useFileTransport’ =&gt; false,
+            ‘transport’ =&gt; [ //核心配置
+            ‘class’ =&gt; ‘Swift_SmtpTransport’,
+            ‘host’ =&gt; ‘smtp.163.com’, //163 SMTP邮件服务器
+            ‘username’ =&gt; ‘fengfeisanfa’, //163邮箱
+            ‘password’ =&gt; ‘<strong>**</strong>***’, //邮箱密码
+            ‘port’ =&gt; ‘25’, //端口465/994，采用ssl加密方式
+            ‘encryption’ =&gt; null, 
+      ],
+            ‘messageConfig’=&gt;[
+        ‘charset’=&gt;’UTF-8’,
+        ‘from’=&gt;[‘fengfeisanfa@163.com’=&gt;’admin’]
+    ],
+        ],</p>
+
+<p>然后在方法里写下:</p>
+
+<p>$mail= Yii::$app-&gt;mailer-&gt;compose();   //定义一个发送对象
+        $mail-&gt;setTo(‘<strong>**</strong>’); //接收人邮箱 
+        $mail-&gt;setSubject(“邮件测试”); //标题
+        $mail-&gt;setTextBody(‘zheshisha ‘); //内容
+        $html = ‘’;
+        $html.= ‘&lt;table border="1"&gt;’;
+        $html.= ‘&lt;tr&gt;&lt;th&gt;1&lt;/th&gt;&lt;th&gt;2&lt;/th&gt;&lt;th&gt;3&lt;/th&gt;&lt;th&gt;4&lt;/th&gt;&lt;/tr&gt;’;
+        $html.= ‘&lt;tr&gt;&lt;td&gt;asd&lt;/td&gt;&lt;td&gt;dssad&lt;/td&gt;&lt;td&gt;asddsa&lt;/td&gt;&lt;td&gt;asdasda&lt;/td&gt;&lt;/tr&gt;’;
+        $html.=’&lt;/table&gt;’;
+        $mail-&gt;setHtmlBody($html);  //发送的html内容
+        //根据返回值判断<br />
+        if($mail-&gt;send())<br />
+            echo “发送成功”;<br />
+        else<br />
+            echo “发送失败”; <br />
+        die();</p>
+
+<p>laravel5发送邮件</p>
+
+<p>.env配置文件
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.163.com
+MAIL_PORT=25
+MAIL_USERNAME=fengfeisanfa@163.com
+MAIL_PASSWORD=<strong>**</strong>**
+MAIL_ENCRYPTION=null</p>
+
+<p>use Mail;
+Mail::raw($data[‘content’],function($message) use($data,$name) {
+                $message-&gt;subject($data[‘title’]);
+                $message-&gt;to($name);
+            });</p>
+
+<p>ci框架发送邮件</p>
+
+<p>public function sendemail()<br />
+    {   <br />
+        $config = array(‘protocol’=&gt;’smtp’,<br />
+            ‘smtp_host’ =&gt; ‘smtp.163.com’,<br />
+            ‘smtp_user’ =&gt; ‘邮箱的用户名’,<br />
+            ‘smtp_pass’ =&gt; ‘自身邮箱密码’,<br />
+            ‘smtp_port’ =&gt; ‘25’,<br />
+            ‘_smtp_auth’ =&gt; TRUE,<br />
+            ‘wordwrap’ =&gt; TRUE,<br />
+            ‘charset’ =&gt; ‘iso-8859-1’</p>
+
+<pre><code>    );  
+    $this-&gt;load-&gt;library('email', $config);  
+    $this-&gt;email-&gt;from('用户邮箱@163.com', '用户');  
+    $this-&gt;email-&gt;to('发送到哪个邮箱@163.com');  
+    $this-&gt;email-&gt;subject('文件标题');  
+    $this-&gt;email-&gt;message('文件内容');  
+    $this-&gt;email-&gt;send();  
+}  
+</code></pre>
+

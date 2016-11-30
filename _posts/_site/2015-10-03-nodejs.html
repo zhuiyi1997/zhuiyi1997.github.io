@@ -1,0 +1,196 @@
+<p>自行安装，代码如下</p>
+
+<p>先安装nodejs</p>
+
+<p>服务器代码</p>
+
+<p>[javascript]</p>
+
+<pre><code>var app = require('http').createServer(handler)  
+var io = require('socket.io')(app);  
+var fs = require('fs');  
+  
+app.listen(83);  
+function handler (req, res) {  
+  fs.readFile(__dirname + '/index.html',  
+  function (err, data) {  
+    if (err) {  
+      res.writeHead(500);  
+      return res.end('Error loading index.html');  
+    }  
+  
+    res.writeHead(200);  
+    res.end(data);  
+  });  
+}     
+io.on('connection', function (socket) {   
+    //获取所有用户  
+    var user_list=socket.nsp.adapter.rooms;  
+    //将用户发送到页面  
+    io.emit("user_list",user_list);  
+    socket.on('disconnect', function () {  
+        io.emit("user_list",user_list);  
+    });  
+      
+    socket.on('per2per',function(name,data){  
+        //console.log(socket.id);  
+        //console.log(data.user)  
+        var user=data.user.substr(2);  
+        //console.log(user)  
+        //console.log(data.content)  
+        if(data.user=='all'){  
+            io.emit("message",'all',data.content)  
+        }else{  
+            socket.broadcast.to(data.user).emit("message",name,data.content);  
+            socket.emit("message",user,data.content);  
+        }  
+          
+    })  
+      
+    //admin模块结束  
+          
+});  
+</code></pre>
+
+<p>客户端代码</p>
+
+<p>[javascript]</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;  
+&lt;html&gt;  
+&lt;head&gt;  
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;  
+&lt;script src="js/jquery-1.11.1.min.js"&gt;&lt;/script&gt;  
+    &lt;script src="js/socket.io-1.4.5.js"&gt;&lt;/script&gt;  
+   &lt;title&gt;nodejs聊天&lt;/title&gt;  
+   &lt;link href="css/bootstrap.min.css" rel="stylesheet"&gt;  
+   &lt;script src="js/bootstrap.min.js"&gt;&lt;/script&gt;  
+&lt;/head&gt;  
+&lt;style&gt;  
+    .panel-body{  
+        display:none;  
+    }  
+&lt;/style&gt;  
+&lt;body&gt;  
+&lt;div class="container"&gt;  
+  
+   &lt;h1 id="count"&gt;&lt;/h1&gt;  
+    昵称id:&lt;span id="self" style="color:red"/&gt;&lt;/span&gt;  
+    发送给：&lt;span id="friend" style="color:green" value="all"/&gt;all&lt;/span&gt;  
+   &lt;div class="row"&gt;  
+      &lt;div class="col-md-4" style="overflow:auto"&gt;  
+         &lt;ul class="list-group" id="userlist" onclick="javascript:void(0)"&gt;  
+           &lt;li class="list-group-item"&gt;  
+              &lt;span class="badge"&gt;新&lt;/span&gt;  
+              24*7 支持  
+           &lt;/li&gt;  
+        &lt;/ul&gt;  
+      &lt;/div&gt;  
+      &lt;div class="col-md-8" &gt;  
+          
+        &lt;div class="panel panel-default" &gt;  
+          &lt;!-- Default panel contents --&gt;  
+          &lt;div class="panel-heading" &gt;消息中心&lt;/div&gt;  
+          &lt;div class="panel-body" id='text_all' style="height:500px; overflow:auto"&gt;  
+            &lt;div class="well well-sm"&gt;all&lt;/div&gt;  
+          &lt;/div&gt;  
+        &lt;/div&gt;  
+        &lt;input id="content"/&gt;  
+        &lt;button onclick="send()"  class="btn btn-success"&gt;send&lt;/button&gt;  
+          
+      &lt;/div&gt;  
+   &lt;/div&gt;&lt;br&gt;  
+     
+&lt;/div&gt;  
+  
+  
+&lt;script&gt;  
+$("#text_all").css('display','block');  
+var socket = io('http://'+location.host+':83'); // TIP: io()  
+  socket.on('connect', function () {   
+    $("#self").html(socket.id);//获取自己socke.id  
+    //获取用户列表  
+    socket.on('user_list',function(data){  
+        $("#userlist").empty();  
+        //console.log(data);  
+        var count=0;  
+        //所有人标签  
+        var text='&lt;li class="list-group-item" value="all"&gt;&lt;span id="badge_all" class="badge"&gt;0&lt;/span&gt;all&lt;/li&gt;'  
+        $("#userlist").append(text)  
+              
+        for(var x in data){       
+            //console.log(x)  
+            count++;  
+            var name=x;  
+            var self = x.substr(2)  
+            //生成用户列表  
+            if(self!=socket.id){  
+                var text='&lt;li class="list-group-item" value="'+name+'"&gt;&lt;span id="badge_'+self+'" class="badge"&gt;0&lt;/span&gt;'+name+'&lt;/li&gt;'  
+                $("#userlist").append(text)  
+            }  
+            if($("#text_"+self).length==0){  
+              var panel='&lt;div class="panel-body" id="text_'+self+'" style="height:500px; overflow:auto"&gt;&lt;div class="well well-sm"&gt;和'+self+'私聊中心&lt;/div&gt;&lt;/div&gt;'  
+                $('.panel').append(panel);  
+            }         
+        }  
+        //$(".panel-body").hide();  
+        //$("#text_all").show();  
+        $("#count").html("在线人数："+count);      
+    })  
+    //来接受消息  
+    socket.on('message',function(name,data){  
+        //console.log(data);  
+        //console.log(name)  
+        //当前时间  
+        var myDate=new Date()  
+        var data_text='&lt;div class="well well-sm"&gt;'+myDate.toLocaleString()+":"+data+'&lt;/div&gt;'  
+        $("#text_"+name).append(data_text)  
+        //未读消息数+1         
+        var val=$('#badge_'+name).html()  
+        //console.log(val)  
+        $('#badge_'+name).html(parseInt(val)+1)           
+        //消息滚动到底部  
+        $("#text_"+name).scrollTop(99999999);   
+    })  
+  });  
+  
+  //消息发送  
+  function send(){  
+     var content= $("#content").val();  
+     //console.log(content.length)  
+     var length=content.length  
+     if(length==0){  
+         alert("不能为空")  
+         return false;  
+     }else if(length&gt;20){  
+         alert("消息太长了")  
+         return false;  
+     }  
+     var user= $("#friend").attr('value');  
+     //console.log(content);  
+     //console.log(user);  
+     socket.emit("per2per",socket.id,{user:user,content:content});  
+  }  
+  //点击用户列表  
+  $(document).on("click",".list-group-item",function(){  
+      $('.list-group-item').css('background-color','white')  
+      $('.list-group-item').css('color','black')  
+      $(this).css('background-color','green')  
+      $(this).css('color','white')  
+      var val= $(this).attr('value');  
+      $("#friend").attr('value',val)  
+      $("#friend").html(val)  
+      
+        if(val!='all'){  
+           val = val.substr(2)  
+        }  
+      $(".panel-body").hide();  
+      $("#text_"+val).show();       
+  })  
+    
+  
+&lt;/script&gt;  
+&lt;/body&gt;  
+&lt;/html&gt;  
+</code></pre>
+

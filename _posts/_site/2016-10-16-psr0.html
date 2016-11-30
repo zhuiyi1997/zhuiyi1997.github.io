@@ -1,0 +1,66 @@
+<blockquote>
+  <p><strong>已弃用</strong> - 截止到2014年10月21日，PSR-0已被弃用。 推荐替代使用<a href="http://www.php-fig.org/psr/psr-4/">PSR-4</a>。</p>
+</blockquote>
+
+<p>下文描述了若要使用一个通用的<code>自动加载器(autoloader)</code>，你所需要遵守的规范：</p>
+
+<h2 id="section">规范</h2>
+
+<ul>
+  <li>一个完全标准的<code>命名空间(namespace)</code>和<code>类(class)</code>的结构是这样的：<code>\&lt;Vendor Name&gt;\(&lt;Namespace&gt;\)*&lt;Class Name&gt;</code></li>
+  <li>每个<code>命名空间(namespace)</code>都必须有一个顶级的<code>空间名(namespace)</code>(“<code>组织名(Vendor Name)</code>”)。</li>
+  <li>每个<code>命名空间(namespace)</code>中可以根据需要使用任意数量的<code>子命名空间(sub-namespace)</code>。</li>
+  <li>从文件系统中加载源文件时，<code>空间名(namespace)</code>中的分隔符将被转换为 <code>DIRECTORY_SEPARATOR</code>。</li>
+  <li><code>类名(class name)</code>中的每个下划线<code>_</code>都将被转换为一个<code>DIRECTORY_SEPARATOR</code>。下划线<code>_</code>在<code>空间名(namespace)</code>中没有什么特殊的意义。</li>
+  <li>完全标准的<code>命名空间(namespace)</code>和<code>类(class)</code>从文件系统加载源文件时将会加上<code>.php</code>后缀。</li>
+  <li><code>组织名(vendor name)</code>，<code>空间名(namespace)</code>，<code>类名(class name)</code>都由大小写字母组合而成。</li>
+</ul>
+
+<h2 id="section-1">示例</h2>
+
+<ul>
+  <li><code>\Doctrine\Common\IsolatedClassLoader</code> =&gt; <code>/path/to/project/lib/vendor/Doctrine/Common/IsolatedClassLoader.php</code></li>
+  <li><code>\Symfony\Core\Request</code> =&gt; <code>/path/to/project/lib/vendor/Symfony/Core/Request.php</code></li>
+  <li><code>\Zend\Acl</code> =&gt; <code>/path/to/project/lib/vendor/Zend/Acl.php</code></li>
+  <li><code>\Zend\Mail\Message</code> =&gt; <code>/path/to/project/lib/vendor/Zend/Mail/Message.php</code></li>
+</ul>
+
+<h2 id="namespaceclass-name"><code>空间名(namespace)</code>和<code>类名(class name)</code>中的下划线</h2>
+
+<ul>
+  <li><code>\namespace\package\Class_Name</code> =&gt; <code>/path/to/project/lib/vendor/namespace/package/Class/Name.php</code></li>
+  <li><code>\namespace\package_name\Class_Name</code> =&gt; <code>/path/to/project/lib/vendor/namespace/package_name/Class/Name.php</code></li>
+</ul>
+
+<p>以上是我们为实现通用的自动加载而制定的最低标准。你可以利用能够自动加载<code>PHP 5.3</code>类的<code>SplClassLoader</code>来测试你的代码是否符合这些标准。</p>
+
+<h2 id="section-2">实例</h2>
+
+<p>下面是一个怎样利用上述标准来实现自动加载的示例函数。</p>
+
+<p>```php
+&lt;?php</p>
+
+<p>function autoload($className)
+{
+    $className = ltrim($className, ‘\’);
+    $fileName  = ‘’;
+    $namespace = ‘’;
+    if ($lastNsPos = strrpos($className, ‘\’)) {
+        $namespace = substr($className, 0, $lastNsPos);
+        $className = substr($className, $lastNsPos + 1);
+        $fileName  = str_replace(‘\’, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+    }
+    $fileName .= str_replace(‘_’, DIRECTORY_SEPARATOR, $className) . ‘.php’;</p>
+
+<pre><code>require $fileName; } ```
+</code></pre>
+
+<h2 id="splclassloader"><code>SplClassLoader</code>实现</h2>
+
+<p>下面的gist是一个按照上面建议的标准来自动加载类的<code>SplClassLoader</code>实例。这是依据这些标准来加载<code>PHP 5.3</code>类的推荐方案。</p>
+
+<ul>
+  <li><a href="http://gist.github.com/221634">http://gist.github.com/221634</a></li>
+</ul>
+

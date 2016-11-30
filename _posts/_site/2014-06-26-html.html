@@ -1,0 +1,73 @@
+<p>html页面</p>
+
+<p>[html] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>&lt;!DOCTYPE html&gt;  
+&lt;html&gt;  
+    &lt;head&gt;  
+        &lt;meta charset="UTF-8"/&gt;  
+        &lt;title&gt;xhr2&lt;/title&gt;  
+    &lt;/head&gt;  
+    &lt;body&gt;      
+        &lt;div style="text-align:center;margin:100px"&gt;        
+            &lt;input type="file" id="file" name="file" multiple="multiple"&gt;&lt;progress id="uploadprogress" min="0" max="100" value="0"&gt;0&lt;/progress&gt;  
+            &lt;button onclick="xhr2()"&gt;多文件上传&lt;/button&gt;  
+        &lt;/div&gt;          
+        &lt;script&gt;  
+        function xhr2(){  
+            var xhr = new XMLHttpRequest();//第一步  
+            //定义表单变量  
+            var file = document.getElementById('file').files;  
+            //console.log(file.length);  
+            //新建一个FormData对象  
+            var formData = new FormData(); //++++++++++  
+            //追加文件数据  
+            for(i=0;i&lt;file.length;i++){    
+                 formData.append("file["+i+"]", file[i]); //++++++++++  
+            }   
+            //formData.append("file", file[0]); //++++++++++  
+              
+            //post方式  
+            xhr.open('POST', 'xhr2.php'); //第二步骤  
+                        xhr.upload.onprogress = function (event) {  
+            　　if (event.lengthComputable) {  
+            　　　　var complete = (event.loaded / event.total * 100 | 0);  
+        　　　　　　     var progress = document.getElementById('uploadprogress');  
+            　　　　progress.value = progress.innerHTML = complete;  
+            　　}  
+            };  
+            //发送请求  
+            xhr.send(formData);  //第三步骤  
+            //ajax返回  
+            xhr.onreadystatechange = function(){ //第四步  
+        　　　　if ( xhr.readyState == 4 &amp;&amp; xhr.status == 200 ) {  
+        　　　　　　console.log( xhr.responseText );  
+        　　　　}  
+        　　};  
+            //设置超时时间  
+            xhr.timeout = 100000;  
+            xhr.ontimeout = function(event){  
+        　　　　alert('请求超时！');  
+        　　}   
+        }  
+        &lt;/script&gt;  
+    &lt;/body&gt;  
+&lt;/html&gt;  
+</code></pre>
+
+<p>php处理页面</p>
+
+<p>[php] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>&lt;?php  
+print_r($_FILES["file"]);  
+  
+for($i=0;$i&lt;count($_FILES["file"]['name']);$i++){  
+$name=$_FILES["file"]["name"][$i];  
+move_uploaded_file($_FILES["file"]["tmp_name"][$i],iconv("UTF-8","gb2312",$name));  
+}  
+  
+?&gt;  
+</code></pre>

@@ -1,0 +1,57 @@
+<p>防止表单重复提交的方法有很多种，那么今天就给大家介绍一种PHP如何有效的防止表单重复提交。</p>
+
+<p>代码非常简单：</p>
+
+<p>我相信大家很聪明给大家分享一个小的demo，大家可以借鉴一下：</p>
+
+<p>[python]</p>
+
+<pre><code>&lt;?php  
+/*  
+* 2016年9月29日08:09:13  郝云云书  
+*/  
+session_start();  
+header("Content-Type: text/html;charset=utf-8");  
+function set_token() {  
+    $_SESSION['token'] = md5(microtime(true));  
+}  
+function valid_token() {  
+    $return = $_REQUEST['token'] === $_SESSION['token'] ? true : false;  
+    set_token();  
+    return $return;  
+}  
+//如果token为空则生成一个token  
+if(!isset($_SESSION['token']) || $_SESSION['token']=='') {  
+    set_token();  
+}  
+if(isset($_POST['web'])){  
+    if(!valid_token()){  
+        echo "token error，请不要重复提交！";  
+    }else{  
+        echo '成功提交，Value:'.$_POST['web'];  
+    }  
+}else{  
+?&gt;  
+&lt;!DOCTYPE html&gt;  
+&lt;html&gt;  
+&lt;head&gt;  
+&lt;meta charset="utf-8"&gt;  
+&lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"&gt;  
+&lt;title&gt;PHP防止重复提交表单&lt;/title&gt;  
+&lt;meta name="keywords" content="PHP" /&gt;  
+&lt;meta name="description" content="PHP防止重复提交表单" /&gt;  
+&lt;/head&gt;  
+&lt;body&gt;  
+&lt;div id="main"&gt;  
+    &lt;div class="demo"&gt;  
+        &lt;form method="post" action=""&gt;    
+            &lt;input type="hidden" name="token" value="&lt;?php echo $_SESSION['token']?&gt;"&gt;    
+            &lt;input type="text" class="input" name="web" value="郝云云"&gt;    
+            &lt;input type="submit" class="btn" value="提交" /&gt;    
+        &lt;/form&gt;    
+    &lt;/div&gt;  
+&lt;/div&gt;  
+&lt;/body&gt;  
+&lt;/html&gt;  
+&lt;?php }?&gt;  
+</code></pre>

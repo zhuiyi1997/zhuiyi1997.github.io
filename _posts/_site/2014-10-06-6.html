@@ -1,0 +1,334 @@
+<p>背景：</p>
+
+<p>在Web应用中接入微信支付，我以为只是调用几个API稍作调试即可。</p>
+
+<p>没想到微信的API和官方文档里隐坑无数，致我抱着怀疑人生的心情悲愤踩遍了丫们布下的所有坑。</p>
+
+<p>简要介绍几个主要大坑：</p>
+
+<p>坑一：关于WeixinJSBridge这个对象</p>
+
+<p>查阅网页端调起支付API的开发文档，此对象即旁若无人的映入眼帘。</p>
+
+<p>然后我们就理所应当的在代码里调用了丫的。</p>
+
+<p>可是，too young too naive……</p>
+
+<p>尽管此对象只在微信浏览器里有效，借此可判断用户是否在微信浏览器里访问应用。</p>
+
+<p>但其实调用了丫之后，你是没有未来的……</p>
+
+<p>此坑所耗时间：1.5天。</p>
+
+<p>坑二：几个签名的混淆</p>
+
+<p>关于签名的调试，网上各种哭嚎，不少人在签名处调试多日无果。</p>
+
+<p>那是因为整个工作流程中，涉及到了至少三个签名，稍不小心就会用错。</p>
+
+<p>在统一下单的接口里，向微信服务器发送请求中的参数有一枚签名；</p>
+
+<p>其返回的参数中，亦有一枚签名，后经观察，发现二者为同一签名。</p>
+
+<p>但在使用JSSDK后所调用的wx.config里所需的参数signature却是另一枚签名。</p>
+
+<p>而在wx.chooseWXPay里所需的支付签名paySign，却又是另另另外的一枚。</p>
+
+<p>此坑所耗时间：2天。</p>
+
+<p>坑三：两个Access_token</p>
+
+<p>查看开发文档可以看到，微信搞了两个Access_token！</p>
+
+<p>即使他们用再多的加粗文字来提醒我们两个token的不同之处，</p>
+
+<p>也难以抚平我们在开发过程中陷入混乱的受伤之身心！</p>
+
+<p>一个是网页授权的access_token，需要用户授权之后才能拿到。</p>
+
+<p>而另一个是普通的access_token，支持公众号的各种基础服务，并非支付独用。</p>
+
+<p>看文档所述的流程，以为用网页授权的token就对了？</p>
+
+<p>恭喜，又进坑了……</p>
+
+<p>最后真正用到的是第二个token。</p>
+
+<p>此坑所耗时间：1.5天。</p>
+
+<p>…………</p>
+
+<p>坑坑相套，防不胜防。最终跑通功能后，心力交瘁矣！</p>
+
+<p>为防以后再次进坑，在此总结一番，供各位参考。</p>
+
+<p>背景毕。</p>
+
+<p>———————— 我是悲愤不已的分割线 ————————</p>
+
+<p>准备工作第一弹：</p>
+
+<p>公众号一枚，并开通微信支付功能。</p>
+
+<p>在微信公众平台（mp.weixin.qq.com）的［微信支付-开发配置］里对支付授权目录做配置。</p>
+
+<p>测试期间，需要配置测试授权目录，以及将参与测试的微信号添加到白名单中。</p>
+
+<p>由于测试必须在线上（测试）环境，debug不太方便，才耗费了辣么多美好的时光。</p>
+
+<p>授权目录，即为调用微信支付控件的页面所在目录。</p>
+
+<p>准备工作第二弹：</p>
+
+<p>还是在公众平台上，进入开发者中心，找到接口权限表。</p>
+
+<p>在其中的网页服务中，找到“网页授权用户基本信息”并填写之。</p>
+
+<p>这里所填的URL必须是用户进入应用的URL，且必须是oauth验证所用的URL里的redirect_uri里的值……</p>
+
+<p>一处不对，都会在坑里苦熬良久。</p>
+
+<p>准备工作第三弹：</p>
+
+<p>还是在公众平台上，进入公众号设置，找到功能设置。</p>
+
+<p>需要对JS接口安全域名做设置。</p>
+
+<p>这里的安全域名就是你的应用相关的域名，改动次数受限制，要注意。</p>
+
+<p>准备工作第四弹：</p>
+
+<p>还是在公众平台上，在开发者中心里找到配置项。</p>
+
+<p>这里需要有APPID和APPSecret的访问权限。</p>
+
+<p>另外，还需要准备的是商户id：mch_id 和 key。</p>
+
+<p>注：secret 和 key 在通信接口里有用到，不允许在前端页面使用！</p>
+
+<p>———————— 我是跃跃欲试的分割线 ————————</p>
+
+<p>第一步骤：一个带验证的入口URI</p>
+
+<p>首先引导用户进入应用，这里以H5页面为例。</p>
+
+<p>由于微信支付必须在微信浏览器里进行，因此入口URL链接应当从公众号发布给用户，</p>
+
+<p>这样用户才会在微信客户端中点击链接，进入应用。</p>
+
+<p>（不要问京东为什么可以在纯网页端使用微信支付，那是微信给他的小伙伴京东开的后门好吗）</p>
+
+<p>这个入口URL不是简单的URL，这里需要做oauth的验证，因此我们暂设此URL为entranceURL。</p>
+
+<p>entranceURL的格式为：</p>
+
+<p>https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&amp;redirect_uri=REDIRECT_URI&amp;response_type=code&amp;scope=SCOPE&amp;state=STATE#wechat_redirect</p>
+
+<p>标红的几个变量需要说明：</p>
+
+<ol>
+  <li>
+    <p>APPID就是公众号的appid</p>
+  </li>
+  <li>
+    <p>REDIRECT_URI很眼熟？就是刚在网页授权里写的URI，要转义哦亲。</p>
+  </li>
+  <li>
+    <p>response_type须填code，理由是这是一个GET请求，微信会返回code然后用code再……blah blah blah</p>
+  </li>
+  <li>
+    <p>SCOPE，填snsapi_userinfo（需用户手动授权）或snsapi_base（直接进入页面）</p>
+  </li>
+  <li>
+    <p>STATE 会跟随code一起返回，看业务需要自己填。一般格式是有大小写和数字的组合。</p>
+  </li>
+</ol>
+
+<p>第二步骤：用code获取openId</p>
+
+<p>用户点击了这个entranceURL之后会发生什么奇妙的事情咩？</p>
+
+<p>这时候微信会返回给你一个code，并重定向到你在REDIRECT_URI里指定的页面。</p>
+
+<p>你需要在这个页面的URL里拿到code的值，如果拿不到，要提示用户授权失败或未授权。</p>
+
+<p>由于这个entranceURL可能是应用的首页，而需要调用支付控件的是其他页面，</p>
+
+<p>所以可以先将其缓存到例如sessionStorage里，到了需要调用支付控件时再用。</p>
+
+<p>拿到这个code需要做什么咩？</p>
+
+<p>这时候要做的事情就不能在前端页面里继续进行了，这里必须写一个前后端通信的接口，</p>
+
+<p>将这个code传送给后端服务器，然后在服务器里发起对微信的GET请求：</p>
+
+<p>https://api.weixin.qq.com/sns/oauth2/access_token?appid=我的appid&amp;secret=我的secret&amp;code=这个code&amp;grant_type=authorization_code;</p>
+
+<p>标红的是需要被替换的变量，其中appid和secret都应该保存在服务端文件中。</p>
+
+<p>这个请求返回的Json里的openid就是我们要的。</p>
+
+<p>第三步骤：统一下单接口</p>
+
+<p>接口地址：https://api.mch.weixin.qq.com/pay/unifiedorder</p>
+
+<p>参考文档：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1</p>
+
+<p>这个接口在文档里讲得很清楚，在此不赘述。</p>
+
+<p>注意这里有签名sign，它与后面要用的signature和paySign虽然都是签名，但完全不同。</p>
+
+<p>如果你的trade_type是NATIVE就不需要openid，如果是JSAPI就必须要openid。</p>
+
+<p>在统一下单的接口中，你会告诉微信当前这笔交易的一些基本信息，</p>
+
+<p>包括但不限于商户id、交易号、交易金额等等。</p>
+
+<p>微信会将其打包到一个package里，从接口返回的prepay_id里其实就对应了你的交易详情。</p>
+
+<p>注意这个接口返回的状态码有两种，一个标识的是通信是否成功：return_code</p>
+
+<p>另一个标识的是业务是否成功：result_code。详情见文档。</p>
+
+<p>第四步骤：前端配置wx.config</p>
+
+<p>在上一步接口的业务返回成功之后，可以在前端引用JSSDK了。</p>
+
+<p>开发文档在：https://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html</p>
+
+<p>首先注入权限验证配置时，需要用到wx.config。</p>
+
+<p>它有几个参数要格外注意，不然又进坑了：</p>
+
+<ol>
+  <li>
+    <p>随机字符串nonceStr，必须使用上一步的统一下单接口返回的nonceStr。</p>
+  </li>
+  <li>
+    <p>签名signature，不是上步接口里的sign，需在服务端生成，返给前端。（见下一步骤）</p>
+  </li>
+  <li>
+    <p>jsApiList 里要指定微信支付接口“chooseWXPay”。</p>
+  </li>
+  <li>
+    <p>debug参数设为true时，会在移动端打出alert帮助调试。</p>
+  </li>
+</ol>
+
+<p>第五步骤：服务端生成wx.config所需的signature</p>
+
+<p>首先用appid和secret从微信基础支持接口中获取access_token。</p>
+
+<p>前面提到了两个token：网页授权型token和普通型token。</p>
+
+<p>这里获取的是普通型token。</p>
+
+<p>由于这个token是公众号所有服务都可能用到的，因此要格外注意。</p>
+
+<p>有效期7200s，建议过期之前应当缓存之。</p>
+
+<p>然后用这个token去获取jsapi_ticket，接口地址：</p>
+
+<p>https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=” access_token “&amp;type=jsapi</p>
+
+<p>这个ticket同样也要做缓存。</p>
+
+<p>现在可以准备生成signature了，所需的参数有：</p>
+
+<ol>
+  <li>
+    <p>jsapi_ticket</p>
+  </li>
+  <li>
+    <p>nonceStr 即统一下单接口返回的随机字符串</p>
+  </li>
+  <li>
+    <p>时间戳：秒为单位（后续还会用到时间戳，要保持一致）</p>
+  </li>
+  <li>
+    <p>当前页面URL，不需转义</p>
+  </li>
+</ol>
+
+<p>注意这个签名是用sha1算法加密，其他的签名是用MD5算法加密的。</p>
+
+<p>第六步骤：终于开始配置chooseWXPay了</p>
+
+<p>wx.config的验证通过之后，就可以在wx.ready的回调里执行wx.chooseWXPay了。</p>
+
+<p>chooseWXPay的几个属性配置说明如下：</p>
+
+<ol>
+  <li>
+    <p>timeStamp：刚才用到的那个时间戳，秒为单位。</p>
+  </li>
+  <li>
+    <p>nonceStr：统一下单接口里的随机字符串</p>
+  </li>
+  <li>
+    <p>package：值的格式为“prepay_id=” 统一下单接口返回的prepay_id</p>
+  </li>
+  <li>
+    <p>signType：由于这里的签名是MD5加密，因此这个值就是“MD5”</p>
+  </li>
+  <li>
+    <p>paySign：呵呵，此处是坑，这个签名也是在服务端生成，返给前端，见下一步骤。</p>
+  </li>
+  <li>
+    <p>success：支付成功后的回调。</p>
+  </li>
+  <li>
+    <p>fail： 支付失败后的回调。</p>
+  </li>
+  <li>
+    <p>cancel：用户取消支付后的回调。</p>
+  </li>
+</ol>
+
+<p>这里注意，由于进入应用时是带着oauth验证的，因此在用户取消支付后，</p>
+
+<p>code可能已过期，因此建议在取消支付的回调里，调用wx.closeWindow()退出Web页返回微信客户端。</p>
+
+<p>因为即使你不退出，再执行支付，code之后的验证也不会通过。</p>
+
+<p>这时只能重新访问一次第一步骤中的entranceURL才行。</p>
+
+<p>第七步骤：生成chooseWXPay所需的签名paySign</p>
+
+<p>这个签名不同于刚才在wx.config里的签名signature，这是用MD5加密的。</p>
+
+<p>生成签名所需参数有appid，nonceStr，package，signType和timeStamp。（字典序排列）</p>
+
+<p>其中nonceStr和package都是前面调用的统一下单的接口返回的。</p>
+
+<p>这里的signType是“MD5”.</p>
+
+<p>另外，这个签名拼合的时候，最后要加一个key，就是app的key。</p>
+
+<p>key的排序在最后，排序不参与字典序。具体规则见官方文档。</p>
+
+<p>第八步骤：线上测试</p>
+
+<p>至此，万事具备，包括东风。可以测试了。</p>
+
+<p>建议使用iPhone手机测试，如果有问题IOS会报出错信息，Android不会。</p>
+
+<p>最常见的问题就是“Invalid signature”，这个错误信息太笼统了。</p>
+
+<p>需要更细致的调试和辛勤的打Log。我在这个坑里淌了两天……</p>
+
+<p>注：本地测试环境不能测试，必须发布到线上测试环境（非生产环境），</p>
+
+<p>并且线上测试环境的域名和URI等信息都要在公众号设置里有授权。</p>
+
+<p>———————— 我是蠢蠢欲动的分割线 ————————</p>
+
+<p>如此看来，流程清晰多了，也无甚难处。</p>
+
+<p>可当初做开发和调试时，因为对后端语言不熟，耗费了很多时间，</p>
+
+<p>用JS三秒写出的方法，用后端语言写就频繁报错，</p>
+
+<p>什么也不说了，只恨自己读书少。</p>
+
+<p>最后感谢在此过程中提供语法指点的盆友。</p>

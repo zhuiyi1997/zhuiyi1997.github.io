@@ -1,0 +1,35 @@
+<p><img src="/media/files/2015/12/31/shadow.jpg" alt="Shadow" /></p>
+
+<h3 id="githubgithubio">1.在个人github上建立一个用户名.github.io格式的版本库</h3>
+<p><img src="/media/files/2015/12/31/1.png" alt="image01" /><br /></p>
+
+<h3 id="ruby">2.安装ruby运行环境</h3>
+<p>到<a href="http://rubyinstaller.org/" title="点下去哦">http://rubyinstaller.org/</a>下载ruby安装包；我这里是2.2.5<br />
+安装完毕后配置环境变量。如果命令行运行ruby –v可以显示版本号，则说明安装配置成功。<br /></p>
+
+<h3 id="gem">3．更换gem源</h3>
+<p>gem sources -a http://gems.ruby-china.org/<br /></p>
+
+<h3 id="section">4.安装需要包</h3>
+<p>gem install Jekyll –v ‘3.0’<br />
+gem install minima<br /></p>
+
+<h3 id="jekyll">5.创建jekyll项目</h3>
+<p>项目目录路径不要有中文<br />
+Jekyll new blog<br />
+这样就在根目录下创建了一个blog文件夹<br /></p>
+
+<h3 id="blogjekyll-serve">6.进入blog文件夹，运行jekyll serve</h3>
+<p>访问localhost:4000<br />
+可以看到<br />
+<img src="/media/files/2015/12/31/2.png" alt="image02" /></p>
+
+<h3 id="section-1">7.然后将它与刚创建的远程版本库相关联</h3>
+<p>在blog目录运行<br />
+git init<br />
+git remote add origin git@github.com:/zhuiyi1997/zhuyi1997.github.io <br />
+git add * -f<br />
+git commit –m ‘1’<br />
+git push origin master<br /></p>
+
+<p>提交成功后，访问<a href="http://zhuiyi1997.github.io" title="点下去哦">http://zhuiyi1997.github.io</a></p>

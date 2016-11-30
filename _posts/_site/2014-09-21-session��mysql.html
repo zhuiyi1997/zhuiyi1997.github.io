@@ -1,0 +1,52 @@
+<p>```php
+    &lt;?php<br />
+    ini_set(“session.save_handler”,”user”);  <br />
+    //session.gc_probability = 1 分子  <br />
+    ini_set(“session.gc_probability”,1);  <br />
+    //session.gc_divisor = 1000 分母  <br />
+    ini_set(“session.gc_divisor”,2);  <br />
+    //session.gc_maxlifetime = 1440 垃圾回收时间，session有效期  <br />
+    session_set_save_handler( “open”,”close”,”read”,”write”,”destroy”,”gc” );<br />
+    //连接数据库  <br />
+    function open(){  <br />
+        @$link = mysql_connect(‘127.0.0.1’, ‘root’, ‘root’);  <br />
+        mysql_query(‘set names utf8’);  <br />
+        mysql_query(‘use wangbin’);  <br />
+    }  <br />
+    function close(){  <br />
+        mysql_close();  <br />
+    }  <br />
+    function read($sess_id){  <br />
+        $sql = “select session_data from <code>session</code> where session_id = ‘$sess_id’”;  <br />
+        $result = mysql_query($sql);  <br />
+        if($rows = mysql_fetch_assoc($result)){<br />
+            return $rows[‘session_data’]; }<br />
+        else{<br />
+            return ‘’;<br />
+        }  <br />
+    }  <br />
+    function write($sess_id,$sess_data){  <br />
+        $sql = “insert into <code>session</code> (session_id,session_data,session_time) values(‘$sess_id’,’$sess_data’, now()) on duplicate key update session_data = ‘$sess_data’ , session_time = now()”;  //这是为了gc()  <br />
+        return mysql_query($sql);</p>
+
+<pre><code>}    
+function destroy($sess_id){    
+    echo __FUNCTION__;    
+    $sql = "delete from `session` where session_id = '$sess_id'";    
+    return mysql_query($sql);    
+    
+}    
+function gc($sess_id){    
+    $maxlifetime = ini_set("session.gc_maxlifetime");    
+    echo __FUNCTION__;    
+    $sql = "delete from `session` where now()-session_time &gt; '$maxlifetime' ";    
+    return mysql_query($sql);    
+}    
+header("content-type:text/html;charset=utf8");    
+session_start();    
+$_SESSION['name']='aa';    
+//echo session_id();    
+echo $_SESSION['name'];    
+</code></pre>
+
+<p>```</p>

@@ -1,0 +1,183 @@
+<p>Session信息入Redis</p>
+
+<p>为什么要把SESSION保存在缓存</p>
+
+<p>就PHP来说，语言本身支持的session是以文件的方式保存到磁盘文件中，保存在指定的文件夹中，保存的路径可以在配置文件中设置或者在程序中使用函数session_save_path()进行设置，但是这么做有弊端，</p>
+
+<p>第一就是保存到文件系统中，效率低，只要有用到session就会从好多个文件中查找指定的sessionid，效率很低。</p>
+
+<p>第二就是当用到多台服务器的时候可能会出现，session丢失问题（其实是保存在了其他服务器上）。</p>
+
+<p>当然了，保存在缓存中可以解决上面的问题，如果使用php本身的session函数，可以使用 session_set_save_handler()函数很方便的对session的处理过程进行重新控制。如果不用php的session系列函数， 可以自己编写个类似的session函数，也是可以的，我现在做的这个项目就是这样，会根据用户的mid、登录时间进行求hash作为 sessionId，每次请求的时候都必须加上sessionId才算合法（第一次登录的时候是不需要的，这个时候会创建sessionId，返回给客户 端），这么做也很方便、简洁高效的。当然了，我这篇文章主要说的是在php自身的SESSION中”做做手脚”。</p>
+
+<p>SESSION保存在缓存中</p>
+
+<p>php将缓存保存到redis中，可以使用配置文件，对session的处理和保存做修改，当然了，在程序中使用ini_set()函数去修改也可以，这个很方便测试，我这里就使用这种方式，当然了，要是生产环境还是建议使用配置文件。</p>
+
+<p>如果想简单操作session入redis操作可以将一下代码运行一下
+```php
+&lt;?php</p>
+
+<p>ini_set(“session.save_handler”, “redis”);</p>
+
+<p>ini_set(“session.save_path”, “tcp://localhost:6379”);</p>
+
+<p>session_start();</p>
+
+<p>header(“Content-type:text/html;charset=utf-8”);</p>
+
+<p>$_SESSION[‘view’] = ‘zhangsan’;</p>
+
+<p>echo $_SESSION[‘view’];</p>
+
+<p>```
+这里设置session.save_handler方式为redis，session.save_path为redis的地址和端口，设置之后刷新，再回头查看redis，会发现redis中的生成了sessionId，sessionId和浏览器请求的是一样的，</p>
+
+<p>如果是memcache
+```php
+&lt;?php</p>
+
+<p>ini_set(“session.save_handler”, “memcache”);</p>
+
+<p>ini_set(“session.save_path”, “tcp://localhost:11211”);</p>
+
+<p>session_start();</p>
+
+<p>header(“Content-type:text/html;charset=utf-8”);</p>
+
+<p>$_SESSION[‘view’] = ‘zhangsan’;</p>
+
+<p>echo $_SESSION[‘view’];</p>
+
+<p><code>
+也可以使用
+</code>php</p>
+
+<p>Session_set_save_handler(‘open’,’close’,’ read’,’ write’,’ destory’,’ gc’);
+<code>
+用法如下自定义一个Redis_session类
+</code>php
+&lt;?php</p>
+
+<p>class RedisSession{</p>
+
+<pre><code>private $_redis = array(
+
+    'handler' =&gt; null, //数据库连接句柄
+
+    'host' =&gt; null,   //redis端口号
+
+    'port' =&gt; null,
+
+);
+
+public function __construct($array = array()){
+
+    isset($array['host'])?$array['host']:"false";
+
+    isset($array['port'])?$array['host']:"false";
+
+    $this-&gt;_redis = array_merge($this-&gt;_redis, $array);
+
+}
+
+public function begin(){
+
+    //设置session处理函数
+
+    session_set_save_handler(
+
+        array($this, 'open'),
+
+        array($this, 'close'),
+
+        array($this, 'read'),
+
+        array($this, 'write'),
+
+        array($this, 'destory'),
+
+        array($this, 'gc')
+
+    );
+
+}
+
+public function open(){
+
+    $redis = new Redis();
+
+    $redis-&gt;connect($this-&gt;_redis['host'], $this-&gt;_redis['port']);
+
+    if(!$redis){
+
+        return false;
+
+    }
+
+ 
+
+    $this-&gt;_redis['handler'] = $redis;
+
+    $this-&gt;gc(null);
+
+    return true;
+
+}
+
+//关
+
+public function close(){
+
+    return $this-&gt;_redis['handler']-&gt;close();
+
+}
+
+//读
+
+public function read($session_id){
+
+    return $this-&gt;_redis['handler']-&gt;get($session_id);
+
+}
+
+//写
+
+public function write($sessionId, $sessionData){
+
+    return $this-&gt;_redis['handler']-&gt;set($sessionId, $sessionData);
+
+}
+
+public function destory($sessionId){
+
+    return $this-&gt;_redis['handler']-&gt;delete($sessionId) &gt;= 1 ? true : false;
+
+}
+
+public function gc(){
+
+    //获取所有sessionid，让过期的释放掉
+
+    $this-&gt;_redis['handler']-&gt;keys("*");
+
+    return true;
+
+}
+</code></pre>
+
+<p>}</p>
+
+<p>$ses = new RedisSession(array(‘host’=&gt;’127.0.0.1’,’port’=&gt;’6379’));</p>
+
+<p>$ses-&gt;begin();</p>
+
+<p>session_start();</p>
+
+<p>$_SESSION[‘name’]=’zhangsan’;</p>
+
+<p>echo $_SESSION[‘name’];</p>
+
+<p>```</p>
+
+<p>这样就可以实现session数据如redis代码执行过程中必须安装redis才可以</p>

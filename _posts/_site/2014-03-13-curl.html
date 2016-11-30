@@ -1,0 +1,90 @@
+<ul id="markdown-toc">
+  <li><a href="#i-classfa--fa-useri-" id="markdown-toc-i-classfa--fa-useri-"><i class="fa  fa-user"></i> 请求接口</a></li>
+  <li><a href="#i-classfa-fa-eyei-cookie" id="markdown-toc-i-classfa-fa-eyei-cookie"><i class="fa fa-eye"></i> 请求接口（当cookie认证登陆的时候）</a></li>
+</ul>
+
+<h2 id="i-classfa--fa-useri-"><i class="fa  fa-user"></i> 请求接口</h2>
+
+<p>```php
+    header(‘content-type:text/html;charset=utf-8’);<br />
+    function curlPost($url,$data,$method){<br />
+        $ch = curl_init();   //1.初始化<br />
+        curl_setopt($ch, CURLOPT_URL, $url); //2.请求地址<br />
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);//3.请求方式<br />
+        //4.参数如下<br />
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);//https<br />
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);<br />
+        curl_setopt($ch, CURLOPT_USERAGENT, ‘Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)’);//模拟浏览器<br />
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);<br />
+        curl_setopt($ch, CURLOPT_AUTOREFERER, 1);<br />
+            curl_setopt($ch, CURLOPT_HTTPHEADER,array(‘Accept-Encoding: gzip, deflate’));//gzip解压内容<br />
+            curl_setopt($ch, CURLOPT_ENCODING, ‘gzip,deflate’);</p>
+
+<pre><code>    if($method=="POST"){//5.post方式的时候添加数据  
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);  
+    }  
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  
+    $tmpInfo = curl_exec($ch);//6.执行  
+  
+    if (curl_errno($ch)) {//7.如果出错  
+        return curl_error($ch);  
+    }  
+    curl_close($ch);//8.关闭  
+    return $tmpInfo;  
+}  
+$data=array('name' =&gt; '1234');  
+$url="http://www.sohu.com/";  
+  
+$method="GET";  
+$file=curlPost($url,$data,$method);  
+$file=mb_convert_encoding($file,'UTF-8','GBK');  
+echo $file;   ```
+</code></pre>
+
+<h2 id="i-classfa-fa-eyei-cookie"><i class="fa fa-eye"></i> 请求接口（当cookie认证登陆的时候）</h2>
+<p>```php</p>
+<pre><code>
+    <?php  
+        $cookie_file = tempnam('./temp','cookie');  
+        function weixinPost($url,$data,$method,$setcooke=false,$cookie_file=false){  
+           3 $ch = curl_init();   //1.初始化  
+            curl_setopt($ch, CURLOPT_URL, $url); //2.请求地址  
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);//3.请求方式  
+            //4.参数如下      
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);  
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);  
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 5.01; Windows NT 5.0)');  
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);  
+            curl_setopt($ch, CURLOPT_AUTOREFERER, 1);  
+              
+            if($method=="POST"){//5.post方式的时候添加数据     
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $data);  
+            }  
+            if($setcooke==true){  
+                curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);  
+            }else{  
+                curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);  
+            }  
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);  
+            $tmpInfo = curl_exec($ch);//6.执行  
+      
+            if (curl_errno($ch)) {//7.如果出错  
+                return curl_error($ch);  
+            }  
+            curl_close($ch);//8.关闭  
+            return $tmpInfo;  
+        }  
+        $data=array('username' => '***','password'=>'***');  
+        $url="http://www.xinxinj.com/login.php";  
+        $method="POST";  
+        $file=weixinPost($url,$data,$method,true,$cookie_file);  
+        echo $file;  
+              
+        $url="http://www.xinxinj.com/admin.php";  
+        $method="GET";  
+        $file=weixinPost($url,$data,$method,false,$cookie_file);  
+        echo $file;  
+              
+    ?>  
+```
+</code></pre>

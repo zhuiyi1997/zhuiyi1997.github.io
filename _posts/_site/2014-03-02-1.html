@@ -1,0 +1,214 @@
+<p>PHP的底层实现</p>
+
+<p>PHP代码的执行过程</p>
+
+<p>编译型语言:</p>
+
+<p>对于C语言,C++, 编译成机器码(二进制)来运行.</p>
+
+<p>java语言, 把.java编译成 .class,称为bytecode, 由jvm来运行.</p>
+
+<p>解释语言:</p>
+
+<p>解释器解释执行. 典型的如 linux shell.</p>
+
+<p>解释器逐行来执行命令.</p>
+
+<p>PHP稍有特殊之处,虽然是一个脚本语言,但不是靠解释器解释.</p>
+
+<p>而是 zend 虚拟机,屏蔽了操作系统的区别.</p>
+
+<p>php代码编译成opcode, 由zend虚拟机来执行opcode.</p>
+
+<p>但是—opcode, PHP脚本一结束,opcode就清除了.</p>
+
+<p>思考:opcode能否缓存?</p>
+
+<p>PHP本身不支持,但是apc,xcache等加速器,实现了这样的效果.</p>
+
+<p><img src="/media/files/2014/03/02/1.png" alt="image01" /><br /></p>
+
+<p>PHP底层用C语言来实现的,C语言是强类型,而PHP是弱类型语言.</p>
+
+<p>是如何实现的呢?</p>
+
+<p>PHP变量的底层实现:</p>
+
+<p>我们解压PHP的源码包, 看到如下的目录</p>
+
+<p><img src="/media/files/2014/03/02/2.png" alt="image02" /><br /></p>
+
+<p>其中,</p>
+
+<p>最核心的—Zend目录, 这是zend虚拟的实现. 包括栈,数据类型,编译器等,都在这实现.</p>
+
+<p>最主要的main –PHP的一些内建函数,最主要函数都在这里放着.</p>
+
+<p>最大的一个目录 ext – PHP的扩展.</p>
+
+<p>PHP的大部分功能,都是以extenstion形式来完成的.</p>
+
+<p>如果你开发了一个扩展,也放在ext目录下.</p>
+
+<p>Zend对变量的表示:</p>
+
+<p>答: zend实现了 zval结构体
+{
+value: [联合体] ,联合体的内容可能是C语言中的long,double,hashtable…</p>
+
+<p>type: 变量类型 , IS_NULL,IS_BOOL,IS_STRING…… IS_RESOURCE</p>
+
+<p>refcount_gc</p>
+
+<p>is_ref_gc</p>
+
+<p>}</p>
+
+<p>如:</p>
+
+<p>$a = 3;</p>
+
+<p>{</p>
+
+<p>value : [long lval = 3]</p>
+
+<p>type: IS_LONG</p>
+
+<p>}</p>
+
+<p>$a = 3.5</p>
+
+<p>{</p>
+
+<p>value: [double dval = 3.5]</p>
+
+<p>type:IS_DOUBLE</p>
+
+<p>}</p>
+
+<p><img src="/media/files/2014/03/02/3.png" alt="image03" /><br /></p>
+
+<p>疑问 :</p>
+
+<p>PHP中有8种数据类型,为什么zval-&gt;value 联合体中,只有5种?</p>
+
+<p>答:</p>
+
+<p>1: NULL,直接 zval-&gt;type = IS_NULL,就可以表示,不必设置  value的值.</p>
+
+<p>2: BOOL型 , zval-&gt;type = IS_BOOL, 再设置 zval.value.lval = 1/0;</p>
+
+<p>3: Resourc型 ,资源型 往往是服务器上打开的一个接口,如果 文件读取接口.</p>
+
+<p>zval-&gt;type = IS_RESOURCE, zval-&gt;tyoe.lval = 服务器上打开的接口的编号</p>
+
+<p>发现:</p>
+
+<p>PHP中,字符串类型,长度是已经缓存的,调用strlen时,系统可以直接返回其长度,不必计算.</p>
+
+<p>符号表 — 变量的花名册</p>
+
+<p><img src="/media/files/2014/03/02/4.png" alt="image04" /><br /></p>
+
+<p>变量的赋值与引用</p>
+
+<p>注意:</p>
+
+<p>在传值赋值时,</p>
+
+<p>以: $a = 3 ; $b = $a为例,</p>
+
+<p>并没有再次产生结构体,而是2个变量共用1个结构体.</p>
+
+<p>此时,2个变量,指向同1个结构体,</p>
+
+<p>refcount_gc 值为2</p>
+
+<p><img src="/media/files/2014/03/02/5.png" alt="image05" /><br /></p>
+
+<p>思考: a, b指向同一个结构体, 那么,修改a,或b ,对方会不会受干扰?</p>
+
+<p>答: 不会,</p>
+
+<p>因为2者,有一方修改时,将会造成结构体的分裂.</p>
+
+<p>结构体一开始共用, 到某一方要修改值时,才分裂.</p>
+
+<p>这种特点,称为cow , copy on write ,</p>
+
+<p>如下图:</p>
+
+<p><img src="/media/files/2014/03/02/6.png" alt="image06" /><br /></p>
+
+<p>当引用赋值时, 双方共用一个结构体(is_ref_gc=1)</p>
+
+<p>发生如下图的变化</p>
+
+<p><img src="/media/files/2014/03/02/7.png" alt="image07" /><br /></p>
+
+<p>引用时的一些怪现象</p>
+
+<p>函数执行时的栈变化</p>
+
+<p>当函数调用时,为此函数生成了一个”执行环境变量”的结构体,里面存储了当前函数的名称,参数,对应的类….等等信息.</p>
+
+<p>称为_zend_execute_data {}结构体</p>
+
+<p>这个结构体中,还有2个重要的信息:</p>
+
+<p>{</p>
+
+<p>*op_array ——&gt;是函数的执行步骤</p>
+
+<p>*hash_table—-&gt;symbol_table 这个函数对应的符号表</p>
+
+<p>}</p>
+
+<p>思考一下: 1个函数,递归调用自己3次, 如t</p>
+
+<p>在栈上,肯定要有3个 execute_data生成.</p>
+
+<p>但是,这3个execute_data—&gt;对应几个*op_array;</p>
+
+<p>答:函数编译完了,生成一份*op_array,因为函数的执行逻辑是固定的.</p>
+
+<p>再问:生成了几个 symbol_table?</p>
+
+<p>答:生成3个符号表.</p>
+
+<p>函数中的静态变量是如何形成的.</p>
+
+<p>t() {</p>
+
+<p>} 自身调用3次</p>
+
+<p>[t_3 execute_data] —-&gt;[symbol_table_3]</p>
+
+<p>[t_2 execute_data] —-&gt;[symbol_table_2]</p>
+
+<p>[t_1 execute_data] —-&gt;[symbol_table_1]</p>
+
+<table>
+  <tbody>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+
+<p><em>op_array-&gt;</em>静态变量表</p>
+
+<p>安装PHP扩展的注意事项</p>

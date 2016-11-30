@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>世间自古有情痴</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <div>
+  <ul class="listing">
+  
+  <article class="content">
+    <section class="title">
+      <h2><a href="/2016/10/16/psr4.html">PSR1代码规范4</a></h2>
+    </section>
+    <section class="meta">
+    <span class="time">
+      <time datetime="2016-10-16">2016-10-16</time>
+    </span>
+    
+    <span class="tags">
+      
+      <a href="/tags.html#php" title="php">#php</a>
+      
+    </span>
+    
+    <!-- BEGIN this would not work on any other domain -->
+    <span
+      class           = 'like-wrapper'
+      like-shortname  = 'gopherwood'
+      like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+      like-name       = 'PSR1代码规范4'
+      like-link       = 'https://zhuiyi1997.github.io//index.markdown.bak'
+      like-btn        = '&#xf087;'
+    ></span>
+    <script type="text/javascript">
+      var l = document.createElement('script'); l.type = 'text/javascript'; l.async = true;
+      l.src = 'http://www.like-btn.com/javascript/widget.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+    </script>
+    <!-- END this would not work on any other domain -->
+    </section>
+    <section class="post">
+    <h2 id="section">1. 概况</h2>
+
+<p>这个 PSR 描述的是通过文件路径<a href="http://php.net/autoload">自动载入</a>类的指南；它作为对 <a href="https://github.com/hfcorriez/fig-standards/tree/master/accepted/zh_CN/PSR-0.md">PSR-0</a> 的补充；根据这个
+指导如何规范存放文件来自动载入；</p>
+
+<h2 id="specification">2. 说明（Specification）</h2>
+
+<ol>
+  <li>
+    <p>术语「类」是一个泛称；它包含类，接口，traits 以及其他类似的结构；</p>
+  </li>
+  <li>
+    <p>完全限定类名应该类似如下范例：</p>
+
+    <p>&lt;NamespaceName&gt;(&lt;SubNamespaceNames&gt;)*&lt;ClassName&gt;</p>
+
+    <ol>
+      <li>完全限定类名必须有一个顶级命名空间（Vendor Name）；</li>
+      <li>完全限定类名可以有多个子命名空间；</li>
+      <li>完全限定类名应该有一个终止类名；</li>
+      <li>下划线在完全限定类名中是没有特殊含义的；</li>
+      <li>字母在完全限定类名中可以是任何大小写的组合；</li>
+      <li>所有类名必须以大小写敏感的方式引用；</li>
+    </ol>
+  </li>
+  <li>
+    <p>当从完全限定类名载入文件时：</p>
+
+    <ol>
+      <li>在完全限定类名中，连续的一个或几个子命名空间构成的命名空间前缀（不包括顶级命名空间的分隔符），至少对应着至少一个基础目录。</li>
+      <li>在「命名空间前缀」后的连续子命名空间名称对应一个「基础目录」下的子目录，其中的命名
+空间分隔符表示目录分隔符。子目录名称必须和子命名空间名大小写匹配；</li>
+      <li>终止类名对应一个以 <code>.php</code> 结尾的文件。文件名必须和终止类名大小写匹配；</li>
+    </ol>
+  </li>
+  <li>
+    <p>自动载入器的实现不可抛出任何异常，不可引发任何等级的错误；也不应返回值；</p>
+  </li>
+</ol>
+
+<h2 id="section-1">3. 范例</h2>
+
+<p>如下表格展示的是与完全限定类名、命名空间前缀和基础目录相对应的文件路径：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>完全限定类名</th>
+      <th>命名空间前缀</th>
+      <th>基础目录</th>
+      <th>实际的文件路径</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>\Acme\Log\Writer\File_Writer</td>
+      <td>Acme\Log\Writer</td>
+      <td>./acme-log-writer/lib/</td>
+      <td>./acme-log-writer/lib/File_Writer.php</td>
+    </tr>
+    <tr>
+      <td>\Aura\Web\Response\Status</td>
+      <td>Aura\Web</td>
+      <td>/path/to/aura-web/src/</td>
+      <td>/path/to/aura-web/src/Response/Status.php</td>
+    </tr>
+    <tr>
+      <td>\Symfony\Core\Request</td>
+      <td>Symfony\Core</td>
+      <td>./vendor/Symfony/Core/</td>
+      <td>./vendor/Symfony/Core/Request.php</td>
+    </tr>
+    <tr>
+      <td>\Zend\Acl</td>
+      <td>Zend</td>
+      <td>/usr/includes/Zend/</td>
+      <td>/usr/includes/Zend/Acl.php</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>例子中的自动载入器非常适应这个指南，请参照 <a href="http://www.php-fig.org/psr/psr-4/PSR-4-autoloader-examples.md">示例文件</a>。由于可能随时变更，实例不能作为指南的一部分。</p>
+
+
+    </section>
+    </article>
+  
+  </ul>
+  <div class="divider"></div>
+  <ul class="listing main-listing">
+    <li class="listing-seperator">Happend earlier this year</i>
+  
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-10-16">2016-10-16</time>
+      <a href="/2016/10/16/psr3.html" title="PSR1代码规范3">PSR1代码规范3</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-10-16">2016-10-16</time>
+      <a href="/2016/10/16/psr2.html" title="PSR1代码规范2">PSR1代码规范2</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-10-16">2016-10-16</time>
+      <a href="/2016/10/16/psr1.html" title="PSR1代码规范1">PSR1代码规范1</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-10-16">2016-10-16</time>
+      <a href="/2016/10/16/psr0.html" title="PSR1代码规范0">PSR1代码规范0</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-09-01">2016-09-01</time>
+      <a href="/2016/09/01/mvc-talk-lightly.html" title="浅谈MVC架构模式分析与设计">浅谈MVC架构模式分析与设计</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-08-05">2016-08-05</time>
+      <a href="/2016/08/05/php-thing.html" title="mysql事物处理">mysql事物处理</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-08-03">2016-08-03</time>
+      <a href="/2016/08/03/magic-methods.html" title="PHP魔术方法">PHP魔术方法</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-07-07">2016-07-07</time>
+      <a href="/2016/07/07/php.html" title="php7所具有的特色">php7所具有的特色</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-07-07">2016-07-07</time>
+      <a href="/2016/07/07/git-clone-not-master-branch.html" title="Git 如何 clone 非 master 分支的代码">Git 如何 clone 非 master 分支的代码</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-06-10">2016-06-10</time>
+      <a href="/2016/06/10/javascript-good-parts-note3.html" title="JavaScript 语言精粹笔记3-方法、毒瘤等">JavaScript 语言精粹笔记3-方法、毒瘤等</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-06-08">2016-06-08</time>
+      <a href="/2016/06/08/javascript-good-parts-note2.html" title="JavaScript 语言精粹笔记2-继承、数组、正则表达式">JavaScript 语言精粹笔记2-继承、数组、正则表达式</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-06-07">2016-06-07</time>
+      <a href="/2016/06/07/javascript-good-parts-note1.html" title="JavaScript 语言精粹笔记1-语法、对象、函数">JavaScript 语言精粹笔记1-语法、对象、函数</a>
+    </li>
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-05-06">2016-05-06</time>
+      <a href="/2016/05/06/regular-expression-group.html" title="浅谈正则表达式中的分组和引用">浅谈正则表达式中的分组和引用</a>
+    </li>
+  
+    
+    
+    
+    <li class="listing-seperator"><a href="/archive.html">Long long ago</a></li>
+  </ul>
+</div>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

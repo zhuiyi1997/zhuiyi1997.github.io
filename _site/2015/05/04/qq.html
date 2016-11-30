@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>QQ群红包的算法实现探讨（基于PHP demo）</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>QQ群红包的算法实现探讨（基于PHP demo） </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2015-05-04">2015-05-04</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#php" title="php">#php</a>
+    
+    <a href="/tags.html#电商" title="电商">#电商</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'QQ群红包的算法实现探讨（基于PHP demo）'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2015/05/04/qq.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>这个算法需要满足以下几点要求：</p>
+
+<p>1、每个人都要能够领取到红包；</p>
+
+<p>2、每个人领取到的红包金额总和=总金额；</p>
+
+<p>3、每个人领取到的红包金额不等，但也不能差的太离谱，不然就没趣味；</p>
+
+<p>4、算法一定要简单，不然对不起腾讯这个招牌；</p>
+
+<p>正式编码之前，先搭建一个递进的模型来分析规律
+[php]</p>
+
+<pre><code>设定总金额为10元，有N个人随机领取：  
+N=1   
+则红包金额=X元；   
+  
+N=2   
+为保证第二个红包可以正常发出，第一个红包金额=0.01至9.99之间的某个随机数   
+第二个红包=10-第一个红包金额；   
+  
+N=3   
+红包1=0.01至0.98之间的某个随机数   
+红包2=0.01至(10-红包1-0.01)的某个随机数   
+红包3=10-红包1-红包2   
+  
+……  
+</code></pre>
+
+<p>至此，规律出现啦！开始编码！
+[php]</p>
+
+<pre><code>header("Content-Type: text/html;charset=utf-8");//输出不乱码，你懂的    
+$total=10;//红包总额    
+$num=8;// 分成8个红包，支持8人随机领取    
+$min=0.01;//每个人最少能收到0.01元    
+        
+for ($i=1;$i&lt;$num;$i++)    
+  {    
+      $safe_total=$total-($num-$i)*$min;//随机安全上限    
+      $money=mt_rand($min*100,$safe_total*100)/100;    
+      $total=$total-$money;    
+      echo '第'.$i.'个红包：'.$money.' 元，余额：'.$total.' 元 &lt;br/&gt;';    
+  }    
+ echo '第'.$num.'个红包：'.$total.' 元，余额：0 元';    
+</code></pre>
+
+<p>输入一看，波动太大，这数据太无趣了！
+[php]</p>
+
+<pre><code>第1个红包：7.48 元，余额：2.52 元   
+第2个红包：1.9 元，余额：0.62 元   
+第3个红包：0.49 元，余额：0.13 元   
+第4个红包：0.04 元，余额：0.09 元   
+第5个红包：0.03 元，余额：0.06 元   
+第6个红包：0.03 元，余额：0.03 元   
+第7个红包：0.01 元，余额：0.02 元   
+第8个红包：0.02 元，余额：0 元  
+</code></pre>
+
+<p>改良一下，将平均值作为随机安全上限来控制波动差</p>
+
+<p>[php]</p>
+
+<pre><code>header("Content-Type: text/html;charset=utf-8");//输出不乱码，你懂的    
+$total=10;//红包总额    
+$num=8;// 分成8个红包，支持8人随机领取    
+$min=0.01;//每个人最少能收到0.01元    
+        
+for ($i=1;$i&lt;$num;$i++)    
+{    
+    $safe_total=($total-($num-$i)*$min)/($num-$i);//随机安全上限    
+    $money=mt_rand($min*100,$safe_total*100)/100;    
+    $total=$total-$money;    
+    echo '第'.$i.'个红包：'.$money.' 元，余额：'.$total.' 元 &lt;br/&gt;';    
+}    
+  echo '第'.$num.'个红包：'.$total.' 元，余额：0 元';    
+</code></pre>
+
+<p>输出结果见下图
+[php]</p>
+
+<pre><code>第1个红包：0.06 元，余额：9.94 元   
+第2个红包：1.55 元，余额：8.39 元   
+第3个红包：0.25 元，余额：8.14 元   
+第4个红包：0.98 元，余额：7.16 元   
+第5个红包：1.88 元，余额：5.28 元   
+第6个红包：1.92 元，余额：3.36 元   
+第7个红包：2.98 元，余额：0.38 元   
+第8个红包：0.38 元，余额：0 元  
+</code></pre>
+
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2015/04/10/jssdk.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2015/05/08/app.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>linux 命令</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>linux 命令 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2013-07-11">2013-07-11</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#linux" title="linux">#linux</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'linux 命令'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2013/07/11/php.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>重启网卡：service network start</p>
+
+<p>查询IP地址：ifconfig</p>
+
+<p>关闭防火墙：iptables -F</p>
+
+<p>查看防火墙：iptables -L</p>
+
+<p>关闭安全机制：setneforce 0</p>
+
+<p>终止本层程序：Ctrl+C</p>
+
+<p>清屏：Ctrl+L</p>
+
+<p>查看配置：setup</p>
+
+<p>打开之后可以别人可以查看你的信息 service sshd</p>
+
+<p>重启sshd   service sshd restart</p>
+
+<p>关机命令：1.poweroff   2.shutdown  3.halt 0</p>
+
+<p>重启：reboot</p>
+
+<p>查看当前目录：pwd</p>
+
+<p>删除一个目录： rm -r  a.PHP(请求是否删除)   rm  -rf  a.php 直接删除</p>
+
+<p>移动 mv</p>
+
+<p>查看一个文件里的内容  cat</p>
+
+<p>离开终端  exit</p>
+
+<p>显示日期 date</p>
+
+<p>查看2016年日期   cal 2016</p>
+
+<p>创建目录  mkdir</p>
+
+<p>建立文件  touch</p>
+
+<p>网络链接不到的原因：1.网线没有插好  2.网卡有没有配置好，有没有与客户端在同一网端上 3.查看防火墙有没有关闭</p>
+
+<p>只查看本目录 ll -d  home/</p>
+
+<p>图形化运行级别：文字化是3   单用户是1 关机的级别是0</p>
+
+<p>偷别人Linux中的东西  scp  -r /boot root @192.168.1.81:/tmp</p>
+
+<p>查找： find / -name “aa.txt”</p>
+
+<p>查询目录位置 locate ifcfg-eth0</p>
+
+<p>更新文件库 updatedb</p>
+
+<p>解压 gzip -9 /boot/*</p>
+
+<p>解压 gzip -d /boot/*</p>
+
+<p>统计文件行数  wc -l aa.txt</p>
+
+<p>统计文件字节数  wc -c</p>
+
+<p>统计文件单词数  wc -w</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>管道 cat  aa.txt</td>
+      <td>wc -L</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>过滤 cat aa.txt</td>
+      <td>grep (单词)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>打包 tar -cvf 1.tar(打包之后的名字)  aa.txt bb.txt cc.txt(需要打包的文件)</p>
+
+<p>解压 tar -xvf  1.tar -c /hunan</p>
+
+<p>打包之后再压缩 tar -zvcf 1.tar.gz aa.txt bb.txt cc.txt</p>
+
+<p>撤销 :U</p>
+
+<p>复制 yy</p>
+
+<p>粘贴 p</p>
+
+<p>剪切 dd</p>
+
+<p>替换 :s aaa/ppp 将aaa替换成ppp</p>
+
+<p>连接别人的电脑 ssh+IP地址</p>
+
+<p>查找前5行 head -5 aa.txt</p>
+
+<p>挂载：mount /dev/cdrom /mnt</p>
+
+<p>linux中打开yum搭建</p>
+
+<p>1.vim /etc/yum.repos.d</p>
+
+<p>2.[C6.0-base]</p>
+
+<p>name=haoyun</p>
+
+<p>baseurl=file:///mnt</p>
+
+<p>gpgcheck=0</p>
+
+<p>enabled=1</p>
+
+<p>3.yum clean all  清除yum缓存</p>
+
+<p>4.yum list</p>
+
+<p>安装apache.php.MySQL</p>
+
+<p>yum install httpd*</p>
+
+<p>yum install mysqld*</p>
+
+<p>yum install php*</p>
+
+<p>卸载 apache .php.mysql</p>
+
+<p>yum remove httpd*</p>
+
+<p>yum remove php*</p>
+
+<p>yum remove mysqld*</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>查询php  ls</td>
+      <td>grep php</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源码安转：</p>
+
+<p>1.安装gcc 用yum</p>
+
+<p>2.解压程序</p>
+
+<p>3.进入解压程序</p>
+
+<p>./configure  运行配置工具</p>
+
+<p>make 编译</p>
+
+<p>make install 安转</p>
+
+<p>开机默认加载文件 cd /etc/rc/d/rc/local   vim /etc/rc.d/rc.loca</p>
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <i class="fa fa-circle"></i>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/03/02/1.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>php使用pdo操作数据库</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>php使用pdo操作数据库 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2014-10-04">2014-10-04</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#php" title="php">#php</a>
+    
+    <a href="/tags.html#mysql" title="mysql">#mysql</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'php使用pdo操作数据库'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2014/10/04/4.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <h3 id="pdo">什么是PDO</h3>
+
+<p>PDO（PHP数据对象） 是一个轻量级的、具有兼容接口的PHP数据连接拓展，是一个PHP官方的PECL库，随PHP 5.1发布，需要PHP 5的面向对象支持，因而在更早的版本上无法使用。它所提供的数据接入抽象层，具有与具体数据库类型无关的优势，为它所支持的数据库提供统一的操作接口。目前支持的数据库有Cubrid、FreeTDS / Microsoft SQL Server / Sybase、Firebird/Interbase 6、IBM DB2、IBM Informix Dynamic Server、MySQL 3.x/4.x/5.x、Oracle Call Interface、ODBC v3 (IBM DB2, unixODBC and win32 ODBC)、PostgreSQL、SQLite 3 and SQLite 2、Microsoft SQL Server / SQL Azure等。由于PDO是在底层实现的统一的数据库操作接口，因而利用它能够实现更高级的数据库操作，比如存储过程的调度等。</p>
+
+<h3 id="pdomysql">pdo操作MySQL数据库</h3>
+
+<p>连接
+$db = new PDO(‘mysql:host=localhost;dbname=test’, $user, $pass);</p>
+
+<p>$db = new PDO(‘mysql:host=localhost;dbname=test’, $user, $pass, array(
+    PDO::ATTR_PERSISTENT =&gt; true
+));</p>
+
+<p>$db-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);</p>
+
+<p>PDO中的查询操作:exec/query/prepared statement</p>
+
+<p>在PDO中有三种方法执行查询操作，分别是用exec、query和使用prepared statement。三种方法各有利弊，先说exec。</p>
+
+<p>（1）PDO::exec()一般用于执行一次的SQL语句，返回受查询影响的行数。它不适用于SELECT语句，如果需要用一次是SELECT语句，可以用PDO::query()；也不适用于多次使用的语句，如果有多次使用的需求，考虑用PDO::prepare()。</p>
+
+<p>（2）PDO::query()用于执行一次SELECT语句，执行后应当随即使用PDOStatement::fetch()语句将结果取出，否则立即进行下一次的PDO::query()将会报错。在2.PDO实例部分，为了得到查询数据的总量，就用了PDO::query()语句。</p>
+
+<p>（3）PDOStatement表示一个prepared statement语句，而在执行之后，又将返回一组关联数组的结果。如果一类查询（查询结构相似而具体的参数不一）需要一次解析而执行使用很多次，可以先用prepared statement，这样可以为具体的查询的执行做好准备，避免了分析、编译、优化的循环，将减少资源占用率，从而提高运行效率。通过对数据库进行prepare操作，便会返回PDOStatement数据类型，从而在其基础上展开execute、fetch等进一步的操作。</p>
+
+<p>$sth = $db-&gt;prepare(‘select * from book where cat_id=:id limit :offset, :limit’, array (</p>
+
+<p>PDO :: ATTR_CURSOR =&gt; PDO :: CURSOR_FWDONLY</p>
+
+<p>));</p>
+
+<p>//用$limit1得到一个结果</p>
+
+<p>$result1 = $sth-&gt;execute(array (</p>
+
+<pre><code>    ':id' =&gt; $cat,
+
+    ':offset' =&gt; ($pg -1) * $limit1,
+
+    ':limit' =&gt; $limit1
+
+));
+</code></pre>
+
+<p>//用$limit2得到另一个结果</p>
+
+<p>$result2 = $sth-&gt;execute(array (</p>
+
+<pre><code>    ':id' =&gt; $cat,
+
+    ':offset' =&gt; ($pg -1) * $limit2,
+
+    ':limit' =&gt; $limit2
+
+));
+</code></pre>
+
+<p>//用位置参入参数</p>
+
+<p>$stmt = $dbh-&gt;prepare(“INSERT INTO REGISTRY (name, value) VALUES (?, ?)”);</p>
+
+<p>$stmt-&gt;bindParam(1, $name);</p>
+
+<p>$stmt-&gt;bindParam(2, $value);</p>
+
+<p>//用名称传入参数</p>
+
+<p>$stmt = $dbh-&gt;prepare(“INSERT INTO REGISTRY (name, value) VALUES (:name, :value)”);</p>
+
+<p>$stmt-&gt;bindParam(‘:name’, $name);</p>
+
+<p>$stmt-&gt;bindParam(‘:value’, $value);</p>
+
+<p>$name = ‘one’;</p>
+
+<p>$value = 1;</p>
+
+<p>$stmt-&gt;execute();</p>
+
+<p>/////////////////////////////////////////////</p>
+
+<p>//也可以这样实现</p>
+
+<p>//用位置参入参数，indexed array</p>
+
+<p>$stmt = $dbh-&gt;prepare(“INSERT INTO REGISTRY (name, value) VALUES (?, ?)”);</p>
+
+<p>$name = ‘one’;</p>
+
+<p>$value = 1;</p>
+
+<p>$stmt-&gt;execute(array($name,$value));</p>
+
+<p>//用名称传入参数, associated array</p>
+
+<p>$stmt = $dbh-&gt;prepare(“INSERT INTO REGISTRY (name, value) VALUES (:name, :value)”);</p>
+
+<p>$name = ‘one’;</p>
+
+<p>$value = 1;</p>
+
+<p>$stmt-&gt;execute(array(‘:name’=&gt;$name,’:value’=&gt;$value));</p>
+
+<p>特别注意：查询语句中的占位符应当是占据整个值的位置，</p>
+
+<p>开启事务</p>
+
+<p>$db-&gt;beginTransaction();</p>
+
+<p>提交和回滚</p>
+
+<p>$db-&gt;commit()</p>
+
+<p>$db-&gt;rollBack()</p>
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2014/10/03/3.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/10/05/5.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

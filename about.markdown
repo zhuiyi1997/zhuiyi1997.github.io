@@ -9,14 +9,13 @@ a
 
 who involved in 
 
-> [github](https://github.com/waynezhang)
+> [github](https://github.com/zhuiyi1997)
 
 mail 
 
-> echo srvpqxfbyqfvpdtkbjwt | tr yxwvtsrqpkjfdb zuonmlihgeca@.
+>  fengfeisanfa@163.com
 
-or follow 
-
-> [@o_lll](https://twitter.com/#!/o_lll)
+or qq
+> 168368713
 
 to reach me

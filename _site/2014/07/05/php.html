@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>四种基本排序算法</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>四种基本排序算法 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2014-07-05">2014-07-05</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#php" title="php">#php</a>
+    
+    <a href="/tags.html#排序算法，" title="排序算法，">#排序算法，</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = '四种基本排序算法'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2014/07/05/php.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <ol>
+  <li>冒泡排序</li>
+</ol>
+
+<p>思路分析：在要排序的一组数中，对当前还未排好的序列，从前往后对相邻的两个数依次进行比较和调整，让较大的数往下沉，较小的往上冒。即，每当两相邻的数比较后发现它们的排序与排序要求相反时，就将它们互换。</p>
+
+<p>[php]</p>
+
+<pre><code>代码实现：  
+$arr=array(1,43,54,62,21,66,32,78,36,76,39);    
+function bubbleSort($arr)  
+{    
+  $len=count($arr);  
+  //该层循环控制 需要冒泡的轮数  
+  for($i=1;$i&lt;$len;$i++)  
+  { //该层循环用来控制每轮 冒出一个数 需要比较的次数  
+    for($k=0;$k&lt;$len-$i;$k++)  
+    {  
+       if($arr[$k]&gt;$arr[$k+1])  
+        {  
+            $tmp=$arr[$k+1];  
+            $arr[$k+1]=$arr[$k];  
+            $arr[$k]=$tmp;  
+        }  
+    }  
+  }  
+  return $arr;  
+}  
+</code></pre>
+
+<ol>
+  <li>选择排序</li>
+</ol>
+
+<p>思路分析：在要排序的一组数中，选出最小的一个数与第一个位置的数交换。然后在剩下的数当中再找最小的与第二个位置的数交换，如此循环到倒数第二个数和最后一个数比较为止。</p>
+
+<p>[php]</p>
+
+<pre><code>代码实现：  
+function selectSort($arr) {  
+//双重循环完成，外层控制轮数，内层控制比较次数  
+ $len=count($arr);  
+    for($i=0; $i&lt;$len-1; $i++) {  
+        //先假设最小的值的位置  
+        $p = $i;  
+          
+        for($j=$i+1; $j&lt;$len; $j++) {  
+            //$arr[$p] 是当前已知的最小值  
+            if($arr[$p] &gt; $arr[$j]) {  
+            //比较，发现更小的,记录下最小值的位置；并且在下次比较时采用已知的最小值进行比较。  
+                $p = $j;  
+            }  
+        }  
+        //已经确定了当前的最小值的位置，保存到$p中。如果发现最小值的位置与当前假设的位置$i不同，则位置互换即可。  
+        if($p != $i) {  
+            $tmp = $arr[$p];  
+            $arr[$p] = $arr[$i];  
+            $arr[$i] = $tmp;  
+        }  
+    }  
+    //返回最终结果  
+    return $arr;  
+}  
+</code></pre>
+
+<p>3.插入排序</p>
+
+<p>思路分析：在要排序的一组数中，假设前面的数已经是排好顺序的，现在要把第n个数插到前面的有序数中，使得这n个数也是排好顺序的。如此反复循环，直到全部排好顺序。</p>
+
+<p>[php]</p>
+
+<pre><code>代码实现：  
+function insertSort($arr) {  
+    $len=count($arr);   
+    for($i=1, $i&lt;$len; $i++) {  
+        $tmp = $arr[$i];  
+        //内层循环控制，比较并插入  
+        for($j=$i-1;$j&gt;=0;$j--) {  
+            if($tmp &lt; $arr[$j]) {  
+                //发现插入的元素要小，交换位置，将后边的元素与前面的元素互换  
+                $arr[$j+1] = $arr[$j];  
+                $arr[$j] = $tmp;  
+            } else {  
+                //如果碰到不需要移动的元素，由于是已经排序好是数组，则前面的就不需要再次比较了。  
+                break;  
+            }  
+        }  
+    }  
+    return $arr;  
+}  
+</code></pre>
+
+<p>4.快速排序<br />
+思路分析：选择一个基准元素，通常选择第一个元素或者最后一个元素。通过一趟扫描，将待排序列分成两部分，一部分比基准元素小，一部分大于等于基准元素。此时基准元素在其排好序后的正确位置，然后再用同样的方法递归地排序划分的两部分。</p>
+
+<p>[php]</p>
+
+<pre><code>代码实现：  
+function quickSort($arr) {  
+    //先判断是否需要继续进行  
+    $length = count($arr);  
+    if($length &lt;= 1) {  
+        return $arr;  
+    }  
+    //选择第一个元素作为基准  
+    $base_num = $arr[0];  
+    //遍历除了标尺外的所有元素，按照大小关系放入两个数组内  
+    //初始化两个数组  
+    $left_array = array();  //小于基准的  
+    $right_array = array();  //大于基准的  
+    for($i=1; $i&lt;$length; $i++) {  
+        if($base_num &gt; $arr[$i]) {  
+            //放入左边数组  
+            $left_array[] = $arr[$i];  
+        } else {  
+            //放入右边  
+            $right_array[] = $arr[$i];  
+        }  
+    }  
+    //再分别对左边和右边的数组进行相同的排序处理方式递归调用这个函数  
+    $left_array = quick_sort($left_array);  
+    $right_array = quick_sort($right_array);  
+    //合并  
+    return array_merge($left_array, array($base_num), $right_array);  
+}  
+</code></pre>
+
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2014/07/03/php.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/07/15/email.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>php发送邮件email</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>php发送邮件email </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2014-07-15">2014-07-15</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#mail" title="mail">#mail</a>
+    
+    <a href="/tags.html#php" title="php">#php</a>
+    
+    <a href="/tags.html#ci框架" title="ci框架">#ci框架</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'php发送邮件email'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2014/07/15/email.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>1.phpmailer,很好用，无论原生还是放到框架下，都没问题，phpmailer下载地址 https://github.com/PHPMailer/PHPMailer</p>
+
+<p>[php]</p>
+
+<pre><code>&lt;?php  
+header("content-type:text/html;charset=utf-8");  
+include("class.phpmailer.php");  
+include("class.smtp.php");  
+$mail = new PHPMailer();   
+$mail-&gt;IsSMTP(); // send via SMTP   
+$mail-&gt;Host = "smtp.163.com"; // SMTP servers   
+$mail-&gt;SMTPAuth = true; // turn on SMTP authentication   
+$mail-&gt;Username = "*********"; // SMTP username 注意：普通邮件认证不需要加 @域名   
+$mail-&gt;Password = "*****"; // SMTP password   
+$mail-&gt;From = "******@163.com"; // 发件人邮箱   
+$mail-&gt;FromName = "zph"; // 发件人   
+$mail-&gt;CharSet = "utf-8"; // 这里指定字符集！   
+$mail-&gt;Encoding = "base64";   
+$mail-&gt;AddAddress("******@163.com","toyou"); // 收件人邮箱和姓名   
+$mail-&gt;AddReplyTo("******@163.com","wo");   
+//$mail-&gt;WordWrap = 50; // set word wrap 换行字数   
+//$mail-&gt;AddAttachment("/var/tmp/file.tar.gz"); // attachment 附件   
+//$mail-&gt;AddAttachment("/tmp/image.jpg", "new.jpg");   
+$mail-&gt;IsHTML(true); // send as HTML   
+// 邮件主题   
+$subject="测试";  
+$mail-&gt;Subject = $subject;   
+// 邮件内容   
+$mail-&gt;Body = "   
+&lt;p&gt;点击激活&lt;/p&gt;   
+&lt;a href='#'&gt;点击激活&lt;/a&gt;  
+";   
+$mail-&gt;AltBody ="text/html";   
+if(!$mail-&gt;Send())   
+{   
+echo "邮件发送有误 &lt;p&gt;";   
+echo "邮件错误信息: " . $mail-&gt;ErrorInfo;   
+exit;   
+}   
+else {   
+echo "邮件发送成功!&lt;br /&gt;";   
+}  
+</code></pre>
+
+<p>2.当使用PHP原生mail()函数的时候，需要安装sendmail，Linux一般已经安装sendmail，可以直接使用mail(),如果是windows需要先安装。</p>
+
+<p>3.当使用ci框架的时候，如下</p>
+
+<p>[php]</p>
+
+<pre><code>public function sendemail()  
+{     
+    $config = array('protocol'=&gt;'smtp',  
+        'smtp_host' =&gt; 'smtp.163.com',  
+        'smtp_user' =&gt; 'yourname',  
+        'smtp_pass' =&gt; '*****',  
+        'smtp_port' =&gt; '25',  
+        '_smtp_auth' =&gt; TRUE,  
+        'wordwrap' =&gt; TRUE,  
+        'charset' =&gt; 'iso-8859-1'  
+  
+    );  
+    $this-&gt;load-&gt;library('email', $config);  
+    $this-&gt;email-&gt;from('m13323262052@163.com', 'Your Name');  
+    $this-&gt;email-&gt;to('m13323262052@163.com');  
+    $this-&gt;email-&gt;subject('Email Test');  
+    $this-&gt;email-&gt;message('Testing the email class.');  
+    $this-&gt;email-&gt;send();  
+}  
+</code></pre>
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2014/07/05/php.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/07/16/html.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

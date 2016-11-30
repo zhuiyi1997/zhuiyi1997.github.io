@@ -1,0 +1,124 @@
+---
+title:  php使用pdo操作数据库
+layout: post
+guid: urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80
+tags:
+    - php
+    - mysql
+---
+
+###什么是PDO
+
+PDO（PHP数据对象） 是一个轻量级的、具有兼容接口的PHP数据连接拓展，是一个PHP官方的PECL库，随PHP 5.1发布，需要PHP 5的面向对象支持，因而在更早的版本上无法使用。它所提供的数据接入抽象层，具有与具体数据库类型无关的优势，为它所支持的数据库提供统一的操作接口。目前支持的数据库有Cubrid、FreeTDS / Microsoft SQL Server / Sybase、Firebird/Interbase 6、IBM DB2、IBM Informix Dynamic Server、MySQL 3.x/4.x/5.x、Oracle Call Interface、ODBC v3 (IBM DB2, unixODBC and win32 ODBC)、PostgreSQL、SQLite 3 and SQLite 2、Microsoft SQL Server / SQL Azure等。由于PDO是在底层实现的统一的数据库操作接口，因而利用它能够实现更高级的数据库操作，比如存储过程的调度等。
+
+###pdo操作MySQL数据库
+
+连接
+$db = new PDO('mysql:host=localhost;dbname=test', $user, $pass);
+
+$db = new PDO('mysql:host=localhost;dbname=test', $user, $pass, array(
+    PDO::ATTR_PERSISTENT => true
+));
+
+
+
+$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+
+PDO中的查询操作:exec/query/prepared statement
+
+在PDO中有三种方法执行查询操作，分别是用exec、query和使用prepared statement。三种方法各有利弊，先说exec。
+
+（1）PDO::exec()一般用于执行一次的SQL语句，返回受查询影响的行数。它不适用于SELECT语句，如果需要用一次是SELECT语句，可以用PDO::query()；也不适用于多次使用的语句，如果有多次使用的需求，考虑用PDO::prepare()。
+
+（2）PDO::query()用于执行一次SELECT语句，执行后应当随即使用PDOStatement::fetch()语句将结果取出，否则立即进行下一次的PDO::query()将会报错。在2.PDO实例部分，为了得到查询数据的总量，就用了PDO::query()语句。
+
+（3）PDOStatement表示一个prepared statement语句，而在执行之后，又将返回一组关联数组的结果。如果一类查询（查询结构相似而具体的参数不一）需要一次解析而执行使用很多次，可以先用prepared statement，这样可以为具体的查询的执行做好准备，避免了分析、编译、优化的循环，将减少资源占用率，从而提高运行效率。通过对数据库进行prepare操作，便会返回PDOStatement数据类型，从而在其基础上展开execute、fetch等进一步的操作。
+
+$sth = $db->prepare('select * from book where cat_id=:id limit :offset, :limit', array (
+
+PDO :: ATTR_CURSOR => PDO :: CURSOR_FWDONLY
+
+));
+
+//用$limit1得到一个结果
+
+$result1 = $sth->execute(array (
+
+        ':id' => $cat,
+
+        ':offset' => ($pg -1) * $limit1,
+
+        ':limit' => $limit1
+
+    ));
+
+//用$limit2得到另一个结果
+
+$result2 = $sth->execute(array (
+
+        ':id' => $cat,
+
+        ':offset' => ($pg -1) * $limit2,
+
+        ':limit' => $limit2
+
+    ));
+
+//用位置参入参数
+
+$stmt = $dbh->prepare("INSERT INTO REGISTRY (name, value) VALUES (?, ?)");
+
+$stmt->bindParam(1, $name);
+
+$stmt->bindParam(2, $value);
+
+//用名称传入参数
+
+$stmt = $dbh->prepare("INSERT INTO REGISTRY (name, value) VALUES (:name, :value)");
+
+$stmt->bindParam(':name', $name);
+
+$stmt->bindParam(':value', $value);
+
+$name = 'one';
+
+$value = 1;
+
+$stmt->execute();
+
+/////////////////////////////////////////////
+
+//也可以这样实现
+
+//用位置参入参数，indexed array
+
+$stmt = $dbh->prepare("INSERT INTO REGISTRY (name, value) VALUES (?, ?)");
+
+$name = 'one';
+
+$value = 1;
+
+$stmt->execute(array($name,$value));
+
+//用名称传入参数, associated array
+
+$stmt = $dbh->prepare("INSERT INTO REGISTRY (name, value) VALUES (:name, :value)");
+
+$name = 'one';
+
+$value = 1;
+
+$stmt->execute(array(':name'=>$name,':value'=>$value));
+
+特别注意：查询语句中的占位符应当是占据整个值的位置，
+
+开启事务
+
+$db->beginTransaction();
+
+提交和回滚
+
+$db->commit()
+
+$db->rollBack()

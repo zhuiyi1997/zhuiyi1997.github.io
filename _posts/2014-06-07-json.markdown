@@ -1,0 +1,40 @@
+---
+title:  代码 json 的运用
+layout: post
+guid: urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80
+tags:
+    - php
+    - json
+---
+
+[php] 
+
+    <script>  
+        $(function(){  
+            $('#button').click(function(){  
+                var pid=$('#select').val();  
+               // alert(pid);  
+                var start=$('.start').val();  
+                var over=$('.over').val();  
+      
+      
+                $.getJSON("b.php",{pid:pid,start:start,over:over},function(msg){  
+      
+      
+                    var str='';  
+                    for(var i=0;i<msg['arr'].length;i++)  
+                    {  
+                        str=str+"<tr><td>"+msg['arr'][i].name+"</td></tr>";  
+                    }  
+                    $('div').html(str);  
+                })  
+            })  
+        })  
+      
+    </script>  
+
+
+
+
+ 
+

@@ -1,0 +1,59 @@
+---
+title:  php无限级分类
+layout: post
+guid: urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80
+tags:
+    - php
+---
+###1递归
+function subtree($arr,$id=0,$lev=1) {
+	static $subs = array(); 
+	foreach ($arr as $v) {
+		if ($v['parent'] == $id) {
+			$v['lev'] = $lev;
+			$subs[] = $v; 
+			subtree($arr,$v['id'],$lev+1);
+		}
+	}
+	return $subs;
+}
+
+
+###2
+function subtree2($arr,$id=0,$lev=1) {
+	 $subs = array(); 
+	foreach ($arr as $v) {
+		if ($v['parent'] == $id) {
+			$v['lev'] = $lev;
+			$subs[] = $v; 
+			$subs = array_merge($subs, subtree2($arr,$v['id'],$lev+1));
+		}
+	}
+	return $subs;
+}
+
+
+###3迭代
+function subtree($arr,$parent=0){
+	$task = array($parent);
+	$tree = array();
+	while(!empty($task)){
+		$flag = false;
+		foreach($arr as $k=>$v){
+			if($v['parent'] == $parent){
+				$tree[] = $v;
+				array_push($task,$v['id']);
+				$parent = $v['id'];
+				unset($arr[$k]);
+				$flag = true;
+			}
+			if($flag==false){
+				array_pop($task);
+				$parent=end($task);
+			}
+		}
+	}
+	return $tree;
+}
+
+

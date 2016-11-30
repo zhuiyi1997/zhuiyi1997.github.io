@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>inotify+rsync安装配置,文件同步</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>inotify+rsync安装配置,文件同步 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2014-09-25">2014-09-25</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#linux" title="linux">#linux</a>
+    
+    <a href="/tags.html#inotify" title="inotify">#inotify</a>
+    
+    <a href="/tags.html#rsync" title="rsync">#rsync</a>
+    
+    <a href="/tags.html#文件备份" title="文件备份">#文件备份</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'inotify+rsync安装配置,文件同步'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2014/09/25/rsync.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>1.两台机器192.168.1.2，192.168.1.3，想把192.168.1.2的数据同步到192.168.1.3中</p>
+
+<p>2.测试开始，可以先关闭防火墙和内核Linux的selinux的防火墙,避免防火墙影响（两台服务器均操作）</p>
+
+<p>关闭防火墙，例如centos7，其他系统版本自己查询如何关闭</p>
+
+<p>[python] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ systemctl stop firewalld.service #停止firewall  
+$ systemctl disable firewalld.service #禁止firewall开机启动  
+</code></pre>
+
+<p>关闭linux的selinux防火墙</p>
+
+<p>永久性关闭：生效需要重启</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ vi /etc/selinux/config  
+SELINUX=disabled  
+</code></pre>
+
+<p>临时性关闭：生效无需重启</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ setenforce 0  
+</code></pre>
+
+<p>3.安装rsync（两台服务器均操作）</p>
+
+<p>前往rsync官网下载最新版本 http://rsync.samba.org/ftp/rsync/src  找到最新的rsync-<em>.</em>.*.tar.gz</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ tar zxvf rsync-*.*.*.tar.gz  
+$ cd rsync-*.*.*  
+$ ./configure --prefix=/usr/local/rsync  
+$ make &amp;&amp; make install  
+</code></pre>
+
+<p>4.配置rsyncd.conf (192.168.1.3)
+[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>#pid文件的存放位置  
+pid file = /var/run/rsync.pid  
+#日志文件位置，启动rsync后自动产生这个文件，无需提前创建  
+log file = /var/log/rsync.log  
+#支持max connections参数的锁文件  
+lock file=/var/run/rsync.lock  
+#用户认证配置文件，里面保存用户名称和密码  
+secrets file = /etc/rsync.pw  
+#rsync启动时欢迎信息页面文件位置  
+motd file = /etc/rsyncd.motd  
+transfer logging = yes  
+log format = %t %a %m %f %b  
+syslog facility = local3  
+#自定义名称  
+[data]  
+#设置需要同步的目录  
+path = /data/test/  
+#模块名称与[data]自定义名称相同  
+comment = data  
+exclude = blank.png ; spinner.gif ; downsimple.png ; rails.png ; WEB-INF/  
+#默认端口  
+port = 873  
+#设置rsync运行权限为root  
+uid = root  
+#设置rsync运行权限为root  
+gid = root  
+#设置超时时间  
+timeout = 600  
+#最大连接数  
+max connections = 200  
+#默认为true，修改为no，增加对目录文件软连接的备份  
+use chroot = no  
+#设置rsync服务端文件为读写权限  
+read only = no  
+#不显示rsync服务端资源列表  
+list = no  
+#允许进行数据同步的客户端IP地址  
+hosts allow = 192.168.1.2  
+</code></pre>
+
+<p>4.可选：可以设置多个目录(192.168.1.3)
+[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>#增加test1目录  
+[test1]  
+path = /data/test1  
+list = yes  
+ignore errors  
+comment = ucweb-file system  
+secrets file = /etc/rsync.pw  
+exclude = blank.png ; spinner.gif ; downsimple.png ; rails.png ; WEB-INF/  
+</code></pre>
+
+<p>5.建立密码认证文件(192.168.1.3)</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ vi /etc/rsync.pw  
+root:123456  
+</code></pre>
+
+<p>配置rsyncd.motd文件，开始传送的时候会显示（192.168.1.3）</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ vi /etc/rsyncd.motd  
+###############################  
+#                             #  
+#        start rsync          #  
+#                             #  
+###############################  
+</code></pre>
+
+<p>5.启动rsync（两台服务器均操作）</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ /usr/local/rsync/bin/rsync --daemon --config=/etc/rsyncd.conf  
+</code></pre>
+
+<p>开机启动rsync</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ echo '/usr/local/rsync/bin/rsync --daemon --config=/etc/rsyncd.conf'&gt;&gt;/etc/rc.d/rc.local  
+</code></pre>
+
+<p>6.建立密码认证文件（192.168.1.2）
+[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ vi /etc/rsync.pw  
+123456  
+</code></pre>
+
+<p>7.测试开始（在192.168.1.2）</p>
+
+<p>先打开192.168.1.2上的/data/test/创建一个test.PHP测试文件，执行下面的命令</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ /usr/local/rsync/bin/rsync -avH --port=873 --progress --delete /data/test/ root@192.168.1.3::data --password-file=/etc/rsync.pw  
+</code></pre>
+
+<p>查看192.168.1.3上/data/test目录下是否有同步过来的test.php</p>
+
+<p>8.安装inotify-tools（192.168.1.2）
+[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ wget https://cloud.github.com/downloads/rvoicilas/inotify-tools/inotify-tools-3.14.tar.gz  
+$ tar zxvf inotify-tools-3.14.tar.gz   
+$ cd inotify-tools-3.14  
+$ ./configure --prefix=/usr/local/inotify  
+$ make &amp;&amp; make install  
+</code></pre>
+
+<p>9.查看是否安装成功</p>
+
+<p>[plain] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>$ ll /usr/local/inotify/bin/inotifywa*  
+</code></pre>
+
+<p>10.新建一个inotify.sh设置文件同步/root/inotify.sh,如果下面代码不管用可参考https://github.com/rvoicilas/inotify-tools/wiki#info</p>
+
+<p>#!/bin/sh</p>
+
+<h1 id="get-the-current-path">get the current path</h1>
+<p>CURPATH=<code>pwd</code></p>
+
+<p>/usr/local/inotify/bin/inotifywait -mr –timefmt ‘%d/%m/%y %H:%M’ –format ‘%T %w %f’ \
+-e close_write /data/test | while read date time dir file; do</p>
+
+<pre><code>   FILECHANGE=${dir}${file}
+   # convert absolute path to relative
+   FILECHANGEREL=`echo "$FILECHANGE" | sed 's_'$CURPATH'/__'`
+
+
+   rsync -avH --port=873 --progress --delete /data/test/ root@192.168.1.3::data --password-file=/etc/rsync.pw
+    echo "At ${time} on ${date}, file $FILECHANGE was backed up via rsync" done
+</code></pre>
+
+<p>11.可执行权限与后台无输出运行
+chmod 777 /root/inotify.sh</p>
+
+<p>[php] view plain copy
+在CODE上查看代码片派生到我的代码片</p>
+
+<pre><code>sh /root/inotify.sh &gt;/dev/null 2&gt;&amp;1 &amp;  
+</code></pre>
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2014/09/21/session%E5%85%A5mysql.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/10/02/2.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>JavaScript实现拖拽预览，AJAX小文件上传</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>JavaScript实现拖拽预览，AJAX小文件上传 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2014-08-18">2014-08-18</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#linux" title="linux">#linux</a>
+    
+    <a href="/tags.html#js" title="js">#js</a>
+    
+    <a href="/tags.html#ajax" title="ajax">#ajax</a>
+    
+    <a href="/tags.html#文件上传" title="文件上传">#文件上传</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'JavaScript实现拖拽预览，AJAX小文件上传'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2014/08/18/js.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>本地上传，提前预览（图片，视频）</p>
+
+<p>1.html中div标签预览显示，button标签触发上传事件。</p>
+
+<p>[html]</p>
+
+<pre><code>&lt;div  id="drop_area" style="border:3px dashed silver;width:200px; height:200px"&gt;将图片拖拽到此&lt;/div&gt;  
+&lt;button onclick="xhr2()"&gt;ajax上传&lt;/button&gt;  
+</code></pre>
+
+<p>2.禁止浏览器打开文件行为</p>
+
+<p>[html]</p>
+
+<pre><code>document.addEventListener("drop",function(e){  //拖离   
+    e.preventDefault();      
+})  
+document.addEventListener("dragleave",function(e){  //拖后放   
+    e.preventDefault();      
+})  
+document.addEventListener("dragenter",function(e){  //拖进  
+    e.preventDefault();      
+})  
+document.addEventListener("dragover",function(e){  //拖来拖去    
+    e.preventDefault();      
+})  
+</code></pre>
+
+<p>3.拖拽,预览文件</p>
+
+<p>[html]</p>
+
+<pre><code>var box = document.getElementById('drop_area'); //拖拽区域     
+box.addEventListener("drop",function(e){           
+    var fileList = e.dataTransfer.files; //获取文件对象    
+    //检测是否是拖拽文件到页面的操作            
+    if(fileList.length == 0){                
+        return false;            
+    }             
+    //拖拉图片到浏览器，可以实现预览功能    
+    //规定视频格式  
+    Array.prototype.S=String.fromCharCode(2);  
+    Array.prototype.in_array=function(e){  
+        var r=new RegExp(this.S+e+this.S);  
+        return (r.test(this.S+this.join(this.S)+this.S));  
+    };  
+    var video_type=["video/mp4","video/ogg"];  
+      
+    //创建一个url连接,供src属性引用  
+    var fileurl = window.URL.createObjectURL(fileList[0]);                
+    if(fileList[0].type.indexOf('image') === 0){  //如果是图片  
+        var str="&lt;img width='200px' height='200px' src='"+fileurl+"'&gt;";  
+        document.getElementById('drop_area').innerHTML=str;                   
+    }else if(video_type.in_array(fileList[0].type)){   //如果是规定格式内的视频                    
+        var str="&lt;video width='200px' height='200px' controls='controls' src='"+fileurl+"'&gt;&lt;/video&gt;";  
+        document.getElementById('drop_area').innerHTML=str;        
+    }else{ //其他格式，输出文件名  
+        //alert("不预览");  
+        var str="文件名字:"+fileList[0].name;  
+        document.getElementById('drop_area').innerHTML=str;      
+    }         
+    resultfile = fileList[0];             
+},false);  
+</code></pre>
+
+<p>4.ajax上传</p>
+
+<p>[html]</p>
+
+<pre><code>function xhr2(){  
+    var xhr = new XMLHttpRequest();//第一步  
+    //新建一个FormData对象  
+    var formData = new FormData(); //++++++++++  
+    //追加文件数据  
+    formData.append('file', resultfile);  
+    //post方式  
+    xhr.open('POST', 'xhr2.php'); //第二步骤  
+    //发送请求  
+    xhr.send(formData);  //第三步骤  
+    //ajax返回  
+    xhr.onreadystatechange = function(){ //第四步  
+　　　　if ( xhr.readyState == 4 &amp;&amp; xhr.status == 200 ) {  
+　　　　　　console.log( xhr.responseText );        
+　　　　}  
+　　};  
+    //设置超时时间  
+    xhr.timeout = 10000;  
+    xhr.ontimeout = function(event){  
+　　　　alert('请求超时！');  
+　　}           
+}  
+</code></pre>
+
+<p>5.php保存文件</p>
+
+<p>[html]</p>
+
+<pre><code>&lt;?php  
+    print_r($_FILES["file"]);  
+    $name = $_FILES["file"]["name"]; //中文可能乱码使用iconv函数  
+    move_uploaded_file($_FILES["file"]["tmp_name"],iconv("UTF-8","gb2312",$name));  
+?&gt;  
+</code></pre>
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2014/08/14/weixin.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2014/09/10/mysql.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>微信js接口 的调用</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>微信js接口 的调用 </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2015-04-10">2015-04-10</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#微信" title="微信">#微信</a>
+    
+    <a href="/tags.html#php" title="php">#php</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = '微信js接口 的调用'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2015/04/10/jssdk.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>一、JSSDK类定义
+复制代码</p>
+
+<p>[php]</p>
+
+<pre><code>&lt;?php  
+class JSSDK {  
+  private $appId;  
+  private $appSecret;  
+  
+  public function __construct($appId, $appSecret) {  
+    $this-&gt;appId = $appId;  
+    $this-&gt;appSecret = $appSecret;  
+  }  
+  
+  public function getSignPackage() {  
+    $jsapiTicket = $this-&gt;getJsApiTicket();  
+    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";  
+    $timestamp = time();  
+    $nonceStr = $this-&gt;createNonceStr();  
+  
+    // 这里参数的顺序要按照 key 值 ASCII 码升序排序  
+    $string = "jsapi_ticket=$jsapiTicket&amp;noncestr=$nonceStr×tamp=$timestamp&amp;url=$url";  
+  
+    $signature = sha1($string);  
+  
+    $signPackage = array(  
+      "appId"     =&gt; $this-&gt;appId,  
+      "nonceStr"  =&gt; $nonceStr,  
+      "timestamp" =&gt; $timestamp,  
+      "url"       =&gt; $url,  
+      "signature" =&gt; $signature,  
+      "rawString" =&gt; $string  
+    );  
+    return $signPackage;   
+  }  
+  
+  private function createNonceStr($length = 16) {  
+    $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";  
+    $str = "";  
+    for ($i = 0; $i &lt; $length; $i++) {  
+      $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);  
+    }  
+    return $str;  
+  }  
+  
+  private function getJsApiTicket() {  
+    // jsapi_ticket 应该全局存储与更新，以下代码以写入到文件中做示例  
+    $data = json_decode(file_get_contents("jsapi_ticket.json"));  
+    if ($data-&gt;expire_time &lt; time()) {  
+      $accessToken = $this-&gt;getAccessToken();  
+      $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&amp;access_token=$accessToken";  
+      $res = json_decode($this-&gt;httpGet($url));  
+      $ticket = $res-&gt;ticket;  
+      if ($ticket) {  
+        $data-&gt;expire_time = time() + 7000;  
+        $data-&gt;jsapi_ticket = $ticket;  
+        $fp = fopen("jsapi_ticket.json", "w");  
+        fwrite($fp, json_encode($data));  
+        fclose($fp);  
+      }  
+    } else {  
+      $ticket = $data-&gt;jsapi_ticket;  
+    }  
+  
+    return $ticket;  
+  }  
+  
+  private function getAccessToken() {  
+    // access_token 应该全局存储与更新，以下代码以写入到文件中做示例  
+    $data = json_decode(file_get_contents("access_token.json"));  
+    if ($data-&gt;expire_time &lt; time()) {  
+      $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&amp;appid=$this-&gt;appId&amp;secret=$this-&gt;appSecret";  
+      $res = json_decode($this-&gt;httpGet($url));  
+      $access_token = $res-&gt;access_token;  
+      if ($access_token) {  
+        $data-&gt;expire_time = time() + 7000;  
+        $data-&gt;access_token = $access_token;  
+        $fp = fopen("access_token.json", "w");  
+        fwrite($fp, json_encode($data));  
+        fclose($fp);  
+      }  
+    } else {  
+      $access_token = $data-&gt;access_token;  
+    }  
+    return $access_token;  
+  }  
+  
+  private function httpGet($url) {  
+    $curl = curl_init();  
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);  
+    curl_setopt($curl, CURLOPT_TIMEOUT, 500);  
+    curl_setopt($curl, CURLOPT_URL, $url);  
+  
+    $res = curl_exec($curl);  
+    curl_close($curl);  
+  
+    return $res;  
+  }  
+}  
+</code></pre>
+
+<p>复制代码</p>
+
+<p>二、类调用
+复制代码</p>
+
+<p>[php]</p>
+
+<pre><code>&lt;?php  
+require_once "jssdk.php";  
+$jssdk = new JSSDK("yourAppID", "yourAppSecret");  
+$signPackage = $jssdk-&gt;GetSignPackage();  
+?&gt;  
+&lt;!DOCTYPE html&gt;  
+&lt;html lang="en"&gt;  
+&lt;head&gt;  
+  &lt;meta charset="UTF-8"&gt;  
+  &lt;title&gt;&lt;/title&gt;  
+&lt;/head&gt;  
+&lt;body&gt;  
+    
+&lt;/body&gt;  
+&lt;script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"&gt;&lt;/script&gt;  
+&lt;script&gt;  
+  // 注意：所有的JS接口只能在公众号绑定的域名下调用，公众号开发者需要先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。   
+  // 如果发现在 Android 不能分享自定义内容，请到官网下载最新的包覆盖安装，Android 自定义分享接口需升级至 6.0.2.58 版本及以上。  
+  // 完整 JS-SDK 文档地址：http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html  
+  wx.config({  
+    appId: '&lt;?php echo $signPackage["appId"];?&gt;',  
+    timestamp: &lt;?php echo $signPackage["timestamp"];?&gt;,  
+    nonceStr: '&lt;?php echo $signPackage["nonceStr"];?&gt;',  
+    signature: '&lt;?php echo $signPackage["signature"];?&gt;',  
+    jsApiList: [  
+      // 所有要调用的 API 都要加到这个列表中  
+    ]  
+  });  
+  wx.ready(function () {  
+    // 在这里调用 API  
+  });  
+&lt;/script&gt;  
+&lt;/html&gt;  
+</code></pre>
+
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2015/04/09/jssdk.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2015/05/04/qq.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

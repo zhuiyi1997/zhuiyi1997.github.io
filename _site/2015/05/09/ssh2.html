@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="追憶" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <title>centos7 安装ssh扩展控制linux</title>
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/media/css/style.css">
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/retina.js/1.3.0/retina.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/github.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+    <script type="text/javascript"> hljs.initHighlightingOnLoad(); </script>
+  </head>
+  <body>
+      <div id="main" role="main">
+        <header>
+          <div id="header">
+            <h1><a title="世间自古有情痴" class="" href="/">世间自古有情痴</a></h1>
+          </div>
+          <nav>
+            
+            <span><a title="Archive" href="/archive.html"><i class="fa fa-list-ul"></i></a></span>
+            
+            <span><a title="Tags" href="/tags.html"><i class="fa fa-tags"></i></a></span>
+            
+            <span><a title="About" href="/about.html"><i class="fa fa-user"></i></a></span>
+            
+            <span><a title="Gallery" href="http://www.tianhui.site"><i class="fa fa-film"></i></a></span>
+            
+            <span><a title="Subscribe" href="/atom.xml"><i class="fa fa-rss"></i></a></span>
+            
+          </nav>
+        </header>
+        <div id="content">
+        <article>
+  <section class="title">
+    <h2>centos7 安装ssh扩展控制linux </h2>
+  </section>
+  <section class="meta">
+  <span class="time">
+    <time datetime="2015-05-09">2015-05-09</time>
+  </span>
+  
+  <span class="tags">
+    
+    <a href="/tags.html#linux" title="linux">#linux</a>
+    
+  </span>
+  <!-- BEGIN this would not work on any other domain -->
+  <span
+    class           = "like-wrapper"
+    like-shortname  = 'gopherwood'
+    like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
+    like-name       = 'centos7 安装ssh扩展控制linux'
+    like-btn        = '&#xf087;'
+    like-link       = 'https://zhuiyi1997.github.io//2015/05/09/ssh2.html'
+    ></span>
+  <script type="text/javascript">
+    var l = document.createElement('script');
+    l.type = 'text/javascript'; l.async = true; l.src = 'http://www.like-btn.com/javascript/widget.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(l);
+  </script>
+  <!-- END this would not work on any other domain -->
+  
+  </section>
+  <section class="post">
+  <p>安装ssh2</p>
+
+<p>PHP的一个扩展ssh2. 下载ssh2扩展，从http://pecl.php.NET/package/ssh2</p>
+
+<p>如果是php5安装ssh2-0.13或0.12扩展,php7安装1.0</p>
+
+<p>wget http://pecl.php.Net/get/ssh2-0.13.tgz</p>
+
+<p>tar -zxvf ssh2-0.13.tgz
+cd ssh2-0.13/</p>
+
+<p>/usr/bin/phpize</p>
+
+<p>./configure –with-php-config=/usr/bin/php-config LIBS=-ldl</p>
+
+<p>(如果失败,请安装 yum install libssh2-devel)</p>
+
+<p>make</p>
+
+<p>make install</p>
+
+<p>测试</p>
+
+<pre><code>&lt;?php  
+  
+$host='127.0.0.1';//被控制的linux的ip  
+  
+$user='root';//用户名  
+  
+$passwd='123456';//密码  
+  
+// 链接远程服务器  
+  
+$connection = ssh2_connect($host, 22);  
+  
+if (!$connection) die('connection to '.$host.':22 failed');  
+  
+echo 'connection OK&lt;br/&gt;';  
+  
+// 获取验证方式并打印  
+  
+$auth_methods = ssh2_auth_none($connection, $user);  
+  
+print_r( $auth_methods.'&lt;br/&gt;');  
+  
+if (in_array('password', $auth_methods ))  
+{  
+  
+    // 通过password方式登录远程服务器  
+  
+    if (ssh2_auth_password($connection, $user, $passwd))  
+  
+    {  
+  
+        echo $user.' login OK&lt;br/&gt;';  
+  
+        $stream = ssh2_exec($connection, "pwd"); // 执行php  
+  
+        stream_set_blocking($stream, true); // 获取执行pwd后的内容  
+  
+         if ($stream === FALSE) die("pwd failed");  
+  
+        echo 'pwd: '.stream_get_contents($stream).'&lt;br/&gt;';  
+  
+    }  
+  
+    else  
+  
+    {  
+  
+        die( $user.' login Failed&lt;br/&gt;');  
+  
+    }  
+  
+}  
+</code></pre>
+
+
+  </section>
+  
+  <div class="divider">
+    <span>
+    
+    <a href="/2015/05/08/app.html"><i class="fa fa-chevron-left"></i></a>
+    
+    </span>
+    <!-- BEGIN comment icon
+    <span><a href="javascript:leave_comment();" id="leave_comment_link"><i class="fa fa-comment-o"></i></a></span>
+    <span><a href="javascript:collapse_comment();" id="collapse_comment_link" style="display:none;"><i class="fa fa-chevron-up"></i></a></span>
+      END comment icon -->
+
+    <span>
+    
+    <a href="/2015/05/12/oneer.html"><i class="fa fa-chevron-right"></i></a>
+    
+    </span>
+  </div>
+
+  <!-- BEGIN comment
+  <section class="comment">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+      var disqus_shortname = 'gopherwood';
+      var disqus_identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80';
+
+      function leave_comment() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+          $("#leave_comment_link").css("display", "none");
+          $("#collapse_comment_link").css("display", "");
+      };
+      function collapse_comment() {
+          // document.getElementById("disqus_thread").innerHTML = '';
+          $("#disqus_thread").slideUp(400, function() {
+              $("#disqus_thread").empty();
+              $("#leave_comment_link").css("display", "");
+              $("#collapse_comment_link").css("display", "none");
+              $("#disqus_thread").css("display", "");
+          });
+      };
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </section>
+  END comment -->
+  
+</article>
+
+        </div>
+        <footer>
+          <div>
+            
+            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://lhzhang.com" title="sext vi">sext vi</a> | fork <a href="https://github.com/waynezhang/blog" title="fork me">me</a>
+          </div>
+        </footer>
+      </div> <!-- main -->
+  </body>
+</html>

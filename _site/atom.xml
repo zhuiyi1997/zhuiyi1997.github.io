@@ -4,7 +4,7 @@
  <title>世间自古有情痴</title>
  <link href="https://zhuiyi1997.github.io//atom.xml" rel="self"/>
  <link href="https://zhuiyi1997.github.io/"/>
- <updated>2016-11-29T16:26:04+08:00</updated>
+ <updated>2016-11-30T11:45:43+08:00</updated>
  <id>https://zhuiyi1997.github.io//</id>
  <author>
    <name>追憶</name>
@@ -12,300 +12,1957 @@
 
  
  <entry>
-   <title>用github page和jekyll搭建个人静态博客</title>
-   <link href="https://zhuiyi1997.github.io//2015/12/31/1.html"/>
-   <updated>2015-12-31T00:00:00+08:00</updated>
-   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;/media/files/2015/12/31/shadow.jpg&quot; alt=&quot;Shadow&quot; /&gt;&lt;/p&gt;
+   <title>PSR1代码规范4</title>
+   <link href="https://zhuiyi1997.github.io//2016/10/16/psr4.html"/>
+   <updated>2016-10-16T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;h2 id=&quot;section&quot;&gt;1. 概况&lt;/h2&gt;
 
-&lt;h3 id=&quot;githubgithubio&quot;&gt;1.在个人github上建立一个用户名.github.io格式的版本库&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/media/files/2015/12/31/1.png&quot; alt=&quot;image01&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;这个 PSR 描述的是通过文件路径&lt;a href=&quot;http://php.net/autoload&quot;&gt;自动载入&lt;/a&gt;类的指南；它作为对 &lt;a href=&quot;https://github.com/hfcorriez/fig-standards/tree/master/accepted/zh_CN/PSR-0.md&quot;&gt;PSR-0&lt;/a&gt; 的补充；根据这个
+指导如何规范存放文件来自动载入；&lt;/p&gt;
 
-&lt;h3 id=&quot;ruby&quot;&gt;2.安装ruby运行环境&lt;/h3&gt;
-&lt;p&gt;到&lt;a href=&quot;http://rubyinstaller.org/&quot; title=&quot;点下去哦&quot;&gt;http://rubyinstaller.org/&lt;/a&gt;下载ruby安装包；我这里是2.2.5&lt;br /&gt;
-安装完毕后配置环境变量。如果命令行运行ruby –v可以显示版本号，则说明安装配置成功。&lt;br /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;specification&quot;&gt;2. 说明（Specification）&lt;/h2&gt;
 
-&lt;h3 id=&quot;gem&quot;&gt;3．更换gem源&lt;/h3&gt;
-&lt;p&gt;gem sources -a http://gems.ruby-china.org/&lt;br /&gt;&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;术语「类」是一个泛称；它包含类，接口，traits 以及其他类似的结构；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;完全限定类名应该类似如下范例：&lt;/p&gt;
 
-&lt;h3 id=&quot;section&quot;&gt;4.安装需要包&lt;/h3&gt;
-&lt;p&gt;gem install Jekyll –v ‘3.0’&lt;br /&gt;
-gem install minima&lt;br /&gt;&lt;/p&gt;
+    &lt;p&gt;&amp;lt;NamespaceName&amp;gt;(&amp;lt;SubNamespaceNames&amp;gt;)*&amp;lt;ClassName&amp;gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;jekyll&quot;&gt;5.创建jekyll项目&lt;/h3&gt;
-&lt;p&gt;项目目录路径不要有中文&lt;br /&gt;
-Jekyll new blog&lt;br /&gt;
-这样就在根目录下创建了一个blog文件夹&lt;br /&gt;&lt;/p&gt;
+    &lt;ol&gt;
+      &lt;li&gt;完全限定类名必须有一个顶级命名空间（Vendor Name）；&lt;/li&gt;
+      &lt;li&gt;完全限定类名可以有多个子命名空间；&lt;/li&gt;
+      &lt;li&gt;完全限定类名应该有一个终止类名；&lt;/li&gt;
+      &lt;li&gt;下划线在完全限定类名中是没有特殊含义的；&lt;/li&gt;
+      &lt;li&gt;字母在完全限定类名中可以是任何大小写的组合；&lt;/li&gt;
+      &lt;li&gt;所有类名必须以大小写敏感的方式引用；&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;当从完全限定类名载入文件时：&lt;/p&gt;
 
-&lt;h3 id=&quot;blogjekyll-serve&quot;&gt;6.进入blog文件夹，运行jekyll serve&lt;/h3&gt;
-&lt;p&gt;访问localhost:4000&lt;br /&gt;
-可以看到&lt;br /&gt;
-&lt;img src=&quot;/media/files/2015/12/31/2.png&quot; alt=&quot;image02&quot; /&gt;&lt;/p&gt;
+    &lt;ol&gt;
+      &lt;li&gt;在完全限定类名中，连续的一个或几个子命名空间构成的命名空间前缀（不包括顶级命名空间的分隔符），至少对应着至少一个基础目录。&lt;/li&gt;
+      &lt;li&gt;在「命名空间前缀」后的连续子命名空间名称对应一个「基础目录」下的子目录，其中的命名
+空间分隔符表示目录分隔符。子目录名称必须和子命名空间名大小写匹配；&lt;/li&gt;
+      &lt;li&gt;终止类名对应一个以 &lt;code&gt;.php&lt;/code&gt; 结尾的文件。文件名必须和终止类名大小写匹配；&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;自动载入器的实现不可抛出任何异常，不可引发任何等级的错误；也不应返回值；&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;7.然后将它与刚创建的远程版本库相关联&lt;/h3&gt;
-&lt;p&gt;在blog目录运行&lt;br /&gt;
-git init&lt;br /&gt;
-git remote add origin git@github.com:/zhuiyi1997/zhuyi1997.github.io &lt;br /&gt;
-git add * -f&lt;br /&gt;
-git commit –m ‘1’&lt;br /&gt;
-git push origin master&lt;br /&gt;&lt;/p&gt;
+&lt;h2 id=&quot;section-1&quot;&gt;3. 范例&lt;/h2&gt;
 
-&lt;p&gt;提交成功后，访问&lt;a href=&quot;http://zhuiyi1997.github.io&quot; title=&quot;点下去哦&quot;&gt;http://zhuiyi1997.github.io&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;如下表格展示的是与完全限定类名、命名空间前缀和基础目录相对应的文件路径：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;完全限定类名&lt;/th&gt;
+      &lt;th&gt;命名空间前缀&lt;/th&gt;
+      &lt;th&gt;基础目录&lt;/th&gt;
+      &lt;th&gt;实际的文件路径&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;\Acme\Log\Writer\File_Writer&lt;/td&gt;
+      &lt;td&gt;Acme\Log\Writer&lt;/td&gt;
+      &lt;td&gt;./acme-log-writer/lib/&lt;/td&gt;
+      &lt;td&gt;./acme-log-writer/lib/File_Writer.php&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;\Aura\Web\Response\Status&lt;/td&gt;
+      &lt;td&gt;Aura\Web&lt;/td&gt;
+      &lt;td&gt;/path/to/aura-web/src/&lt;/td&gt;
+      &lt;td&gt;/path/to/aura-web/src/Response/Status.php&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;\Symfony\Core\Request&lt;/td&gt;
+      &lt;td&gt;Symfony\Core&lt;/td&gt;
+      &lt;td&gt;./vendor/Symfony/Core/&lt;/td&gt;
+      &lt;td&gt;./vendor/Symfony/Core/Request.php&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;\Zend\Acl&lt;/td&gt;
+      &lt;td&gt;Zend&lt;/td&gt;
+      &lt;td&gt;/usr/includes/Zend/&lt;/td&gt;
+      &lt;td&gt;/usr/includes/Zend/Acl.php&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;例子中的自动载入器非常适应这个指南，请参照 &lt;a href=&quot;http://www.php-fig.org/psr/psr-4/PSR-4-autoloader-examples.md&quot;&gt;示例文件&lt;/a&gt;。由于可能随时变更，实例不能作为指南的一部分。&lt;/p&gt;
+
 </content>
  </entry>
  
  <entry>
-   <title>mysql锁</title>
-   <link href="https://zhuiyi1997.github.io//2014/03/03/1.html"/>
-   <updated>2014-03-03T00:00:00+08:00</updated>
-   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
-   <content type="html">&lt;p&gt;什么是锁&lt;/p&gt;
+   <title>PSR1代码规范3</title>
+   <link href="https://zhuiyi1997.github.io//2016/10/16/psr3.html"/>
+   <updated>2016-10-16T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;h1 id=&quot;section&quot;&gt;日志接口&lt;/h1&gt;
 
-&lt;p&gt;锁是计算机协调多个进程或纯线程并发访问某一资源的机制。在数据库中，除传统的计算资源（CPU、RAM、I/O）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所在有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。 相对其他数据库而言，MySQL的锁机制比较简单，其最显著的特点是不同的存储引擎支持不同的锁机制。&lt;/p&gt;
+&lt;p&gt;本文档描述了日志类库的通用接口。&lt;/p&gt;
 
-&lt;p&gt;MySQL大致可归纳为以下3种锁：&lt;/p&gt;
+&lt;p&gt;主要目标是让类库获得一个&lt;code&gt;Psr\Log\LoggerInterface&lt;/code&gt;对象并能通过简单通用的方式来写日志。有自定义需求的框架和CMS&lt;code&gt;可以&lt;/code&gt;根据情况扩展这个接口，但&lt;code&gt;推荐&lt;/code&gt;保持和该文档的兼容性，以确保应用中使用到的第三方库能将日志集中写到应用日志里。&lt;/p&gt;
 
-&lt;p&gt;表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最高，并发度最低。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;http://tools.ietf.org/html/rfc2119&quot;&gt;RFC 2119&lt;/a&gt;中的&lt;code&gt;必须(MUST)&lt;/code&gt;，&lt;code&gt;不可(MUST NOT)&lt;/code&gt;，&lt;code&gt;建议(SHOULD)&lt;/code&gt;，&lt;code&gt;不建议(SHOULD NOT)&lt;/code&gt;，&lt;code&gt;可以/可能(MAY)&lt;/code&gt;等关键词将在本节用来做一些解释性的描述。&lt;/p&gt;
 
-&lt;p&gt;行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最低，并发度也最高。&lt;/p&gt;
+&lt;p&gt;关键词&lt;code&gt;实现者&lt;/code&gt;在这个文档被解释为：在日志相关的库或框架实现&lt;code&gt;LoggerInterface&lt;/code&gt;接口的开发人员。用这些实现者开发出来的类库的人都被称作&lt;code&gt;用户&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表锁和行锁之间，并发度一般。&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-1&quot;&gt;规范&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;mysql表级锁有两种模式：表共享锁和表独占写锁。&lt;/p&gt;
+&lt;h3 id=&quot;section-2&quot;&gt;1.1 基础&lt;/h3&gt;
 
-&lt;p&gt;对MyISAM的读操作，不会阻塞其他用户对同一表请求，但会阻塞对同一表的写请求；&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;LoggerInterface&lt;/code&gt;暴露八个接口用来记录八个等级(debug, info, notice, warning, error, critical, alert, emergency)的日志。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;第九个方法是&lt;code&gt;log&lt;/code&gt;，接受日志等级作为第一个参数。用一个日志等级常量来调用这个方法&lt;code&gt;必须&lt;/code&gt;和直接调用指定等级方法的结果一致。用一个本规范中未定义且不为具体实现所知的日志等级来调用该方法&lt;code&gt;必须&lt;/code&gt;抛出一个&lt;code&gt;Psr\Log\InvalidArgumentException&lt;/code&gt;。&lt;code&gt;不推荐&lt;/code&gt;使用自定义的日志等级，除非你非常确定当前类库对其有所支持。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;对MyISAM的写操作，则会阻塞其他用户对同一表的读和写操作；&lt;/p&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;1.2 消息&lt;/h3&gt;
 
-&lt;p&gt;MyISAM表的读操作和写操作之间，以及写操作之间是串行的。&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;每个方法都接受一个字符串，或者一个有&lt;code&gt;__toString&lt;/code&gt;方法的对象作为&lt;code&gt;message&lt;/code&gt;参数。&lt;code&gt;实现者&lt;/code&gt; &lt;code&gt;可以&lt;/code&gt;对传入的对象有特殊的处理。如果没有，&lt;code&gt;实现者&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;将它转换成字符串。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;message&lt;/code&gt;参数中&lt;code&gt;可能&lt;/code&gt;包含一些&lt;code&gt;可以&lt;/code&gt;被&lt;code&gt;context&lt;/code&gt;参数的数值所替换的占位符。&lt;/p&gt;
 
-&lt;p&gt;当一个线程获得对一个表的写锁后，只有持有锁线程可以对表进行更新操作。其他线程的读、写操作都会等待，直到锁被释放为止。&lt;/p&gt;
+    &lt;p&gt;占位符名字&lt;code&gt;必须&lt;/code&gt;和&lt;code&gt;context&lt;/code&gt;数组类型参数的键名对应。&lt;/p&gt;
 
-&lt;p&gt;如何加表锁&lt;/p&gt;
+    &lt;p&gt;占位符名字&lt;code&gt;必须&lt;/code&gt;使用一对花括号来作为分隔符。在占位符和分隔符之间&lt;code&gt;不能&lt;/code&gt;有任何空格。&lt;/p&gt;
 
-&lt;p&gt;MyISAM在执行查询语句前，会自动给涉及的所有表加读锁，在执行更新操作前，会自动给涉及的表加写锁，这个过程不需要用户干预，因此 用户一般不需要直接用LOCK TABLE命令给MyISAM表显式加锁。&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>php的底层实现</title>
-   <link href="https://zhuiyi1997.github.io//2014/03/02/1.html"/>
-   <updated>2014-03-02T00:00:00+08:00</updated>
-   <id>urn:uuid:de8d598d-6f35-4c7b-ab23-1951062dadfc</id>
-   <content type="html">&lt;p&gt;PHP的底层实现&lt;/p&gt;
+    &lt;p&gt;占位符名字&lt;code&gt;应该&lt;/code&gt;只能由&lt;code&gt;A-Z&lt;/code&gt;，&lt;code&gt;a-z&lt;/code&gt;，&lt;code&gt;0-9&lt;/code&gt;，下划线&lt;code&gt;_&lt;/code&gt;和句号&lt;code&gt;.&lt;/code&gt;组成。其它的字符作为以后占位符规范的保留字。&lt;/p&gt;
 
-&lt;p&gt;PHP代码的执行过程&lt;/p&gt;
+    &lt;p&gt;&lt;code&gt;实现者&lt;/code&gt; &lt;code&gt;可以&lt;/code&gt;使用占位符来实现不同的转义和翻译日志成文。因为&lt;code&gt;用户&lt;/code&gt;并不知道上下文数据会是什么，所以&lt;code&gt;不推荐&lt;/code&gt;提前转义占位符。&lt;/p&gt;
 
-&lt;p&gt;编译型语言:&lt;/p&gt;
+    &lt;p&gt;下面提供一个占位符替换的例子，仅作为参考：&lt;/p&gt;
 
-&lt;p&gt;对于C语言,C++, 编译成机器码(二进制)来运行.&lt;/p&gt;
+    &lt;p&gt;```php
+  &amp;lt;?php
+  /**
+   * Interpolates context values into the message placeholders.
+   */
+  function interpolate($message, array $context = array())
+  {
+      // build a replacement array with braces around the context keys
+      $replace = array();
+      foreach ($context as $key =&amp;gt; $val) {
+          $replace[’{‘ . $key . ‘}’] = $val;
+      }&lt;/p&gt;
 
-&lt;p&gt;java语言, 把.java编译成 .class,称为bytecode, 由jvm来运行.&lt;/p&gt;
+    &lt;pre&gt;&lt;code&gt;  // interpolate replacement values into the message and return
+  return strtr($message, $replace);   }
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;解释语言:&lt;/p&gt;
+    &lt;p&gt;// a message with brace-delimited placeholder names
+  $message = “User {username} created”;&lt;/p&gt;
 
-&lt;p&gt;解释器解释执行. 典型的如 linux shell.&lt;/p&gt;
+    &lt;p&gt;// a context array of placeholder names =&amp;gt; replacement values
+  $context = array(‘username’ =&amp;gt; ‘bolivar’);&lt;/p&gt;
 
-&lt;p&gt;解释器逐行来执行命令.&lt;/p&gt;
+    &lt;p&gt;// echoes “Username bolivar created”
+  echo interpolate($message, $context);
+  ```&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;PHP稍有特殊之处,虽然是一个脚本语言,但不是靠解释器解释.&lt;/p&gt;
+&lt;h3 id=&quot;section-4&quot;&gt;1.3 上下文&lt;/h3&gt;
 
-&lt;p&gt;而是 zend 虚拟机,屏蔽了操作系统的区别.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;每个方法接受一个数组作为&lt;code&gt;context&lt;/code&gt;参数，用来存储不适合在字符串中填充的信息。数组可以包括任何东西。&lt;code&gt;实现者&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;确保他们尽可能包容的对&lt;code&gt;context&lt;/code&gt;参数进行处理。一个&lt;code&gt;context&lt;/code&gt;参数的给定值&lt;code&gt;不可&lt;/code&gt;导致抛出异常，也&lt;code&gt;不可&lt;/code&gt;产生任何PHP错误，警告或者提醒。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果在&lt;code&gt;context&lt;/code&gt;参数中传入了一个&lt;code&gt;异常&lt;/code&gt;对象，它必须以&lt;code&gt;exception&lt;/code&gt;作为键名。记录异常轨迹是通用的模式，并且可以在日志系统支持的情况下从异常中提取出整个调用栈。&lt;code&gt;实现者&lt;/code&gt;在将&lt;code&gt;exception&lt;/code&gt;当做&lt;code&gt;异常&lt;/code&gt;对象来使用之前&lt;code&gt;必须&lt;/code&gt;去验证它是不是一个&lt;code&gt;异常&lt;/code&gt;对象，因为它&lt;code&gt;可能&lt;/code&gt;包含着任何东西。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;php代码编译成opcode, 由zend虚拟机来执行opcode.&lt;/p&gt;
+&lt;h3 id=&quot;section-5&quot;&gt;1.4 助手类和接口&lt;/h3&gt;
 
-&lt;p&gt;但是—opcode, PHP脚本一结束,opcode就清除了.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;Psr\Log\AbstractLogger&lt;/code&gt;类可以让你通过继承它并实现通用的&lt;code&gt;log&lt;/code&gt;方法来方便的实现&lt;code&gt;LoggerInterface&lt;/code&gt;接口。而其他八个方法将会把消息和上下文转发给&lt;code&gt;log&lt;/code&gt;方法。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类似的，使用&lt;code&gt;Psr\Log\LoggerTrait&lt;/code&gt;只需要你实现通用的&lt;code&gt;log&lt;/code&gt;方法。注意特性是不能用来实现接口的，所以你依然需要在你的类中&lt;code&gt;implement LoggerInterface&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;Psr\Log\NullLogger&lt;/code&gt;是和接口一起提供的。它在没有可用的日志记录器时，&lt;code&gt;可以&lt;/code&gt;为使用日志接口的&lt;code&gt;用户&lt;/code&gt;们提供一个后备的“黑洞”。但是，当&lt;code&gt;context&lt;/code&gt;参数的构建非常耗时的时候，直接判断是否需要记录日志可能是个更好的选择。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;Psr\Log\LoggerAwareInterface&lt;/code&gt;只有一个&lt;code&gt;setLogger(LoggerInterface $logger)&lt;/code&gt;方法，它可以在框架中用来随意设置一个日志记录器。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;Psr\Log\LoggerAwareTrait&lt;/code&gt;特性可以被用来在各个类中轻松实现相同的接口。通过它可以访问到&lt;code&gt;$this-&amp;gt;logger&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;Psr\Log\LogLevel&lt;/code&gt;类拥有八个日志等级的常量。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;思考:opcode能否缓存?&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-6&quot;&gt;包&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;PHP本身不支持,但是apc,xcache等加速器,实现了这样的效果.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://packagist.org/packages/psr/log&quot;&gt;psr/log&lt;/a&gt;中提供了上文描述过的接口和类，以及相关的异常类，还有一组用来验证你的实现的单元测试。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/1.png&quot; alt=&quot;image01&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;psrlogloggerinterface&quot;&gt;&lt;code&gt;Psr\Log\LoggerInterface&lt;/code&gt;&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;PHP底层用C语言来实现的,C语言是强类型,而PHP是弱类型语言.&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php&lt;/p&gt;
 
-&lt;p&gt;是如何实现的呢?&lt;/p&gt;
+&lt;p&gt;namespace Psr\Log;&lt;/p&gt;
 
-&lt;p&gt;PHP变量的底层实现:&lt;/p&gt;
-
-&lt;p&gt;我们解压PHP的源码包, 看到如下的目录&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/2.png&quot; alt=&quot;image02&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;其中,&lt;/p&gt;
-
-&lt;p&gt;最核心的—Zend目录, 这是zend虚拟的实现. 包括栈,数据类型,编译器等,都在这实现.&lt;/p&gt;
-
-&lt;p&gt;最主要的main –PHP的一些内建函数,最主要函数都在这里放着.&lt;/p&gt;
-
-&lt;p&gt;最大的一个目录 ext – PHP的扩展.&lt;/p&gt;
-
-&lt;p&gt;PHP的大部分功能,都是以extenstion形式来完成的.&lt;/p&gt;
-
-&lt;p&gt;如果你开发了一个扩展,也放在ext目录下.&lt;/p&gt;
-
-&lt;p&gt;Zend对变量的表示:&lt;/p&gt;
-
-&lt;p&gt;答: zend实现了 zval结构体
+&lt;p&gt;/**
+ * Describes a logger instance
+ *
+ * The message MUST be a string or object implementing __toString().
+ *
+ * The message MAY contain placeholders in the form: {foo} where foo
+ * will be replaced by the context data in key “foo”.
+ *
+ * The context array can contain arbitrary data, the only assumption that
+ * can be made by implementors is that if an Exception instance is given
+ * to produce a stack trace, it MUST be in a key named “exception”.
+ *
+ * See https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md
+ * for the full interface specification.
+ */
+interface LoggerInterface
 {
-value: [联合体] ,联合体的内容可能是C语言中的long,double,hashtable…&lt;/p&gt;
+    /**
+     * System is unusable.
+     *
+     * @param string $message
+     * @param array $context
+     * @return null
+     */
+    public function emergency($message, array $context = array());&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * Action must be taken immediately.
+ *
+ * Example: Entire website down, database unavailable, etc. This should
+ * trigger the SMS alerts and wake you up.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function alert($message, array $context = array());
+
+/**
+ * Critical conditions.
+ *
+ * Example: Application component unavailable, unexpected exception.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function critical($message, array $context = array());
+
+/**
+ * Runtime errors that do not require immediate action but should typically
+ * be logged and monitored.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function error($message, array $context = array());
+
+/**
+ * Exceptional occurrences that are not errors.
+ *
+ * Example: Use of deprecated APIs, poor use of an API, undesirable things
+ * that are not necessarily wrong.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function warning($message, array $context = array());
+
+/**
+ * Normal but significant events.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function notice($message, array $context = array());
+
+/**
+ * Interesting events.
+ *
+ * Example: User logs in, SQL logs.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function info($message, array $context = array());
+
+/**
+ * Detailed debug information.
+ *
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function debug($message, array $context = array());
+
+/**
+ * Logs with an arbitrary level.
+ *
+ * @param mixed $level
+ * @param string $message
+ * @param array $context
+ * @return null
+ */
+public function log($level, $message, array $context = array()); } ```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;psrlogloggerawareinterface&quot;&gt;&lt;code&gt;Psr\Log\LoggerAwareInterface&lt;/code&gt;&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php&lt;/p&gt;
+
+&lt;p&gt;namespace Psr\Log;&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Describes a logger-aware instance
+ */
+interface LoggerAwareInterface
+{
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param LoggerInterface $logger
+     * @return null
+     */
+    public function setLogger(LoggerInterface $logger);
+}
+```&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;psrlogloglevel&quot;&gt;&lt;code&gt;Psr\Log\LogLevel&lt;/code&gt;&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php&lt;/p&gt;
+
+&lt;p&gt;namespace Psr\Log;&lt;/p&gt;
+
+&lt;p&gt;/**
+ * Describes log levels
+ */
+class LogLevel
+{
+    const EMERGENCY = ‘emergency’;
+    const ALERT     = ‘alert’;
+    const CRITICAL  = ‘critical’;
+    const ERROR     = ‘error’;
+    const WARNING   = ‘warning’;
+    const NOTICE    = ‘notice’;
+    const INFO      = ‘info’;
+    const DEBUG     = ‘debug’;
+}
+```&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>PSR1代码规范2</title>
+   <link href="https://zhuiyi1997.github.io//2016/10/16/psr2.html"/>
+   <updated>2016-10-16T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;h1 id=&quot;section&quot;&gt;代码风格指南&lt;/h1&gt;
+
+&lt;p&gt;本手册是基础代码规范(&lt;a href=&quot;https://github.com/hfcorriez/fig-standards/blob/zh_CN/接受/PSR-1-basic-coding-standard.md&quot;&gt;PSR-1&lt;/a&gt;)的继承和扩展。&lt;/p&gt;
+
+&lt;p&gt;为了尽可能的提升阅读其他人代码时的效率，下面例举了一系列的通用规则，特别是有关于PHP代码风格的。&lt;/p&gt;
+
+&lt;p&gt;各个成员项目间的共性组成了这组代码规范。当开发者们在多个项目中合作时，本指南将会成为所有这些项目中共用的一组代码规范。 因此，本指南的益处不在于这些规则本身，而在于在所有项目中共用这些规则。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ietf.org/rfc/rfc2119.txt&quot;&gt;RFC 2119&lt;/a&gt;中的&lt;code&gt;必须(MUST)&lt;/code&gt;，&lt;code&gt;不可(MUST NOT)&lt;/code&gt;，&lt;code&gt;建议(SHOULD)&lt;/code&gt;，&lt;code&gt;不建议(SHOULD NOT)&lt;/code&gt;，&lt;code&gt;可以/可能(MAY)&lt;/code&gt;等关键词将在本节用来做一些解释性的描述。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-1&quot;&gt;概述&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;代码&lt;code&gt;必须&lt;/code&gt;遵守 &lt;a href=&quot;https://github.com/hfcorriez/fig-standards/blob/zh_CN/接受/PSR-1-basic-coding-standard.md&quot;&gt;PSR-1&lt;/a&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;代码&lt;code&gt;必须&lt;/code&gt;使用4个空格来进行缩进，而不是用制表符。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一行代码的长度&lt;code&gt;不建议&lt;/code&gt;有硬限制；软限制&lt;code&gt;必须&lt;/code&gt;为120个字符，&lt;code&gt;建议&lt;/code&gt;每行代码80个字符或者更少。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在&lt;code&gt;命名空间(namespace)&lt;/code&gt;的声明下面&lt;code&gt;必须&lt;/code&gt;有一行空行，并且在&lt;code&gt;导入(use)&lt;/code&gt;的声明下面也&lt;code&gt;必须&lt;/code&gt;有一行空行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;类(class)&lt;/code&gt;的左花括号&lt;code&gt;必须&lt;/code&gt;放到其声明下面自成一行，右花括号则&lt;code&gt;必须&lt;/code&gt;放到类主体下面自成一行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;方法(method)&lt;/code&gt;的左花括号&lt;code&gt;必须&lt;/code&gt;放到其声明下面自成一行，右花括号则&lt;code&gt;必须&lt;/code&gt;放到方法主体的下一行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;所有的&lt;code&gt;属性(property)&lt;/code&gt;和&lt;code&gt;方法(method)&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;有可见性声明；&lt;code&gt;抽象(abstract)&lt;/code&gt;和&lt;code&gt;终结(final)&lt;/code&gt;声明&lt;code&gt;必须&lt;/code&gt;在可见性声明之前；而&lt;code&gt;静态(static)&lt;/code&gt;声明&lt;code&gt;必须&lt;/code&gt;在可见性声明之后。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在控制结构关键字的后面&lt;code&gt;必须&lt;/code&gt;有一个空格；而&lt;code&gt;方法(method)&lt;/code&gt;和&lt;code&gt;函数(function)&lt;/code&gt;的关键字的后面&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;控制结构的左花括号&lt;code&gt;必须&lt;/code&gt;跟其放在同一行，右花括号&lt;code&gt;必须&lt;/code&gt;放在该控制结构代码主体的下一行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;控制结构的左括号之后&lt;code&gt;不可&lt;/code&gt;有空格，右括号之前也&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;1.1. 示例&lt;/h3&gt;
+
+&lt;p&gt;这个示例中简单展示了上文中提到的一些规则：&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
+
+&lt;p&gt;use FooInterface;
+use BarClass as Bar;
+use OtherVendor\OtherPackage\BazClass;&lt;/p&gt;
+
+&lt;p&gt;class Foo extends Bar implements FooInterface
+{
+    public function sampleFunction($a, $b = null)
+    {
+        if ($a === $b) {
+            bar();
+        } elseif ($a &amp;gt; $b) {
+            $foo-&amp;gt;bar($arg1);
+        } else {
+            BazClass::bar($arg2, $arg3);
+        }
+    }&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;final public static function bar()
+{
+    // 方法主体
+} } ```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-3&quot;&gt;通则&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;2.1 基础代码规范&lt;/h3&gt;
+
+&lt;p&gt;代码&lt;code&gt;必须&lt;/code&gt;遵守 &lt;a href=&quot;https://github.com/hfcorriez/fig-standards/blob/zh_CN/接受/PSR-1-basic-coding-standard.md&quot;&gt;PSR-1&lt;/a&gt; 中的所有规则。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;2.2 源文件&lt;/h3&gt;
+
+&lt;p&gt;所有的PHP源文件&lt;code&gt;必须&lt;/code&gt;使用Unix LF(换行)作为行结束符。&lt;/p&gt;
+
+&lt;p&gt;所有PHP源文件&lt;code&gt;必须&lt;/code&gt;以一个空行结束。&lt;/p&gt;
+
+&lt;p&gt;纯PHP代码源文件的关闭标签&lt;code&gt;?&amp;gt;&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;省略。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;2.3. 行&lt;/h3&gt;
+
+&lt;p&gt;行长度&lt;code&gt;不可&lt;/code&gt;有硬限制。&lt;/p&gt;
+
+&lt;p&gt;行长度的软限制&lt;code&gt;必须&lt;/code&gt;是120个字符；对于软限制，代码风格检查器&lt;code&gt;必须&lt;/code&gt;警告但&lt;code&gt;不可&lt;/code&gt;报错。&lt;/p&gt;
+
+&lt;p&gt;一行代码的长度&lt;code&gt;不建议&lt;/code&gt;超过80个字符；较长的行&lt;code&gt;建议&lt;/code&gt;拆分成多个不超过80个字符的子行。&lt;/p&gt;
+
+&lt;p&gt;在非空行后面&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/p&gt;
+
+&lt;p&gt;空行&lt;code&gt;可以&lt;/code&gt;用来增强可读性和区分相关代码块。&lt;/p&gt;
+
+&lt;p&gt;一行&lt;code&gt;不可&lt;/code&gt;多于一个语句。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;2.4. 缩进&lt;/h3&gt;
 
-&lt;p&gt;type: 变量类型 , IS_NULL,IS_BOOL,IS_STRING…… IS_RESOURCE&lt;/p&gt;
+&lt;p&gt;代码&lt;code&gt;必须&lt;/code&gt;使用4个空格，且&lt;code&gt;不可&lt;/code&gt;使用制表符来作为缩进。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注意：代码中只使用空格，且不和制表符混合使用，将会对避免代码差异，补丁，历史和注解中的一些问题有帮助。空格的使用还可以使通过调整细微的缩进来改进行间对齐变得更加的简单。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;truefalsenull&quot;&gt;2.5. 关键字和 True/False/Null&lt;/h3&gt;
+
+&lt;p&gt;PHP关键字(&lt;a href=&quot;http://php.net/manual/en/reserved.keywords.php&quot;&gt;keywords&lt;/a&gt;)&lt;code&gt;必须&lt;/code&gt;使用小写字母。&lt;/p&gt;
+
+&lt;p&gt;PHP常量&lt;code&gt;true&lt;/code&gt;, &lt;code&gt;false&lt;/code&gt;和&lt;code&gt;null&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;使用小写字母。&lt;/p&gt;
 
-&lt;p&gt;refcount_gc&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;namespaceuse&quot;&gt;&lt;code&gt;命名空间(Namespace)&lt;/code&gt;和&lt;code&gt;导入(Use)&lt;/code&gt;声明&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;is_ref_gc&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;命名空间(namespace)&lt;/code&gt;的声明后面&lt;code&gt;必须&lt;/code&gt;有一行空行。&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;所有的&lt;code&gt;导入(use)&lt;/code&gt;声明&lt;code&gt;必须&lt;/code&gt;放在&lt;code&gt;命名空间(namespace)&lt;/code&gt;声明的下面。&lt;/p&gt;
 
-&lt;p&gt;如:&lt;/p&gt;
+&lt;p&gt;一句声明中，&lt;code&gt;必须&lt;/code&gt;只有一个&lt;code&gt;导入(use)&lt;/code&gt;关键字。&lt;/p&gt;
 
-&lt;p&gt;$a = 3;&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;导入(use)&lt;/code&gt;声明代码块后面&lt;code&gt;必须&lt;/code&gt;有一行空行。&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;p&gt;示例：&lt;/p&gt;
 
-&lt;p&gt;value : [long lval = 3]&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;type: IS_LONG&lt;/p&gt;
+&lt;p&gt;use FooClass;
+use BarClass as Bar;
+use OtherVendor\OtherPackage\BazClass;&lt;/p&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;// … 其它PHP代码 …&lt;/p&gt;
 
-&lt;p&gt;$a = 3.5&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
 
-&lt;p&gt;{&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;classpropertymethod&quot;&gt;&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;属性(property)&lt;/code&gt;和&lt;code&gt;方法(method)&lt;/code&gt;&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;value: [double dval = 3.5]&lt;/p&gt;
+&lt;p&gt;术语“类”指所有的&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;接口(interface)&lt;/code&gt;和&lt;code&gt;特性(trait)&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;type:IS_DOUBLE&lt;/p&gt;
+&lt;h3 id=&quot;extendimplement&quot;&gt;4.1. &lt;code&gt;扩展(extend)&lt;/code&gt;和&lt;code&gt;实现(implement)&lt;/code&gt;&lt;/h3&gt;
 
-&lt;p&gt;}&lt;/p&gt;
+&lt;p&gt;一个类的&lt;code&gt;扩展(extend)&lt;/code&gt;和&lt;code&gt;实现(implement)&lt;/code&gt;关键词&lt;code&gt;必须&lt;/code&gt;和&lt;code&gt;类名(class name)&lt;/code&gt;在同一行。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/3.png&quot; alt=&quot;image03&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;类(class)&lt;/code&gt;的左花括号&lt;code&gt;必须&lt;/code&gt;放在下面自成一行；右花括号必须放在&lt;code&gt;类(class)&lt;/code&gt;主体的后面自成一行。&lt;/p&gt;
 
-&lt;p&gt;疑问 :&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;PHP中有8种数据类型,为什么zval-&amp;gt;value 联合体中,只有5种?&lt;/p&gt;
+&lt;p&gt;use FooClass;
+use BarClass as Bar;
+use OtherVendor\OtherPackage\BazClass;&lt;/p&gt;
 
-&lt;p&gt;答:&lt;/p&gt;
+&lt;p&gt;class ClassName extends ParentClass implements \ArrayAccess, \Countable
+{
+    // 常量、属性、方法
+}
+```&lt;/p&gt;
 
-&lt;p&gt;1: NULL,直接 zval-&amp;gt;type = IS_NULL,就可以表示,不必设置  value的值.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;实现(implement)&lt;/code&gt;列表&lt;code&gt;可以&lt;/code&gt;被拆分为多个缩进了一次的子行。如果要拆成多个子行，列表的第一项&lt;code&gt;必须&lt;/code&gt;要放在下一行，并且每行&lt;code&gt;必须&lt;/code&gt;只有一个&lt;code&gt;接口(interface)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;2: BOOL型 , zval-&amp;gt;type = IS_BOOL, 再设置 zval.value.lval = 1/0;&lt;/p&gt;
+&lt;p&gt;use FooClass;
+use BarClass as Bar;
+use OtherVendor\OtherPackage\BazClass;&lt;/p&gt;
 
-&lt;p&gt;3: Resourc型 ,资源型 往往是服务器上打开的一个接口,如果 文件读取接口.&lt;/p&gt;
+&lt;p&gt;class ClassName extends ParentClass implements
+    \ArrayAccess,
+    \Countable,
+    \Serializable
+{
+    // 常量、属性、方法
+}
+```&lt;/p&gt;
 
-&lt;p&gt;zval-&amp;gt;type = IS_RESOURCE, zval-&amp;gt;tyoe.lval = 服务器上打开的接口的编号&lt;/p&gt;
+&lt;h3 id=&quot;property&quot;&gt;4.2. &lt;code&gt;属性(property)&lt;/code&gt;&lt;/h3&gt;
 
-&lt;p&gt;发现:&lt;/p&gt;
+&lt;p&gt;所有的&lt;code&gt;属性(property)&lt;/code&gt;都&lt;code&gt;必须&lt;/code&gt;声明其可见性。&lt;/p&gt;
 
-&lt;p&gt;PHP中,字符串类型,长度是已经缓存的,调用strlen时,系统可以直接返回其长度,不必计算.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;变量(var)&lt;/code&gt;关键字&lt;code&gt;不可&lt;/code&gt;用来声明一个&lt;code&gt;属性(property)&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;符号表 — 变量的花名册&lt;/p&gt;
+&lt;p&gt;一条语句&lt;code&gt;不可&lt;/code&gt;声明多个&lt;code&gt;属性(property)&lt;/code&gt;。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/4.png&quot; alt=&quot;image04&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;属性名(property name)&lt;/code&gt; &lt;code&gt;不推荐&lt;/code&gt;用单个下划线作为前缀来表明其&lt;code&gt;保护(protected)&lt;/code&gt;或&lt;code&gt;私有(private)&lt;/code&gt;的可见性。&lt;/p&gt;
 
-&lt;p&gt;变量的赋值与引用&lt;/p&gt;
+&lt;p&gt;一个&lt;code&gt;属性(property)&lt;/code&gt;声明看起来应该像下面这样。&lt;/p&gt;
 
-&lt;p&gt;注意:&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;在传值赋值时,&lt;/p&gt;
+&lt;p&gt;class ClassName
+{
+    public $foo = null;
+}
+```&lt;/p&gt;
 
-&lt;p&gt;以: $a = 3 ; $b = $a为例,&lt;/p&gt;
+&lt;h3 id=&quot;method&quot;&gt;4.3. &lt;code&gt;方法(method)&lt;/code&gt;&lt;/h3&gt;
 
-&lt;p&gt;并没有再次产生结构体,而是2个变量共用1个结构体.&lt;/p&gt;
+&lt;p&gt;所有的&lt;code&gt;方法(method)&lt;/code&gt;都&lt;code&gt;必须&lt;/code&gt;声明其可见性。&lt;/p&gt;
 
-&lt;p&gt;此时,2个变量,指向同1个结构体,&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;方法名(method name)&lt;/code&gt; &lt;code&gt;不推荐&lt;/code&gt;用单个下划线作为前缀来表明其&lt;code&gt;保护(protected)&lt;/code&gt;或&lt;code&gt;私有(private)&lt;/code&gt;的可见性。&lt;/p&gt;
 
-&lt;p&gt;refcount_gc 值为2&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;方法名(method name)&lt;/code&gt;在其声明后面&lt;code&gt;不可&lt;/code&gt;有空格跟随。其左花括号&lt;code&gt;必须&lt;/code&gt;放在下面自成一行，且右花括号&lt;code&gt;必须&lt;/code&gt;放在方法主体的下面自成一行。左括号后面&lt;code&gt;不可&lt;/code&gt;有空格，且右括号前面也&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/5.png&quot; alt=&quot;image05&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;一个&lt;code&gt;方法(method)&lt;/code&gt;声明看来应该像下面这样。 注意括号，逗号，空格和花括号的位置：&lt;/p&gt;
 
-&lt;p&gt;思考: a, b指向同一个结构体, 那么,修改a,或b ,对方会不会受干扰?&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;答: 不会,&lt;/p&gt;
+&lt;p&gt;class ClassName
+{
+    public function fooBarBaz($arg1, &amp;amp;$arg2, $arg3 = [])
+    {
+        // 方法主体部分
+    }
+}
+```&lt;/p&gt;
+
+&lt;h3 id=&quot;method-1&quot;&gt;4.4. &lt;code&gt;方法(method)&lt;/code&gt;的参数&lt;/h3&gt;
+
+&lt;p&gt;在参数列表中，逗号之前&lt;code&gt;不可&lt;/code&gt;有空格，而逗号之后则&lt;code&gt;必须&lt;/code&gt;要有一个空格。&lt;/p&gt;
 
-&lt;p&gt;因为2者,有一方修改时,将会造成结构体的分裂.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;方法(method)&lt;/code&gt;中有默认值的参数必须放在参数列表的最后面。&lt;/p&gt;
 
-&lt;p&gt;结构体一开始共用, 到某一方要修改值时,才分裂.&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;这种特点,称为cow , copy on write ,&lt;/p&gt;
+&lt;p&gt;class ClassName
+{
+    public function foo($arg1, &amp;amp;$arg2, $arg3 = [])
+    {
+        // 方法主体部分
+    }
+}
+```&lt;/p&gt;
+
+&lt;p&gt;参数列表&lt;code&gt;可以&lt;/code&gt;被拆分为多个缩进了一次的子行。如果要拆分成多个子行，参数列表的第一项&lt;code&gt;必须&lt;/code&gt;放在下一行，并且每行&lt;code&gt;必须&lt;/code&gt;只有一个参数。&lt;/p&gt;
 
-&lt;p&gt;如下图:&lt;/p&gt;
+&lt;p&gt;当参数列表被拆分成多个子行，右括号和左花括号之间&lt;code&gt;必须&lt;/code&gt;又一个空格并且自成一行。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/6.png&quot; alt=&quot;image06&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
 
-&lt;p&gt;当引用赋值时, 双方共用一个结构体(is_ref_gc=1)&lt;/p&gt;
+&lt;p&gt;class ClassName
+{
+    public function aVeryLongMethodName(
+        ClassTypeHint $arg1,
+        &amp;amp;$arg2,
+        array $arg3 = []
+    ) {
+        // 方法主体部分
+    }
+}
+```&lt;/p&gt;
+
+&lt;h3 id=&quot;abstractfinal-static&quot;&gt;4.5. &lt;code&gt;抽象(abstract)&lt;/code&gt;，&lt;code&gt;终结(final)&lt;/code&gt;和 &lt;code&gt;静态(static)&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;当用到&lt;code&gt;抽象(abstract)&lt;/code&gt;和&lt;code&gt;终结(final)&lt;/code&gt;来做类声明时，它们&lt;code&gt;必须&lt;/code&gt;放在可见性声明的前面。&lt;/p&gt;
+
+&lt;p&gt;而当用到&lt;code&gt;静态(static)&lt;/code&gt;来做类声明时，则&lt;code&gt;必须&lt;/code&gt;放在可见性声明的后面。&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Package;&lt;/p&gt;
+
+&lt;p&gt;abstract class ClassName
+{
+    protected static $foo;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;abstract protected function zim();
+
+final public static function bar()
+{
+    // 方法主体部分
+} } ```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;4.6. 调用方法和函数&lt;/h3&gt;
+
+&lt;p&gt;调用一个方法或函数时，在方法名或者函数名和左括号之间&lt;code&gt;不可&lt;/code&gt;有空格，左括号之后&lt;code&gt;不可&lt;/code&gt;有空格，右括号之前也&lt;code&gt;不可&lt;/code&gt;有空格。参数列表中，逗号之前&lt;code&gt;不可&lt;/code&gt;有空格，逗号之后则&lt;code&gt;必须&lt;/code&gt;有一个空格。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+bar();
+$foo-&amp;gt;bar($arg1);
+Foo::bar($arg2, $arg3);
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;参数列表&lt;code&gt;可以&lt;/code&gt;被拆分成多个缩进了一次的子行。如果拆分成子行，列表中的第一项&lt;code&gt;必须&lt;/code&gt;放在下一行，并且每一行&lt;code&gt;必须&lt;/code&gt;只能有一个参数。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+$foo-&amp;gt;bar(
+    $longArgument,
+    $longerArgument,
+    $muchLongerArgument
+);
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-9&quot;&gt;控制结构&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;下面是对于控制结构代码风格的概括：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;控制结构的关键词之后&lt;code&gt;必须&lt;/code&gt;有一个空格。&lt;/li&gt;
+  &lt;li&gt;控制结构的左括号之后&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/li&gt;
+  &lt;li&gt;控制结构的右括号之前&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/li&gt;
+  &lt;li&gt;控制结构的右括号和左花括号之间&lt;code&gt;必须&lt;/code&gt;有一个空格。&lt;/li&gt;
+  &lt;li&gt;控制结构的代码主体&lt;code&gt;必须&lt;/code&gt;进行一次缩进。&lt;/li&gt;
+  &lt;li&gt;控制结构的右花括号&lt;code&gt;必须&lt;/code&gt;主体的下一行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;每个控制结构的代码主体&lt;code&gt;必须&lt;/code&gt;被括在花括号里。这样可是使代码看上去更加标准化，并且加入新代码的时候还可以因此而减少引入错误的可能性。&lt;/p&gt;
+
+&lt;h3 id=&quot;ifelseifelse&quot;&gt;5.1. &lt;code&gt;if&lt;/code&gt;，&lt;code&gt;elseif&lt;/code&gt;，&lt;code&gt;else&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;if&lt;/code&gt;条件控制结构的示例，注意其中括号，空格和花括号的位置。同时注意&lt;code&gt;else&lt;/code&gt;和&lt;code&gt;elseif&lt;/code&gt;要和前一个条件控制结构的右花括号在同一行。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+if ($expr1) {
+    // if body
+} elseif ($expr2) {
+    // elseif body
+} else {
+    // else body;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;推荐&lt;/code&gt;用&lt;code&gt;elseif&lt;/code&gt;来替代&lt;code&gt;else if&lt;/code&gt;，以保持所有的条件控制关键字看起来像是一个单词。&lt;/p&gt;
+
+&lt;h3 id=&quot;switchcase&quot;&gt;5.2. &lt;code&gt;switch&lt;/code&gt;，&lt;code&gt;case&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;switch&lt;/code&gt;条件控制结构的示例，注意其中括号，空格和花括号的位置。&lt;code&gt;case&lt;/code&gt;语句&lt;code&gt;必须&lt;/code&gt;要缩进一级，而&lt;code&gt;break&lt;/code&gt;关键字（或其他中止关键字）&lt;code&gt;必须&lt;/code&gt;和&lt;code&gt;case&lt;/code&gt;结构的代码主体在同一个缩进层级。如果一个有主体代码的&lt;code&gt;case&lt;/code&gt;结构故意的继续向下执行则&lt;code&gt;必须&lt;/code&gt;要有一个类似于&lt;code&gt;// no break&lt;/code&gt;的注释。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+switch ($expr) {
+    case 0:
+        echo &#39;First case, with a break&#39;;
+        break;
+    case 1:
+        echo &#39;Second case, which falls through&#39;;
+        // no break
+    case 2:
+    case 3:
+    case 4:
+        echo &#39;Third case, return instead of break&#39;;
+        return;
+    default:
+        echo &#39;Default case&#39;;
+        break;
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;whiledo-while&quot;&gt;5.3. &lt;code&gt;while&lt;/code&gt;，&lt;code&gt;do while&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;while&lt;/code&gt;循环控制结构的示例，注意其中括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+while ($expr) {
+    // structure body
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;do while&lt;/code&gt;循环控制结构的示例，注意其中括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+do {
+    // structure body;
+} while ($expr);
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;for&quot;&gt;5.4. &lt;code&gt;for&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;for&lt;/code&gt;循环控制结构的示例，注意其中括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+for ($i = 0; $i &amp;lt; 10; $i++) {
+    // for body
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;foreach&quot;&gt;5.5. &lt;code&gt;foreach&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;foreach&lt;/code&gt;循环控制结构的示例，注意其中括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+foreach ($iterable as $key =&amp;gt; $value) {
+    // foreach body
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;try-catch&quot;&gt;5.6. &lt;code&gt;try&lt;/code&gt;, &lt;code&gt;catch&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;下面是一个&lt;code&gt;try catch&lt;/code&gt;异常处理控制结构的示例，注意其中括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+try {
+    // try body
+} catch (FirstExceptionType $e) {
+    // catch body
+} catch (OtherExceptionType $e) {
+    // catch body
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-10&quot;&gt;闭包&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;声明闭包时所用的&lt;code&gt;function&lt;/code&gt;关键字之后&lt;code&gt;必须&lt;/code&gt;要有一个空格，而&lt;code&gt;use&lt;/code&gt;关键字的前后都要有一个空格。&lt;/p&gt;
+
+&lt;p&gt;闭包的左花括号&lt;code&gt;必须&lt;/code&gt;跟其在同一行，而右花括号&lt;code&gt;必须&lt;/code&gt;在闭包主体的下一行。&lt;/p&gt;
+
+&lt;p&gt;闭包的参数列表和变量列表的左括号后面&lt;code&gt;不可&lt;/code&gt;有空格，右括号的前面也&lt;code&gt;不可&lt;/code&gt;有空格。&lt;/p&gt;
+
+&lt;p&gt;闭包的参数列表和变量列表中逗号前面&lt;code&gt;不可&lt;/code&gt;有空格，而逗号后面则&lt;code&gt;必须&lt;/code&gt;有空格。&lt;/p&gt;
+
+&lt;p&gt;闭包的参数列表中带默认值的参数&lt;code&gt;必须&lt;/code&gt;放在参数列表的结尾部分。&lt;/p&gt;
+
+&lt;p&gt;下面是一个闭包的示例。注意括号，空格和花括号的位置。&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+$closureWithArgs = function ($arg1, $arg2) {
+    // body
+};&lt;/p&gt;
+
+&lt;p&gt;$closureWithArgsAndVars = function ($arg1, $arg2) use ($var1, $var2) {
+    // body
+};
+```&lt;/p&gt;
+
+&lt;p&gt;参数列表和变量列表&lt;code&gt;可以&lt;/code&gt;被拆分成多个缩进了一级的子行。如果要拆分成多个子行，列表中的第一项&lt;code&gt;必须&lt;/code&gt;放在下一行，并且每一行&lt;code&gt;必须&lt;/code&gt;只放一个参数或变量。&lt;/p&gt;
+
+&lt;p&gt;当列表（不管是参数还是变量）最终被拆分成多个子行，右括号和左花括号之间&lt;code&gt;必须&lt;/code&gt;要有一个空格并且自成一行。&lt;/p&gt;
+
+&lt;p&gt;下面是一个参数列表和变量列表被拆分成多个子行的示例。&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+$longArgs_noVars = function (
+    $longArgument,
+    $longerArgument,
+    $muchLongerArgument
+) {
+   // body
+};&lt;/p&gt;
+
+&lt;p&gt;$noArgs_longVars = function () use (
+    $longVar1,
+    $longerVar2,
+    $muchLongerVar3
+) {
+   // body
+};&lt;/p&gt;
+
+&lt;p&gt;$longArgs_longVars = function (
+    $longArgument,
+    $longerArgument,
+    $muchLongerArgument
+) use (
+    $longVar1,
+    $longerVar2,
+    $muchLongerVar3
+) {
+   // body
+};&lt;/p&gt;
+
+&lt;p&gt;$longArgs_shortVars = function (
+    $longArgument,
+    $longerArgument,
+    $muchLongerArgument
+) use ($var1) {
+   // body
+};&lt;/p&gt;
+
+&lt;p&gt;$shortArgs_longVars = function ($arg) use (
+    $longVar1,
+    $longerVar2,
+    $muchLongerVar3
+) {
+   // body
+};
+```&lt;/p&gt;
+
+&lt;p&gt;把闭包作为一个参数在函数或者方法中调用时，依然要遵守上述规则。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+$foo-&amp;gt;bar(
+    $arg1,
+    function ($arg2) use ($var1) {
+        // body
+    },
+    $arg3
+);
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-11&quot;&gt;结论&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;本指南有意的省略了许多元素的代码风格。主要包括：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;全局变量和全局常量的声明&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数声明&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;操作符和赋值&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;行间对齐&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;注释和文档块&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类名的前缀和后缀&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;最佳实践&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以后的代码规范中&lt;code&gt;可能&lt;/code&gt;会修正或扩展本指南中规定的代码风格。&lt;/p&gt;
+
+&lt;h2 id=&quot;a-&quot;&gt;附录A 调查&lt;/h2&gt;
+
+&lt;p&gt;为了写这个风格指南，我们调查了各个项目以最终确定通用的代码风格。并把这次调查在这里公布出来。&lt;/p&gt;
+
+&lt;h3 id=&quot;a1-&quot;&gt;A.1. 调查数据&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;url,http://www.horde.org/apps/horde/docs/CODING_STANDARDS,http://pear.php.net/manual/en/standards.php,http://solarphp.com/manual/appendix-standards.style,http://framework.zend.com/manual/en/coding-standard.html,http://symfony.com/doc/2.0/contributing/code/standards.html,http://www.ppi.io/docs/coding-standards.html,https://github.com/ezsystems/ezp-next/wiki/codingstandards,http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html,https://github.com/UnionOfRAD/lithium/wiki/Spec%3A-Coding,http://drupal.org/coding-standards,http://code.google.com/p/sabredav/,http://area51.phpbb.com/docs/31x/coding-guidelines.html,https://docs.google.com/a/zikula.org/document/edit?authkey=CPCU0Us&amp;amp;hgd=1&amp;amp;id=1fcqb93Sn-hR9c0mkN6m_tyWnmEvoswKBtSc0tKkZmJA,http://www.chisimba.com,n/a,https://github.com/Respect/project-info/blob/master/coding-standards-sample.php,n/a,Object Calisthenics for PHP,http://doc.nette.org/en/coding-standard,http://flow3.typo3.org,https://github.com/propelorm/Propel2/wiki/Coding-Standards,http://developer.joomla.org/coding-standards.html
+voting,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,no,no,no,?,yes,no,yes
+indent_type,4,4,4,4,4,tab,4,tab,tab,2,4,tab,4,4,4,4,4,4,tab,tab,4,tab
+line_length_limit_soft,75,75,75,75,no,85,120,120,80,80,80,no,100,80,80,?,?,120,80,120,no,150
+line_length_limit_hard,85,85,85,85,no,no,no,no,100,?,no,no,no,100,100,?,120,120,no,no,no,no
+class_names,studly,studly,studly,studly,studly,studly,studly,studly,studly,studly,studly,lower_under,studly,lower,studly,studly,studly,studly,?,studly,studly,studly
+class_brace_line,next,next,next,next,next,same,next,same,same,same,same,next,next,next,next,next,next,next,next,same,next,next
+constant_names,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper,upper
+true_false_null,lower,lower,lower,lower,lower,lower,lower,lower,lower,upper,lower,lower,lower,upper,lower,lower,lower,lower,lower,upper,lower,lower
+method_names,camel,camel,camel,camel,camel,camel,camel,camel,camel,camel,camel,lower_under,camel,camel,camel,camel,camel,camel,camel,camel,camel,camel
+method_brace_line,next,next,next,next,next,same,next,same,same,same,same,next,next,same,next,next,next,next,next,same,next,next
+control_brace_line,same,same,same,same,same,same,next,same,same,same,same,next,same,same,next,same,same,same,same,same,same,next
+control_space_after,yes,yes,yes,yes,yes,no,yes,yes,yes,yes,no,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes,yes
+always_use_control_braces,yes,yes,yes,yes,yes,yes,no,yes,yes,yes,no,yes,yes,yes,yes,no,yes,yes,yes,yes,yes,yes
+else_elseif_line,same,same,same,same,same,same,next,same,same,next,same,next,same,next,next,same,same,same,same,same,same,next
+case_break_indent_from_switch,0/1,0/1,0/1,1/2,1/2,1/2,1/2,1/1,1/1,1/2,1/2,1/1,1/2,1/2,1/2,1/2,1/2,1/2,0/1,1/1,1/2,1/2
+function_space_after,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no,no
+closing_php_tag_required,no,no,no,no,no,no,no,no,yes,no,no,no,no,yes,no,no,no,no,no,yes,no,no
+line_endings,LF,LF,LF,LF,LF,LF,LF,LF,?,LF,?,LF,LF,LF,LF,?,,LF,?,LF,LF,LF
+static_or_visibility_first,static,?,static,either,either,either,visibility,visibility,visibility,either,static,either,?,visibility,?,?,either,either,visibility,visibility,static,?
+control_space_parens,no,no,no,no,no,no,yes,no,no,no,no,no,no,yes,?,no,no,no,no,no,no,no
+blank_line_after_php,no,no,no,no,yes,no,no,no,no,yes,yes,no,no,yes,?,yes,yes,no,yes,no,yes,no
+class_method_control_brace,next/next/same,next/next/same,next/next/same,next/next/same,next/next/same,same/same/same,next/next/next,same/same/same,same/same/same,same/same/same,same/same/same,next/next/next,next/next/same,next/same/same,next/next/next,next/next/same,next/next/same,next/next/same,next/next/same,same/same/same,next/next/same,next/next/next
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&quot;a2-&quot;&gt;A.2. 调查说明&lt;/h3&gt;
+
+&lt;p&gt;&lt;code&gt;indent_type&lt;/code&gt;:
+缩进类型。 &lt;code&gt;tab&lt;/code&gt; = “使用制表符”，&lt;code&gt;2&lt;/code&gt; or &lt;code&gt;4&lt;/code&gt; = “空格数量”&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;line_length_limit_soft&lt;/code&gt;:
+行长度的“软”限制，用字符。 &lt;code&gt;?&lt;/code&gt; = 不表示或者数字 &lt;code&gt;no&lt;/code&gt; 意为不限制.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;line_length_limit_hard&lt;/code&gt;:
+行长度的”硬”限制，用字符。 &lt;code&gt;?&lt;/code&gt; = 不表示或者数字, &lt;code&gt;no&lt;/code&gt; 意为不限制.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;class_names&lt;/code&gt;:
+类名如何命名 &lt;code&gt;lower&lt;/code&gt; = 只是小写, &lt;code&gt;lower_under&lt;/code&gt; = 小写加下划线, &lt;code&gt;studly&lt;/code&gt; = 骆驼型.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;class_brace_line&lt;/code&gt;:
+类的左花括号是放在同(&lt;code&gt;same&lt;/code&gt;)一行还是在下(&lt;code&gt;next&lt;/code&gt;)一行？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;constant_names&lt;/code&gt;:
+类常量如何命名？&lt;code&gt;upper&lt;/code&gt; = 大写加下划线分隔符。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;true_false_null&lt;/code&gt;:
+全小写或者全大写？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;method_names&lt;/code&gt;:
+方法名如何命名？&lt;code&gt;camel&lt;/code&gt; = &lt;code&gt;驼峰式&lt;/code&gt;, &lt;code&gt;lower_under&lt;/code&gt; = 小写加下划线分隔符。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;method_brace_line&lt;/code&gt;:
+方法的左花括号在同(&lt;code&gt;same&lt;/code&gt;)一行还是在下(&lt;code&gt;next&lt;/code&gt;)一行？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;control_brace_line&lt;/code&gt;:
+控制结构的左花括号在同(&lt;code&gt;same&lt;/code&gt;)一行还是在下(&lt;code&gt;next&lt;/code&gt;)一行？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;control_space_after&lt;/code&gt;:
+控制结构关键词后是否有空格？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;always_use_control_braces&lt;/code&gt;:
+控制结构总是使用花括号？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;else_elseif_line&lt;/code&gt;:
+当使用&lt;code&gt;else&lt;/code&gt;和&lt;code&gt;elseif&lt;/code&gt;，是否放在同(&lt;code&gt;same&lt;/code&gt;)一行还是在下(&lt;code&gt;next&lt;/code&gt;)一行？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;case_break_indent_from_switch&lt;/code&gt;:
+&lt;code&gt;case&lt;/code&gt;和&lt;code&gt;break&lt;/code&gt;分别从&lt;code&gt;swith&lt;/code&gt;语句处缩进多少次？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;function_space_after&lt;/code&gt;:
+函数调用的函数名和左括号是否有空格？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;closing_php_tag_required&lt;/code&gt;:
+如过是纯PHP文件，关闭标签&lt;code&gt;?&amp;gt;&lt;/code&gt;是否需要？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;line_endings&lt;/code&gt;:
+使用何种的行结束符？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;static_or_visibility_first&lt;/code&gt;:
+在定义方法的时候&lt;code&gt;static&lt;/code&gt;和可见性谁在前面？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;control_space_parens&lt;/code&gt;:
+在控制结构表达式中，左括号后面和右括号前面是否要有一个空格？&lt;code&gt;yes&lt;/code&gt; = &lt;code&gt;if ( $expr )&lt;/code&gt;, &lt;code&gt;no&lt;/code&gt; = &lt;code&gt;if ($expr)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;blank_line_after_php&lt;/code&gt;:
+PHP的开始标签后面是否需要一个空行？&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;class_method_control_brace&lt;/code&gt;:
+左花括号在类，方法和控制结构中的位置。&lt;/p&gt;
+
+&lt;h3 id=&quot;a3-&quot;&gt;A.3. 调查结果&lt;/h3&gt;
+
+&lt;pre&gt;&lt;code&gt;indent_type:
+    tab: 7
+    2: 1
+    4: 14
+line_length_limit_soft:
+    ?: 2
+    no: 3
+    75: 4
+    80: 6
+    85: 1
+    100: 1
+    120: 4
+    150: 1
+line_length_limit_hard:
+    ?: 2
+    no: 11
+    85: 4
+    100: 3
+    120: 2
+class_names:
+    ?: 1
+    lower: 1
+    lower_under: 1
+    studly: 19
+class_brace_line:
+    next: 16
+    same: 6
+constant_names:
+    upper: 22
+true_false_null:
+    lower: 19
+    upper: 3
+method_names:
+    camel: 21
+    lower_under: 1
+method_brace_line:
+    next: 15
+    same: 7
+control_brace_line:
+    next: 4
+    same: 18
+control_space_after:
+    no: 2
+    yes: 20
+always_use_control_braces:
+    no: 3
+    yes: 19
+else_elseif_line:
+    next: 6
+    same: 16
+case_break_indent_from_switch:
+    0/1: 4
+    1/1: 4
+    1/2: 14
+function_space_after:
+    no: 22
+closing_php_tag_required:
+    no: 19
+    yes: 3
+line_endings:
+    ?: 5
+    LF: 17
+static_or_visibility_first:
+    ?: 5
+    either: 7
+    static: 4
+    visibility: 6
+control_space_parens:
+    ?: 1
+    no: 19
+    yes: 2
+blank_line_after_php:
+    ?: 1
+    no: 13
+    yes: 8
+class_method_control_brace:
+    next/next/next: 4
+    next/next/same: 11
+    next/same/same: 1
+    same/same/same: 6
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>PSR1代码规范1</title>
+   <link href="https://zhuiyi1997.github.io//2016/10/16/psr1.html"/>
+   <updated>2016-10-16T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;h1 id=&quot;section&quot;&gt;基本代码规范&lt;/h1&gt;
+
+&lt;p&gt;本节我们将会讨论一些基本的代码规范问题，以此作为将来讨论更高级别的代码分享和技术互用的基础。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.ietf.org/rfc/rfc2119.txt&quot;&gt;RFC 2119&lt;/a&gt;中的&lt;code&gt;必须(MUST)&lt;/code&gt;，&lt;code&gt;不可(MUST NOT)&lt;/code&gt;，&lt;code&gt;建议(SHOULD)&lt;/code&gt;，&lt;code&gt;不建议(SHOULD NOT)&lt;/code&gt;，&lt;code&gt;可以/可能(MAY)&lt;/code&gt;等关键词将在本节用来做一些解释性的描述。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-1&quot;&gt;概述&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;源文件&lt;code&gt;必须&lt;/code&gt;只使用 &lt;code&gt;&amp;lt;?php&lt;/code&gt; 和 &lt;code&gt;&amp;lt;?=&lt;/code&gt; 这两种标签。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;源文件中php代码的编码格式&lt;code&gt;必须&lt;/code&gt;只使用不带&lt;code&gt;字节顺序标记(BOM)&lt;/code&gt;的&lt;code&gt;UTF-8&lt;/code&gt;。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;一个源文件&lt;code&gt;建议&lt;/code&gt;只用来做声明（&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;函数(function)&lt;/code&gt;，&lt;code&gt;常量(constant)&lt;/code&gt;等）或者只用来做一些引起副作用的操作（例如：输出信息，修改&lt;code&gt;.ini&lt;/code&gt;配置等）,但&lt;code&gt;不建议&lt;/code&gt;同时做这两件事。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;命名空间(namespace)&lt;/code&gt;和&lt;code&gt;类(class)&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;遵守&lt;a href=&quot;https://github.com/hfcorriez/fig-standards/blob/zh_CN/接受/PSR-0.md&quot;&gt;PSR-0&lt;/a&gt;标准。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;类名(class name)&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;使用&lt;code&gt;骆驼式(StudlyCaps)&lt;/code&gt;写法 (译者注：&lt;code&gt;驼峰式(cameCase)&lt;/code&gt;的一种变种，后文将直接用&lt;code&gt;StudlyCaps&lt;/code&gt;表示)。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;类(class)&lt;/code&gt;中的常量&lt;code&gt;必须&lt;/code&gt;只由大写字母和&lt;code&gt;下划线(_)&lt;/code&gt;组成。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code&gt;方法名(method name)&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;使用&lt;code&gt;驼峰式(cameCase)&lt;/code&gt;写法(译者注：后文将直接用&lt;code&gt;camelCase&lt;/code&gt;表示)。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-2&quot;&gt;文件&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;php&quot;&gt;2.1. PHP标签&lt;/h3&gt;
+
+&lt;p&gt;PHP代码&lt;code&gt;必须&lt;/code&gt;只使用&lt;code&gt;长标签(&amp;lt;?php ?&amp;gt;)&lt;/code&gt;或者&lt;code&gt;短输出式标签(&amp;lt;?= ?&amp;gt;)&lt;/code&gt;；而&lt;code&gt;不可&lt;/code&gt;使用其他标签。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;2.2. 字符编码&lt;/h3&gt;
+
+&lt;p&gt;PHP代码的编码格式&lt;code&gt;必须&lt;/code&gt;只使用不带&lt;code&gt;字节顺序标记(BOM)&lt;/code&gt;的&lt;code&gt;UTF-8&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;2.3. 副作用&lt;/h3&gt;
+
+&lt;p&gt;一个源文件&lt;code&gt;建议&lt;/code&gt;只用来做声明（&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;函数(function)&lt;/code&gt;，&lt;code&gt;常量(constant)&lt;/code&gt;等）或者只用来做一些引起副作用的操作（例如：输出信息，修改&lt;code&gt;.ini&lt;/code&gt;配置等）,但&lt;code&gt;不建议&lt;/code&gt;同时做这两件事。&lt;/p&gt;
+
+&lt;p&gt;短语&lt;code&gt;副作用(side effects)&lt;/code&gt;的意思是 &lt;em&gt;在包含文件时&lt;/em&gt; 所执行的逻辑与所声明的&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;函数(function)&lt;/code&gt;，&lt;code&gt;常量(constant)&lt;/code&gt;等没有直接的关系。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;副作用(side effects)&lt;/code&gt;包含但不局限于：产生输出，显式地使用&lt;code&gt;require&lt;/code&gt;或&lt;code&gt;include&lt;/code&gt;，连接外部服务，修改ini配置，触发错误或异常，修改全局或者静态变量，读取或修改文件等等&lt;/p&gt;
+
+&lt;p&gt;下面是一个既包含声明又有副作用的示例文件；即应避免的例子：&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+// 副作用：修改了ini配置
+ini_set(‘error_reporting’, E_ALL);&lt;/p&gt;
+
+&lt;p&gt;// 副作用：载入了文件
+include “file.php”;&lt;/p&gt;
+
+&lt;p&gt;// 副作用：产生了输出
+echo “&amp;lt;html&amp;gt;\n”;&lt;/p&gt;
+
+&lt;p&gt;// 声明
+function foo()
+{
+    // 函数体
+}
+```&lt;/p&gt;
+
+&lt;p&gt;下面是一个仅包含声明的示例文件；即应提倡的例子：&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+// 声明
+function foo()
+{
+    // 函数体
+}&lt;/p&gt;
+
+&lt;p&gt;// 条件式声明不算做是副作用
+if (! function_exists(‘bar’)) {
+    function bar()
+    {
+        // 函数体
+    }
+}
+```&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;namespaceclass-name&quot;&gt;&lt;code&gt;空间名(namespace)&lt;/code&gt;和&lt;code&gt;类名(class name)&lt;/code&gt;&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code&gt;命名空间(namespace)&lt;/code&gt;和&lt;code&gt;类(class)&lt;/code&gt;必须遵守 &lt;a href=&quot;https://github.com/hfcorriez/fig-standards/blob/zh_CN/接受/PSR-0.md&quot;&gt;PSR-0&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;这意味着一个源文件中只能有一个&lt;code&gt;类(class)&lt;/code&gt;，并且每个&lt;code&gt;类(class)&lt;/code&gt;至少要有一级&lt;code&gt;空间名（namespace）&lt;/code&gt;：即一个顶级的&lt;code&gt;组织名(vendor name)&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;类名(class name)&lt;/code&gt; &lt;code&gt;必须&lt;/code&gt;使用&lt;code&gt;StudlyCaps&lt;/code&gt;写法。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PHP5.3&lt;/code&gt;之后的代码&lt;code&gt;必须&lt;/code&gt;使用正式的&lt;code&gt;命名空间(namespace)&lt;/code&gt;
+例子：&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+// PHP 5.3 及之后:
+namespace Vendor\Model;&lt;/p&gt;
+
+&lt;p&gt;class Foo
+{
+}
+```&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;PHP5.2.x&lt;/code&gt;之前的代码&lt;code&gt;建议&lt;/code&gt;用伪命名空间&lt;code&gt;Vendor_&lt;/code&gt;作为&lt;code&gt;类名(class name)&lt;/code&gt;的前缀&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;php
+&amp;lt;?php
+// PHP 5.2.x 及之前:
+class Vendor_Model_Foo
+{
+}
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;h2 id=&quot;section-5&quot;&gt;类的常量、属性和方法&lt;/h2&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;术语&lt;code&gt;类(class)&lt;/code&gt;指所有的&lt;code&gt;类(class)&lt;/code&gt;，&lt;code&gt;接口(interface)&lt;/code&gt;和&lt;code&gt;特性(trait)&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;4.1. 常量&lt;/h3&gt;
+
+&lt;p&gt;类常量&lt;code&gt;必须&lt;/code&gt;只由大写字母和&lt;code&gt;下划线(_)&lt;/code&gt;组成。
+例子：&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php
+namespace Vendor\Model;&lt;/p&gt;
+
+&lt;p&gt;class Foo
+{
+    const VERSION = ‘1.0’;
+    const DATE_APPROVED = ‘2012-06-01’;
+}
+```&lt;/p&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;4.2. 属性&lt;/h3&gt;
+
+&lt;p&gt;本指南中故意不对&lt;code&gt;$StulyCaps&lt;/code&gt;，&lt;code&gt;$camelCase&lt;/code&gt;或者&lt;code&gt;$unser_score&lt;/code&gt;中的某一种风格作特别推荐，完全由读者依据个人喜好决定属性名的命名风格。&lt;/p&gt;
+
+&lt;p&gt;但是不管你如何定义属性名，&lt;code&gt;建议&lt;/code&gt;在一个合理的范围内保持一致。这个范围可能是&lt;code&gt;组织(vendor)&lt;/code&gt;级别的，&lt;code&gt;包(package)&lt;/code&gt;级别的，&lt;code&gt;类(class)&lt;/code&gt;级别的，或者&lt;code&gt;方法(method)&lt;/code&gt;级别的。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;4.3. 方法&lt;/h3&gt;
+
+&lt;p&gt;方法名则&lt;code&gt;必须&lt;/code&gt;使用&lt;code&gt;camelCase()&lt;/code&gt;风格来声明。&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>PSR1代码规范0</title>
+   <link href="https://zhuiyi1997.github.io//2016/10/16/psr0.html"/>
+   <updated>2016-10-16T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;已弃用&lt;/strong&gt; - 截止到2014年10月21日，PSR-0已被弃用。 推荐替代使用&lt;a href=&quot;http://www.php-fig.org/psr/psr-4/&quot;&gt;PSR-4&lt;/a&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;下文描述了若要使用一个通用的&lt;code&gt;自动加载器(autoloader)&lt;/code&gt;，你所需要遵守的规范：&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;规范&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;一个完全标准的&lt;code&gt;命名空间(namespace)&lt;/code&gt;和&lt;code&gt;类(class)&lt;/code&gt;的结构是这样的：&lt;code&gt;\&amp;lt;Vendor Name&amp;gt;\(&amp;lt;Namespace&amp;gt;\)*&amp;lt;Class Name&amp;gt;&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;每个&lt;code&gt;命名空间(namespace)&lt;/code&gt;都必须有一个顶级的&lt;code&gt;空间名(namespace)&lt;/code&gt;(“&lt;code&gt;组织名(Vendor Name)&lt;/code&gt;”)。&lt;/li&gt;
+  &lt;li&gt;每个&lt;code&gt;命名空间(namespace)&lt;/code&gt;中可以根据需要使用任意数量的&lt;code&gt;子命名空间(sub-namespace)&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;从文件系统中加载源文件时，&lt;code&gt;空间名(namespace)&lt;/code&gt;中的分隔符将被转换为 &lt;code&gt;DIRECTORY_SEPARATOR&lt;/code&gt;。&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;类名(class name)&lt;/code&gt;中的每个下划线&lt;code&gt;_&lt;/code&gt;都将被转换为一个&lt;code&gt;DIRECTORY_SEPARATOR&lt;/code&gt;。下划线&lt;code&gt;_&lt;/code&gt;在&lt;code&gt;空间名(namespace)&lt;/code&gt;中没有什么特殊的意义。&lt;/li&gt;
+  &lt;li&gt;完全标准的&lt;code&gt;命名空间(namespace)&lt;/code&gt;和&lt;code&gt;类(class)&lt;/code&gt;从文件系统加载源文件时将会加上&lt;code&gt;.php&lt;/code&gt;后缀。&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;组织名(vendor name)&lt;/code&gt;，&lt;code&gt;空间名(namespace)&lt;/code&gt;，&lt;code&gt;类名(class name)&lt;/code&gt;都由大小写字母组合而成。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;示例&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;\Doctrine\Common\IsolatedClassLoader&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/Doctrine/Common/IsolatedClassLoader.php&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;\Symfony\Core\Request&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/Symfony/Core/Request.php&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;\Zend\Acl&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/Zend/Acl.php&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;\Zend\Mail\Message&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/Zend/Mail/Message.php&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;namespaceclass-name&quot;&gt;&lt;code&gt;空间名(namespace)&lt;/code&gt;和&lt;code&gt;类名(class name)&lt;/code&gt;中的下划线&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;\namespace\package\Class_Name&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/namespace/package/Class/Name.php&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;\namespace\package_name\Class_Name&lt;/code&gt; =&amp;gt; &lt;code&gt;/path/to/project/lib/vendor/namespace/package_name/Class/Name.php&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以上是我们为实现通用的自动加载而制定的最低标准。你可以利用能够自动加载&lt;code&gt;PHP 5.3&lt;/code&gt;类的&lt;code&gt;SplClassLoader&lt;/code&gt;来测试你的代码是否符合这些标准。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;实例&lt;/h2&gt;
+
+&lt;p&gt;下面是一个怎样利用上述标准来实现自动加载的示例函数。&lt;/p&gt;
+
+&lt;p&gt;```php
+&amp;lt;?php&lt;/p&gt;
+
+&lt;p&gt;function autoload($className)
+{
+    $className = ltrim($className, ‘\’);
+    $fileName  = ‘’;
+    $namespace = ‘’;
+    if ($lastNsPos = strrpos($className, ‘\’)) {
+        $namespace = substr($className, 0, $lastNsPos);
+        $className = substr($className, $lastNsPos + 1);
+        $fileName  = str_replace(‘\’, DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+    }
+    $fileName .= str_replace(‘_’, DIRECTORY_SEPARATOR, $className) . ‘.php’;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;require $fileName; } ```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;splclassloader&quot;&gt;&lt;code&gt;SplClassLoader&lt;/code&gt;实现&lt;/h2&gt;
+
+&lt;p&gt;下面的gist是一个按照上面建议的标准来自动加载类的&lt;code&gt;SplClassLoader&lt;/code&gt;实例。这是依据这些标准来加载&lt;code&gt;PHP 5.3&lt;/code&gt;类的推荐方案。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://gist.github.com/221634&quot;&gt;http://gist.github.com/221634&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</content>
+ </entry>
+ 
+ <entry>
+   <title>浅谈MVC架构模式分析与设计</title>
+   <link href="https://zhuiyi1997.github.io//2016/09/01/mvc-talk-lightly.html"/>
+   <updated>2016-09-01T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;hr /&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;MVC全名是Model View Controller ,是模型-视图-控制器的缩写。&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;视图：我们能能直观的看到的web界面。&lt;/p&gt;
+
+&lt;p&gt;控制器：向系统发出指令的工具和帮手。&lt;/p&gt;
+
+&lt;p&gt;模型：模型的工作是按要求从数据库取出数据。&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;学习MVC的目的：&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;1、快速上手各大主流PHP框架，列如YII框架、thinkphp、ci等&lt;/p&gt;
+
+&lt;p&gt;2、快速适应多数公司的web开发需求&lt;/p&gt;
+
+&lt;p&gt;3、逐步接触和了解web系统架构的知识、为日后成为系统架构的中坚力量做准备&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;MVC解决的问题：&lt;/p&gt;
+
+&lt;p&gt;```
+在PHP还不支持面向对象之前，是过程化的方式来创建的，它们将 Model View Controller 三层的代码混在一起，十分混乱。&lt;/p&gt;
+
+&lt;p&gt;它解决的问题有：维护难、开发速度慢、二次开发难度高，工作量大&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;MVC的优势：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/res/img/blog/PHP学习/MVC_1.jpg&quot; alt=&quot;MVC_1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;MVC的工作流程初步认识：&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;1、浏览者 -&amp;gt; 调用控制器，对它发出指令
+2、控制器 -&amp;gt; 按指令选取一个合适的模型
+3、模型 -&amp;gt; 安控制器指令去相应数据
+4、控制器 -&amp;gt; 按指令选取相应视图
+5、视图 -&amp;gt; 把第三步取到的数据按用户想要的样子显示出来&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;NVC的目录结构：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/res/img/blog/PHP学习/MVC_2.jpg&quot; alt=&quot;MVC_2&quot; /&gt;&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>mysql事物处理</title>
+   <link href="https://zhuiyi1997.github.io//2016/08/05/php-thing.html"/>
+   <updated>2016-08-05T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;hr /&gt;
+
+&lt;!-- more --&gt;
+
+&lt;p&gt;事务处理在各种管理系统中都有着广泛的应用。比如人员管理系统，很多同步数据库操作大都需要用到事务处理。&lt;/p&gt;
+
+&lt;p&gt;比如说，在人员管理系统中，你删除一个人员，你即需要删除人员的基本资料，也要删除和该人员相关的信息，如信箱，文章等等，这样，这些数据库操作语句就构成一个事务！&lt;/p&gt;
+
+&lt;p&gt;例子：删除的SQL语句&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;delete from userinfo where ~~~
+delete from mail where ~~
+delete from article where~~
+~~
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果没有事务处理，在你删除的过程中，假设出错了，只执行了第一句，那么其后果是难以想象的！&lt;/p&gt;
+
+&lt;p&gt;但用事务处理。如果删除出错，你只要rollback就可以取消删除操作（其实是只要你没有commit你就没有确实的执行该删除操作）&lt;/p&gt;
+
+&lt;p&gt;一般来说，在商务级的应用中，都必须考虑事务处理的！&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;查看inodb信息&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;  shell&amp;gt; /usr/local/mysql -u root -p
+
+  mysql&amp;gt; show variables like &quot;have_%&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;系统会提示：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;+——————+——-+
+| Variable_name     | Value |
++——————+——-+
+| have_bdb          | YES    |
+| have_crypt        | YES    |
+| have_innodb       | YES    |
+| have_isam         | YES    |
+| have_raid         | YES    |
+| have_symlink      | YES    |
+| have_openssl      | NO     |
+| have_query_cache | YES    |
++——————+——-+
+8 rows in set (0.05 sec)&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;如果是这样的，那么我们就可以创建一张支持事务处理的表来试试了。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;先简单介绍一下事务吧！事务是DBMS得执行单位。它由有限得数据库操作序列组成得。但不是任意得数据库操作序列都能成为事务。&lt;/p&gt;
+
+&lt;p&gt;一般来说，事务是必须满足4个条件（ACID）:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;原子性（Autmic）：事务在执行性，要做到“要么不做，要么全做！”，就是说不允许事务部分得执行。
+
+即使因为故障而使事务不能完成，在rollback时也要消除对数据库得影响！
+
+一致性（Consistency）：事务得操作应该使数据库从一个一致状态转变倒另一个一致得状态！
+
+就拿网上购物来说吧，你只有即让商品出库，又让商品进入顾客得购物篮才能构成事务！ 
+
+隔离性（Isolation）：如果多个事务并发执行，应象各个事务独立执行一样！
+
+持久性（Durability）：一个成功执行得事务对数据库得作用是持久得，即使数据库应故障出错，也应该能够恢复！
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;MYSQL的事务处理主要有两种方法。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1、用begin,rollback,commit来实现
+
+	begin 开始一个事务
+
+    rollback 事务回滚
+
+    commit  事务确认
+
+2、直接用set来改变mysql的自动提交模式
+
+	MYSQL默认是自动提交的，也就是你提交一个QUERY，它就直接执行！我们可以通过
+
+	set autocommit=0	禁止自动提交
+
+	set autocommit=1 	开启自动提交来实现事务的处理。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;但注意当你用 set autocommit=0 的时候，你以后所有的SQL都将做为事务处理，直到你用commit确认或rollback结束。&lt;/p&gt;
+
+&lt;p&gt;注意当你结束这个事务的同时也开启了个新的事务！按第一种方法只将当前的作为一个事务！&lt;/p&gt;
+
+&lt;p&gt;个人推荐使用第一种方法！&lt;/p&gt;
+
+&lt;p&gt;注：MYSQL中只有INNODB和BDB类型的数据表才能支持事务处理！其他的类型是不支持的！（切记！）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MYSQL5.0 WINXP下测试通过～   ^_^&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; use test;
+Database changed
+mysql&amp;gt; CREATE TABLE &lt;code&gt;dbtest&lt;/code&gt;(
+     -&amp;gt; id int(4)
+     -&amp;gt; ) TYPE=INNODB;
+Query OK, 0 rows affected, 1 warning (0.05 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; select * from dbtest
+     -&amp;gt; ;
+Empty set (0.01 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; begin;
+Query OK, 0 rows affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; insert into dbtest value(5);
+Query OK, 1 row affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; insert into dbtest value(6);
+Query OK, 1 row affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; commit;
+Query OK, 0 rows affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; select * from dbtest;
++——+
+| id    |
++——+
+|     5 |
+|     6 |
++——+
+2 rows in set (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; begin;
+Query OK, 0 rows affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; insert into dbtest values(7);
+Query OK, 1 row affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; rollback;
+Query OK, 0 rows affected (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt; select * from dbtest;
++——+
+| id    |
++——+
+|     5 |
+|     6 |
++——+
+2 rows in set (0.00 sec)&lt;/p&gt;
+
+&lt;p&gt;mysql&amp;gt;&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;p&gt;[PHP]
+function Tran( $sql ) {
+         $judge = 1;
+         mysql_query(‘begin’);
+         foreach ($sql as $v) {
+                 if ( !mysql_query($v) ) {
+                         $judge = 0;
+                 }
+         }
+         if ($judge == 0) {
+                 mysql_query(‘rollback’);
+                 return false;
+         }
+         elseif ($judge == 1) {
+                 mysql_query(‘commit’);
+                 return true;
+         }
+}
+[/PHP]&lt;/p&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;```&lt;/p&gt;
+
+&lt;?php
+$handler=mysql_connect(&quot;localhost&quot;,&quot;root&quot;,&quot;&quot;);
+mysql_select_db(&quot;task&quot;);
+mysql_query(&quot;SET AUTOCOMMIT=0&quot;);//设置为不自动提交，因为MYSQL默认立即执行
+mysql_query(&quot;BEGIN&quot;);//开始事务定义
+if(!mysql_query(&quot;insert into trans (id) values(&#39;2&#39;)&quot;))
+{
+mysql_query(&quot;ROOLBACK&quot;);//判断当执行失败时回滚
+}
+if(!mysql_query(&quot;insert into trans (id) values(&#39;4&#39;)&quot;))
+{
+mysql_query(&quot;ROOLBACK&quot;);//判断执行失败回滚
+}
+mysql_query(&quot;COMMIT&quot;);//执行事务
+mysql_close($handler);
 
-&lt;p&gt;发生如下图的变化&lt;/p&gt;
+?&gt;
 
-&lt;p&gt;&lt;img src=&quot;/media/files/2014/03/02/7.png&quot; alt=&quot;image07&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;```&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>PHP魔术方法</title>
+   <link href="https://zhuiyi1997.github.io//2016/08/03/magic-methods.html"/>
+   <updated>2016-08-03T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;hr /&gt;
 
-&lt;p&gt;引用时的一些怪现象&lt;/p&gt;
+&lt;!-- more --&gt;
 
-&lt;p&gt;函数执行时的栈变化&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1、__get、__set&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;当函数调用时,为此函数生成了一个”执行环境变量”的结构体,里面存储了当前函数的名称,参数,对应的类….等等信息.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__get( $property ) 当调用一个未定义的属性时访问此方法
 
-&lt;p&gt;称为_zend_execute_data {}结构体&lt;/p&gt;
+__set( $property, $value ) 给一个未定义的属性赋值时调用
 
-&lt;p&gt;这个结构体中,还有2个重要的信息:&lt;/p&gt;
+注意：这两个方法是为 在类和他们的父类中没有声明的属性而设计的。
 
-&lt;p&gt;{&lt;/p&gt;
+这里的没有声明包括当使用对象调用时，访问控制为proteced,private的属性（即没有权限访问的属性）
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;*op_array ——&amp;gt;是函数的执行步骤&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2、__isset、__unset&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;*hash_table—-&amp;gt;symbol_table 这个函数对应的符号表&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__isset( $property ) 当在一个未定义的属性上调用isset()函数时调用此方法
 
-&lt;p&gt;}&lt;/p&gt;
+__unset( $property ) 当在一个未定义的属性上调用unset()函数时调用此方法
 
-&lt;p&gt;思考一下: 1个函数,递归调用自己3次, 如t&lt;/p&gt;
+注意：与__get方法和__set方法相同。
 
-&lt;p&gt;在栈上,肯定要有3个 execute_data生成.&lt;/p&gt;
+这里的没有声明包括当使用对象调用时，访问控制为proteced,private的属性（即没有权限访问的属性）
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;但是,这3个execute_data—&amp;gt;对应几个*op_array;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;3、__call&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;答:函数编译完了,生成一份*op_array,因为函数的执行逻辑是固定的.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__call( $method, $arg_array ) 当调用一个未定义的方法时调用此请求
 
-&lt;p&gt;再问:生成了几个 symbol_table?&lt;/p&gt;
+注意：这里的未定义的方法包括没有权限访问的方法
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;答:生成3个符号表.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;4、__autoload&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;函数中的静态变量是如何形成的.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__autoload 函数，它会在试图使用尚未被定义的类时自动调用。
 
-&lt;p&gt;t() {&lt;/p&gt;
+通过调用此函数，脚本引擎在 PHP 	出错失败前有了最后一个机会加载所需的类。
 
-&lt;p&gt;} 自身调用3次&lt;/p&gt;
+注意: 在 __autoload 函数中抛出的异常不能被 catch 语句块捕获并导致致命错误。
+&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;[t_3 execute_data] —-&amp;gt;[symbol_table_3]&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;5、__construct、__destruct&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;[t_2 execute_data] —-&amp;gt;[symbol_table_2]&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__construct 构造方法，当一个对象创建时调用此方法，使用此方法的好处是：
 
-&lt;p&gt;[t_1 execute_data] —-&amp;gt;[symbol_table_1]&lt;/p&gt;
+可以使构造方法有一个独一无二的名称,无论它所在的类的名称是什么。这样你在改变类的名称时,就不需要改变构造方法的名称。
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+__destruct 析构方法，PHP将在对象被销毁前（即从内存中清除前）调用这个方法。
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+注意：默认情况下,PHP仅仅释放对象属性所占用的内存并销毁对象相关的资源。
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+析构函数允许你在使用一个对象之后执行任意代码来清除内存。
 
-&lt;p&gt;&lt;em&gt;op_array-&amp;gt;&lt;/em&gt;静态变量表&lt;/p&gt;
+当PHP决定你的脚本不再与对象相关时,析构函数将被调用。
 
-&lt;p&gt;安装PHP扩展的注意事项&lt;/p&gt;
+在一个函数的命名空间内,这会发生在函数return的时候。
+
+对于全局变量,这发生于脚本结束的时候。
+
+如果你想明确地销毁一个对象,你可以给指向该对象的变量分配任何其它值。
+
+通常将变量赋值勤为NULL或者调用unset。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;6、__clone&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;PHP5中的对象赋值是使用的引用赋值。
+
+如果想复制一个对象则需要使用clone方法，在调用此方法时 对象会自动调用__clone魔术方法。
+
+如果在对象复制需要执行某些初始化操作，可以在__clone方法实现。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;7、__toString&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;__toString方法在将一个对象转化成字符串时自动调用。
+
+比如使用echo打印对象时，如果类没有实现此方法，则无法通过echo打印对象，
+
+否则会显示：Catchable fatal error: Object of class test could not be converted to string in.
+
+此方法必须返回一个字符串
+
+在PHP 5.2.0之前，__toString方法只有结合使用echo() 或 print()时 才能生效。
+
+PHP 5.2.0之后，则可以在任何字符串环境生效（例如通过printf()，使用%s修饰符），但不能用于非字符串环境（如使用%d修饰符）。
+
+从PHP 5.2.0，如果将一个未定义__toString方法的对象 转换为字符串，会报出一个E_RECOVERABLE_ERROR错误。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;8、__sleep、__wakeup&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;__sleep 串行化的时候用
+
+__wakeup 反串行化的时候调用
+
+serialize() 检查类中是否有魔术名称 __sleep 的函数。
+
+如果这样，该函数将在任何序列化之前运行。它可以清除对象并应该返回一个包含有该对象中应被序列化的所有变量名的数组。
+
+使用 __sleep 的目的是关闭对象可能具有的任何数据库连接，提交等待中的数据或进行类似的清除任务。
+
+此外，如果有非常大的对象而并不需要完全储存下来时此函数也很有用。
+
+相反地，unserialize() 检查具有魔术名称 __wakeup 的函数的存在。
+
+如果存在，此函数可以重建对象可能具有的任何资源。
+
+使用 __wakeup 的目的是重建在序列化中可能丢失的任何数据库连接以及处理其它重新初始化的任务。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;9、__set_state&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;当调用var_export()时，这个静态方法会被调用（自PHP 5.1.0起有效）。
+
+本方法的唯一参数是一个数组，其中包含按array(’property’ =&amp;gt; value, …)格式排列的类属性。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;10、__invoke&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;当尝试以调用函数的方式调用一个对象时，__invoke 方法会被自动调用。PHP5.3.0以上版本有效
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;11、__callStatic&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;它的工作方式类似于 __call() 魔术方法，__callStatic() 是为了处理静态方法调用，PHP5.3.0以上版本有效
+
+PHP 确实加强了对 __callStatic() 方法的定义；它必须是公共的，并且必须被声明为静态的。
+
+同样，__call() 魔术方法必须被定义为公共的，所有其他魔术方法都必须如此。
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>php7所具有的特色</title>
+   <link href="https://zhuiyi1997.github.io//2016/07/07/php.html"/>
+   <updated>2016-07-07T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;p&gt;PHP（外文名:PHP Hypertext Preprocessor，中文名：“超文本预处理器”）是一种通用开源脚本语言。
+PHP语法吸收了C语言、Java和Perl的特点，易于学习，使用广泛，主要适用于Web开发领域。PHP 独特的语法混合了C、Java、Perl以及PHP自创的语法。它可以比CGI或者Perl更快速地执行动态网页。用PHP做出的动态页面与其他的编程语言相比，PHP是将程序嵌入到HTML（标准通用标记语言下的一个应用）文档中去执行，执行效率比完全生成HTML标记的CGI要高许多；PHP还可以执行编译后代码，编译可以达到加密和优化代码运行，使代码运行更快。&lt;/p&gt;
+
+&lt;p&gt;php7的一些特性
+打破一切
+　　PHP7要打破一切。 PHP开发人员应该接受打破版本之间向下兼容的定律。只要不允许大量的向后兼容，PHP7将是一个高度尊重的语言。
+　　1、创建一个具体的核心语言 删除所有库方法，并保持在对象集中的核心方法。 您应该能够编写无需任何外部库或扩展PHP7和对基本输入/输出，字符串处理和数学一个很好的完整的语言。库以外的任何应该通过批准扩展。
+　　2、 一切都当作一个对象 以从Ruby，Smalltalk和(主要)的Java对象，并把它一切当作对象。 整数是对象，字符串是对象，他们每个人都可以操作的方法， 我不相信PHP需要的Ruby和Smalltalk在对象之间传递彼此讯息的观念，而调用对象的方法才是最好的。
+　　3、一致的命名方法和类 由于PHP的最大的抱怨之一是不断要检查，(needle,haystack) 或(haystack, needle)，或some_function()，或function_some()，或someFunction()，一个一致的格式需要制定。
+　　4、让事情严格尝试传递到一个方法浮动字符串? 这是一个警告。
+　　5、 一切是Unicode 在PHP6中的所有字符串都是Unicode，这很好，我主张PHP7也应该保持。
+　　6、中央启动点 创建一个主类或初始化，所有代码执行源于此。
+　　7、清理C代码我不是一个C的专家，但如果你比较了解Ruby的C代码到PHP的C代码，可以很容易地了解了PHP与Ruby的内部。 我非常熟悉PHP，所以我自己的写扩展更容易。
+　　8、摆脱eval() eval()是邪恶的。 如果你正在使用它，那么这是一个错的主意：这将打破PHPUnit，抛弃它从现在开始。
+　　9、支持操作符重载 因为一切都是对象，开发者只需掌握操作对象的方法即可。
+　　10、允许的方法签名
+PHP 7.0.0 Alpha 1[1]  使用新版的ZendEngine引擎，带来了许多新的特性，以下是不完全列表：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;性能提升：PHP7比PHP5.6性能提升了两倍。 Improved performance: PHP 7 is up to twice as fast as PHP 5.6
+全面一致的64位支持。 Consistent 64-bit support
+以前的许多致命错误，现在改成抛出异常。Many fatal errors are now Exceptions
+移除了一些老的不在支持的SAPI（服务器端应用编程端口）和扩展。Removal of old and unsupported SAPIs and extensions
+新增了空接合操作符。The null coalescing operator (??)
+新增加了结合比较运算符。Combined comparison Operator (&amp;lt;=&amp;gt;)
+新增加了函数的返回类型声明。Return Type Declarations
+新增加了标量类型声明。Scalar Type Declarations
+新增加匿名类。Anonymous Classes
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>Git 如何 clone 非 master 分支的代码</title>
+   <link href="https://zhuiyi1997.github.io//2016/07/07/git-clone-not-master-branch.html"/>
+   <updated>2016-07-07T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#section&quot; id=&quot;markdown-toc-section&quot;&gt;问题描述&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#section-1&quot; id=&quot;markdown-toc-section-1&quot;&gt;解决方法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#section-2&quot; id=&quot;markdown-toc-section-2&quot;&gt;原来的解决方案&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;问题描述&lt;/h2&gt;
+
+&lt;p&gt;我们每次使用命令&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git clone git@gitlab.xxx.com:xxxxx.git
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;默认 clone 的是这个仓库的 master 分支。如果最新的代码不在 master 分支上，该如何拿到呢？如下图所示，最新的代码可能在&lt;code&gt;daily/1.4.1&lt;/code&gt;分支上，我们希望拿到这个分支上的代码。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://ooo.0o0.ooo/2016/07/07/577e349ab42ed.png&quot; alt=&quot;7f07c8f6deef169ef6be5103bbd3e932f8676bb1.png&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;解决方法&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;刚刚开周会的时候，自己洋洋得意的分享我的解决方案，但是……经过与团队成员的的讨论，自己的方法弱爆了，现在把更优雅的方法写一下。原来写的方法并不太适合用在这个场景里。&lt;/strong&gt; 我之前写的方法在文章后面。&lt;/p&gt;
+
+&lt;p&gt;直接使用命令&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git branch -r #查看远程分支
+&lt;/code&gt;
+或&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git branch -a #查看所有分支
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;会显示&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+origin/HEAD -&amp;gt; origin/master
+origin/daily/1.2.2
+origin/daily/1.3.0
+origin/daily/1.4.1
+origin/develop
+origin/feature/daily-1.0.0
+origin/master
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;然后直接&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git checkout origin/daily/1.4.1
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;就好了。。。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;原来的解决方案&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;其实我原来写的这个方法更多的是：设置已有的本地分支跟踪一个刚刚拉取下来的远程分支，或者想要修改正在跟踪的上游分支。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;我们在本地先建立一个分支，建议名称和远程的想要同步的分支名称一样。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git branch daily/1.4.1
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;在切换到这个本地分支&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git checkout daily/1.4.1
+# Switched to branch &#39;daily/1.4.1&#39;
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来就可以去建立上游分支的关联了，但是这个命令比较长，不好记，我们可以直接先&lt;code&gt;pull&lt;/code&gt;一下，git 会提示我们相应的操作和命令。&lt;/p&gt;
+
+&lt;p&gt;```
+git pull
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git pull &amp;lt;remote&amp;gt; &amp;lt;branch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If you wish to set tracking information for this branch you can do so with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;git branch --set-upstream-to=origin/&amp;lt;branch&amp;gt; daily/1.4.1 ```
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;我们看到最后一行，执行这个命令，即可完成与上游分支的关联。&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git branch --set-upstream-to=origin/daily/1.4.1 daily/1.4.1
+# Branch daily/1.4.1 set up to track remote branch daily/1.4.1 from origin.
+&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;然后再&lt;code&gt;pull&lt;/code&gt;一下就好了！&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;
+git pull
+&lt;/code&gt;&lt;/p&gt;
 </content>
  </entry>
  

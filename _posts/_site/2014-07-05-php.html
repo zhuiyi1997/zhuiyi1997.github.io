@@ -7,25 +7,24 @@
 <p>[php]</p>
 
 <pre><code>代码实现：  
-$arr=array(1,43,54,62,21,66,32,78,36,76,39);    
-function bubbleSort($arr)  
-{    
-  $len=count($arr);  
-  //该层循环控制 需要冒泡的轮数  
-  for($i=1;$i&lt;$len;$i++)  
-  { //该层循环用来控制每轮 冒出一个数 需要比较的次数  
-    for($k=0;$k&lt;$len-$i;$k++)  
-    {  
-       if($arr[$k]&gt;$arr[$k+1])  
-        {  
-            $tmp=$arr[$k+1];  
-            $arr[$k+1]=$arr[$k];  
-            $arr[$k]=$tmp;  
-        }  
-    }  
-  }  
-  return $arr;  
-}  
+$arr=array(1,43,54,62,21,66,32,78,36,76,39); 
+function bubbleSort($arr){
+$len = count($arr);
+if($len&lt;2){
+	return false;
+}
+for($i=1;$i&lt;$len;$i++){
+	for($k=$len-1;$k&gt;$i;$k--){
+		if($arr[$k]&lt;$arr[$k-1]){ 
+			$num = $arr[$k]+$arr[$k-1];
+			$arr[$k]=$num-$arr[$k];
+			$arr[$k-1]=$num-$arr[$k];
+		}
+	}
+}
+return $arr;
+}
+print_r(bubbleSort($arr));
 </code></pre>
 
 <ol>

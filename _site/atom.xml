@@ -4,12 +4,174 @@
  <title>世间自古有情痴</title>
  <link href="https://zhuiyi1997.github.io//atom.xml" rel="self"/>
  <link href="https://zhuiyi1997.github.io/"/>
- <updated>2016-12-02T19:06:28+08:00</updated>
+ <updated>2016-12-05T10:47:02+08:00</updated>
  <id>https://zhuiyi1997.github.io//</id>
  <author>
    <name>追憶</name>
  </author>
 
+ 
+ <entry>
+   <title>openssl进行非对称加密和对称加密的php示例</title>
+   <link href="https://zhuiyi1997.github.io//2016/12/05/jiami.html"/>
+   <updated>2016-12-05T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;p&gt;确保开启PHP的openssl扩展：extension=php_openssl.dll
+[php]
+&amp;lt;?php
+/**
+ * @file
+ * 作者：yunke url：http://blog.csdn.net/u011474028
+ *
+ */
+header(“Content-Type:text/html; charset=utf-8”);&lt;/p&gt;
+
+&lt;p&gt;$key_file = “yunkeserver.key”; //私钥
+$publickey_file = “yunkeserver.crt”; //证书文件
+//$publickey_file=”server.crt”;//和私钥不匹配的证书文件
+$data_file = “msg.txt”; //待加密数据文件&lt;/p&gt;
+
+&lt;p&gt;$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
+echo “私钥为：&lt;br /&gt;” . $private_key . “&lt;br /&gt;&lt;br /&gt;”;
+$public_key = openssl_get_publickey(file_get_contents($publickey_file)); //获取公钥 非字符串类型  为资源类型
+echo “公钥为：&lt;br /&gt;” . $public_key . “&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+
+&lt;p&gt;/*
+$str_key = ‘’; //KEY的字符串表示
+if (openssl_pkey_export($private_key, $str_key)) { //需要正确配置openssl.cnf文件才可以成功
+    echo “密钥的字符串表示为：&lt;br /&gt;” . $str_key . “&lt;br /&gt;&lt;br /&gt;”;
+} else {
+    echo “密钥的字符串化失败：&lt;br /&gt;”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “&lt;br /&gt;\n”;
+    }
+    echo “&lt;br /&gt;”;
+}
+*/
+ //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的&lt;/p&gt;
+
+&lt;p&gt;$data = file_get_contents($data_file);
+echo “明码数据为：&lt;br /&gt;” . $data . “&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+
+&lt;p&gt;$crypted_data = null; //密文
+if (openssl_private_encrypt($data, $crypted_data, $private_key)) {
+    echo “以下是私钥加密的密文：&lt;br /&gt;” . $crypted_data . “&lt;br /&gt;&lt;br /&gt;”;
+} else {
+    echo “加密失败：&lt;br /&gt;”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “&lt;br /&gt;\n”;
+    }
+}
+$decrypted_data = null; //加密还原后的明文
+if (openssl_public_decrypt($crypted_data, $decrypted_data, $public_key)) {
+    echo “以下是经过公钥解密后的明文：&lt;br /&gt;” . $decrypted_data . “&lt;br /&gt;&lt;br /&gt;”;
+} else {
+    echo “解密失败：&lt;br /&gt;”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “&lt;br /&gt;\n”;
+    }
+}&lt;/p&gt;
+
+&lt;p&gt;//以上为非对称加密   以下演示对称加密&lt;/p&gt;
+
+&lt;p&gt;$key=”123456”; //设置一个共享密码
+$cipher=’’;//加密算法
+$arr=openssl_get_cipher_methods(); //获取支持的加密算法 数组的key和值并没有对应关系
+$cipher=$arr[20];
+echo “选择的加密算法是：$cipher &lt;br /&gt;\n”;
+$value=openssl_encrypt($data , $cipher,$key); //第四参数OPENSSL_RAW_DATA输出原始数据 
+echo “加密后的密文是：&lt;br /&gt;”.$value.”&lt;br /&gt;&lt;br /&gt;”;
+$old_data=openssl_decrypt ( $value,$cipher, $key);
+echo “解密还原的明文：&lt;br /&gt;”.$old_data.”&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+
+&lt;p&gt;//print_r($arr);&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
+   <title>我的简历</title>
+   <link href="https://zhuiyi1997.github.io//2016/12/04/jianli.html"/>
+   <updated>2016-12-04T00:00:00+08:00</updated>
+   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
+   <content type="html">&lt;p&gt;个人概况&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;姓    名：袁天赐                             	性    别：男
+户    口：河南南阳                                	婚    否：未婚
+工  作  经 验：2年                                    手    机：17600167516
+电子邮箱：fengfeisanfa@163.com    现居住地：北京昌平
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;自我评价&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1、乐观开朗，对待工作认真负责,具有强烈的责任感.
+2、做事前先制定好整体流程，分析所利用技术点，然后一步一步踏实完成.
+3、工作中喜欢钻研一些模块的技术难点，比较喜欢解决后的愉快感觉.
+4、拥有良好的代码编程习惯和排错能力.
+5、喜欢学习，乐于助人，踏实勤劳.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;求职意向&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;工作性质：全职
+期望职业: PHP开发工程师
+期望行业：互联网
+工作地区：北京
+期望月薪：15K
+目前状况：我目前处于离职状态，可立即上岗
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;专业技能&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;1、熟悉mvc编程思想.
+2、熟悉tp框架.也使用过ci、laravel框架. 
+3、熟悉linux基本操作命令，能在apache或nginx下搭建应用，配置各种重写规则.(分三个级别，定向错误页面，使用伪静态)
+4、掌握mysql基本常用语法、基本常用配置（主从配置，开启慢查询）、进行优化（引擎选择，建表，索引创建，如何构建高性能查询语句）.
+5、熟练使用memcache和redis缓存
+6、smarty模板引擎，html+css+js以及jquery的熟练使用
+7、能够熟练使用git进行团队协作开发.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;工作经历&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;2014/11------至今    北京锥芒科技有限公司
+担任职务	php高级工程师	
+工作描述  与小组成员共同讨论网站的需求分析，负责项目功能模块的开发，参与相关技术点的攻关，配合测试部门协调进行测试，以及项目后期优化。
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;项目经验&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;左岸女人
+项目简介:
+该项目是一个B2C型的美容化妆产品销售网站，网站中有商品筛选模块，用户可以根据自己的皮肤问题、护理的侧重面选择自己合适的护肤化妆品或美容工具等。网站中还有护肤学院模块，用户可以在其中学习到各种美容护肤方面的知识，帮助用户解决皮肤问题!
+责任描述:
+1、登录注册模块，对提交数据进行过滤防sql注入和xss攻击，引入第三方登录
+2、网站首页的展示，包括分类信息，畅销商品、畅销工具的信息、文章信息，使用memcache进行缓存
+3、护肤学院模块即文章模块开发
+4、开发app端接口，整理接口文档
+5、商品品牌信息的归类展示，根据品牌首字母进行归类展示（点击品牌里面有品牌的详细介绍，品牌相关商品展示，购买过此品牌商品用户对商品的评论展示）
+6、负责前台用户中心模块（个人信息、我的资料、我的收藏、浏览记录）（第三方登录之后随机生成账号（账号无密码），所有账号必须绑定邮箱或手机号之后才能更改密码，用户详细信息如生日等可在后台详细编辑）
+
+礼仪久久
+项目简介:
+礼仪久久是一个预订礼物送给别人的礼品订购网站，各种场合，各种节日，各种送礼对象，各种价格区间的礼品在这里你都可以找到，按照你的要求，给您提供最精美最合适的礼品并送到您的手中。
+责任描述：
+1.网站登录注册模块.(短信登录，第三方登录)
+2.商品详情页展示（包括商品评价和用户咨询的展示）
+3.使用sphinx进行商品搜索
+4.购物车,完成对购物车商品的逻辑处理，入库并可以展示
+5.完成生成订单页面的展示，包括地址填写，送达日期，贺卡及留言填写，支付方式选择。并完成订单的生成.
+
+爱去小说网
+项目简介: 该项目是一个小说在线阅读网站。网站大量采用静态化以及memcache缓存技术提高页面加载速度.
+责任描述:
+1.网站首页展示，包括最近更新，最新上架（使用缓存加快首页加载速度）.
+2.小说按分类进行展示模块.
+3.小说排行榜，周榜以及月榜的展示.
+4.我的书架模块，加入书架的小说的展示.
+5.最近阅读，把最近阅读的小说的章节数记录下来，方便下次接着阅读.
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+ </entry>
  
  <entry>
    <title>禁用cookie后session是如何设置的</title>
@@ -1717,182 +1879,6 @@ mysql_close($handler);
 ?&gt;
 
 &lt;p&gt;```&lt;/p&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>PHP魔术方法</title>
-   <link href="https://zhuiyi1997.github.io//2016/08/03/magic-methods.html"/>
-   <updated>2016-08-03T00:00:00+08:00</updated>
-   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
-   <content type="html">&lt;hr /&gt;
-
-&lt;!-- more --&gt;
-
-&lt;p&gt;&lt;strong&gt;1、__get、__set&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__get( $property ) 当调用一个未定义的属性时访问此方法
-
-__set( $property, $value ) 给一个未定义的属性赋值时调用
-
-注意：这两个方法是为 在类和他们的父类中没有声明的属性而设计的。
-
-这里的没有声明包括当使用对象调用时，访问控制为proteced,private的属性（即没有权限访问的属性）
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;2、__isset、__unset&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__isset( $property ) 当在一个未定义的属性上调用isset()函数时调用此方法
-
-__unset( $property ) 当在一个未定义的属性上调用unset()函数时调用此方法
-
-注意：与__get方法和__set方法相同。
-
-这里的没有声明包括当使用对象调用时，访问控制为proteced,private的属性（即没有权限访问的属性）
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;3、__call&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__call( $method, $arg_array ) 当调用一个未定义的方法时调用此请求
-
-注意：这里的未定义的方法包括没有权限访问的方法
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;4、__autoload&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__autoload 函数，它会在试图使用尚未被定义的类时自动调用。
-
-通过调用此函数，脚本引擎在 PHP 	出错失败前有了最后一个机会加载所需的类。
-
-注意: 在 __autoload 函数中抛出的异常不能被 catch 语句块捕获并导致致命错误。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;5、__construct、__destruct&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__construct 构造方法，当一个对象创建时调用此方法，使用此方法的好处是：
-
-可以使构造方法有一个独一无二的名称,无论它所在的类的名称是什么。这样你在改变类的名称时,就不需要改变构造方法的名称。
-
-__destruct 析构方法，PHP将在对象被销毁前（即从内存中清除前）调用这个方法。
-
-注意：默认情况下,PHP仅仅释放对象属性所占用的内存并销毁对象相关的资源。
-
-析构函数允许你在使用一个对象之后执行任意代码来清除内存。
-
-当PHP决定你的脚本不再与对象相关时,析构函数将被调用。
-
-在一个函数的命名空间内,这会发生在函数return的时候。
-
-对于全局变量,这发生于脚本结束的时候。
-
-如果你想明确地销毁一个对象,你可以给指向该对象的变量分配任何其它值。
-
-通常将变量赋值勤为NULL或者调用unset。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;6、__clone&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;PHP5中的对象赋值是使用的引用赋值。
-
-如果想复制一个对象则需要使用clone方法，在调用此方法时 对象会自动调用__clone魔术方法。
-
-如果在对象复制需要执行某些初始化操作，可以在__clone方法实现。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;7、__toString&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__toString方法在将一个对象转化成字符串时自动调用。
-
-比如使用echo打印对象时，如果类没有实现此方法，则无法通过echo打印对象，
-
-否则会显示：Catchable fatal error: Object of class test could not be converted to string in.
-
-此方法必须返回一个字符串
-
-在PHP 5.2.0之前，__toString方法只有结合使用echo() 或 print()时 才能生效。
-
-PHP 5.2.0之后，则可以在任何字符串环境生效（例如通过printf()，使用%s修饰符），但不能用于非字符串环境（如使用%d修饰符）。
-
-从PHP 5.2.0，如果将一个未定义__toString方法的对象 转换为字符串，会报出一个E_RECOVERABLE_ERROR错误。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;8、__sleep、__wakeup&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;__sleep 串行化的时候用
-
-__wakeup 反串行化的时候调用
-
-serialize() 检查类中是否有魔术名称 __sleep 的函数。
-
-如果这样，该函数将在任何序列化之前运行。它可以清除对象并应该返回一个包含有该对象中应被序列化的所有变量名的数组。
-
-使用 __sleep 的目的是关闭对象可能具有的任何数据库连接，提交等待中的数据或进行类似的清除任务。
-
-此外，如果有非常大的对象而并不需要完全储存下来时此函数也很有用。
-
-相反地，unserialize() 检查具有魔术名称 __wakeup 的函数的存在。
-
-如果存在，此函数可以重建对象可能具有的任何资源。
-
-使用 __wakeup 的目的是重建在序列化中可能丢失的任何数据库连接以及处理其它重新初始化的任务。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;9、__set_state&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;当调用var_export()时，这个静态方法会被调用（自PHP 5.1.0起有效）。
-
-本方法的唯一参数是一个数组，其中包含按array(’property’ =&amp;gt; value, …)格式排列的类属性。
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;10、__invoke&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;当尝试以调用函数的方式调用一个对象时，__invoke 方法会被自动调用。PHP5.3.0以上版本有效
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;strong&gt;11、__callStatic&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;它的工作方式类似于 __call() 魔术方法，__callStatic() 是为了处理静态方法调用，PHP5.3.0以上版本有效
-
-PHP 确实加强了对 __callStatic() 方法的定义；它必须是公共的，并且必须被声明为静态的。
-
-同样，__call() 魔术方法必须被定义为公共的，所有其他魔术方法都必须如此。
-&lt;/code&gt;&lt;/pre&gt;
-</content>
- </entry>
- 
- <entry>
-   <title>php7所具有的特色</title>
-   <link href="https://zhuiyi1997.github.io//2016/07/07/php.html"/>
-   <updated>2016-07-07T00:00:00+08:00</updated>
-   <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
-   <content type="html">&lt;p&gt;PHP（外文名:PHP Hypertext Preprocessor，中文名：“超文本预处理器”）是一种通用开源脚本语言。
-PHP语法吸收了C语言、Java和Perl的特点，易于学习，使用广泛，主要适用于Web开发领域。PHP 独特的语法混合了C、Java、Perl以及PHP自创的语法。它可以比CGI或者Perl更快速地执行动态网页。用PHP做出的动态页面与其他的编程语言相比，PHP是将程序嵌入到HTML（标准通用标记语言下的一个应用）文档中去执行，执行效率比完全生成HTML标记的CGI要高许多；PHP还可以执行编译后代码，编译可以达到加密和优化代码运行，使代码运行更快。&lt;/p&gt;
-
-&lt;p&gt;php7的一些特性
-打破一切
-　　PHP7要打破一切。 PHP开发人员应该接受打破版本之间向下兼容的定律。只要不允许大量的向后兼容，PHP7将是一个高度尊重的语言。
-　　1、创建一个具体的核心语言 删除所有库方法，并保持在对象集中的核心方法。 您应该能够编写无需任何外部库或扩展PHP7和对基本输入/输出，字符串处理和数学一个很好的完整的语言。库以外的任何应该通过批准扩展。
-　　2、 一切都当作一个对象 以从Ruby，Smalltalk和(主要)的Java对象，并把它一切当作对象。 整数是对象，字符串是对象，他们每个人都可以操作的方法， 我不相信PHP需要的Ruby和Smalltalk在对象之间传递彼此讯息的观念，而调用对象的方法才是最好的。
-　　3、一致的命名方法和类 由于PHP的最大的抱怨之一是不断要检查，(needle,haystack) 或(haystack, needle)，或some_function()，或function_some()，或someFunction()，一个一致的格式需要制定。
-　　4、让事情严格尝试传递到一个方法浮动字符串? 这是一个警告。
-　　5、 一切是Unicode 在PHP6中的所有字符串都是Unicode，这很好，我主张PHP7也应该保持。
-　　6、中央启动点 创建一个主类或初始化，所有代码执行源于此。
-　　7、清理C代码我不是一个C的专家，但如果你比较了解Ruby的C代码到PHP的C代码，可以很容易地了解了PHP与Ruby的内部。 我非常熟悉PHP，所以我自己的写扩展更容易。
-　　8、摆脱eval() eval()是邪恶的。 如果你正在使用它，那么这是一个错的主意：这将打破PHPUnit，抛弃它从现在开始。
-　　9、支持操作符重载 因为一切都是对象，开发者只需掌握操作对象的方法即可。
-　　10、允许的方法签名
-PHP 7.0.0 Alpha 1[1]  使用新版的ZendEngine引擎，带来了许多新的特性，以下是不完全列表：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;性能提升：PHP7比PHP5.6性能提升了两倍。 Improved performance: PHP 7 is up to twice as fast as PHP 5.6
-全面一致的64位支持。 Consistent 64-bit support
-以前的许多致命错误，现在改成抛出异常。Many fatal errors are now Exceptions
-移除了一些老的不在支持的SAPI（服务器端应用编程端口）和扩展。Removal of old and unsupported SAPIs and extensions
-新增了空接合操作符。The null coalescing operator (??)
-新增加了结合比较运算符。Combined comparison Operator (&amp;lt;=&amp;gt;)
-新增加了函数的返回类型声明。Return Type Declarations
-新增加了标量类型声明。Scalar Type Declarations
-新增加匿名类。Anonymous Classes
-&lt;/code&gt;&lt;/pre&gt;
 </content>
  </entry>
  

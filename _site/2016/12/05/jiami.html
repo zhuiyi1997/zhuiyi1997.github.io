@@ -5,7 +5,7 @@
     <meta name="author" content="追憶" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     
-    <title>禁用cookie后session是如何设置的</title>
+    <title>openssl进行非对称加密和对称加密的php示例</title>
     
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
@@ -39,18 +39,20 @@
         <div id="content">
         <article>
   <section class="title">
-    <h2>禁用cookie后session是如何设置的 </h2>
+    <h2>openssl进行非对称加密和对称加密的php示例 </h2>
   </section>
   <section class="meta">
   <span class="time">
-    <time datetime="2016-10-17">2016-10-17</time>
+    <time datetime="2016-12-05">2016-12-05</time>
   </span>
   
   <span class="tags">
     
     <a href="/tags.html#php" title="php">#php</a>
     
-    <a href="/tags.html#session" title="session">#session</a>
+    <a href="/tags.html#加密" title="加密">#加密</a>
+    
+    <a href="/tags.html#openssl" title="openssl">#openssl</a>
     
   </span>
   <!-- BEGIN this would not work on any other domain -->
@@ -58,9 +60,9 @@
     class           = "like-wrapper"
     like-shortname  = 'gopherwood'
     like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
-    like-name       = '禁用cookie后session是如何设置的'
+    like-name       = 'openssl进行非对称加密和对称加密的php示例'
     like-btn        = '&#xf087;'
-    like-link       = 'https://zhuiyi1997.github.io//2016/10/17/session.html'
+    like-link       = 'https://zhuiyi1997.github.io//2016/12/05/jiami.html'
     ></span>
   <script type="text/javascript">
     var l = document.createElement('script');
@@ -71,41 +73,82 @@
   
   </section>
   <section class="post">
-  <p>我们都知道当在session 会话有基于cookie和基于url两种传递SESSIONID的方法。为了实现客户端禁止cookie发送的情况也不影响客户登陆网站，可以设置 php.ini中 session.use_trans_sid=1 ，表示当客户端浏览器禁止cookie的时候，页面上的链接会基于url传递SESSIONID。但是很多人仅仅设置了这一个选项并没有达到效果，本人也 遇到此问题，后来一番研究发现
-php.ini 文件中还有两个选项
-session.use_cookies=1
-session.use_only_cookies=1
-仔细琢磨上面的英文就会发现其意义
-session.use_cookies表示是否开始基于cookies的session会话
-session.use_only_cookies 表示是否只开启基于cookies的session的会话方式</p>
+  <p>确保开启PHP的openssl扩展：extension=php_openssl.dll
+[php]
+&lt;?php
+/**
+ * @file
+ * 作者：yunke url：http://blog.csdn.net/u011474028
+ *
+ */
+header(“Content-Type:text/html; charset=utf-8”);</p>
 
-<p>所以如果想要在浏览器开启cookie的时候用基于cookie的方式，在未开启cookie的时候使用url的方式就进行如下设置（最常用的方式，推荐）
-在php.ini文件中
-session.use_trans_sid=1
-session.use_only_cookies=0
-session.use_cookies=1
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
-ini_set(“session.use_only_cookies”,0);
-ini_set(“session.use_cookies”,1);
-如果不管浏览器是否开启cookie，都使用url的方式就进行如下设置（这个例子主要想说明一下设置session.use_only_cookies 和 session.use_cookies的区别）
-在php.ini文件中
-session.use_trans_sid=1
-session.use_only_cookies=0
-session.use_cookies=0
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
-ini_set(“session.use_only_cookies”,0);
-ini_set(“session.use_cookies”,0);</p>
+<p>$key_file = “yunkeserver.key”; //私钥
+$publickey_file = “yunkeserver.crt”; //证书文件
+//$publickey_file=”server.crt”;//和私钥不匹配的证书文件
+$data_file = “msg.txt”; //待加密数据文件</p>
 
-<p>动手自己试一试 你就会明白session.use_only_cookies 和 session.use_cookies的区别。</p>
+<p>$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
+echo “私钥为：<br />” . $private_key . “<br /><br />”;
+$public_key = openssl_get_publickey(file_get_contents($publickey_file)); //获取公钥 非字符串类型  为资源类型
+echo “公钥为：<br />” . $public_key . “<br /><br />”;</p>
+
+<p>/*
+$str_key = ‘’; //KEY的字符串表示
+if (openssl_pkey_export($private_key, $str_key)) { //需要正确配置openssl.cnf文件才可以成功
+    echo “密钥的字符串表示为：<br />” . $str_key . “<br /><br />”;
+} else {
+    echo “密钥的字符串化失败：<br />”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “<br />\n”;
+    }
+    echo “<br />”;
+}
+*/
+ //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的</p>
+
+<p>$data = file_get_contents($data_file);
+echo “明码数据为：<br />” . $data . “<br /><br />”;</p>
+
+<p>$crypted_data = null; //密文
+if (openssl_private_encrypt($data, $crypted_data, $private_key)) {
+    echo “以下是私钥加密的密文：<br />” . $crypted_data . “<br /><br />”;
+} else {
+    echo “加密失败：<br />”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “<br />\n”;
+    }
+}
+$decrypted_data = null; //加密还原后的明文
+if (openssl_public_decrypt($crypted_data, $decrypted_data, $public_key)) {
+    echo “以下是经过公钥解密后的明文：<br />” . $decrypted_data . “<br /><br />”;
+} else {
+    echo “解密失败：<br />”;
+    while ($msg = openssl_error_string()) {
+        echo $msg . “<br />\n”;
+    }
+}</p>
+
+<p>//以上为非对称加密   以下演示对称加密</p>
+
+<p>$key=”123456”; //设置一个共享密码
+$cipher=’’;//加密算法
+$arr=openssl_get_cipher_methods(); //获取支持的加密算法 数组的key和值并没有对应关系
+$cipher=$arr[20];
+echo “选择的加密算法是：$cipher <br />\n”;
+$value=openssl_encrypt($data , $cipher,$key); //第四参数OPENSSL_RAW_DATA输出原始数据 
+echo “加密后的密文是：<br />”.$value.”<br /><br />”;
+$old_data=openssl_decrypt ( $value,$cipher, $key);
+echo “解密还原的明文：<br />”.$old_data.”<br /><br />”;</p>
+
+<p>//print_r($arr);</p>
 
   </section>
   
   <div class="divider">
     <span>
     
-    <a href="/2016/10/16/psr4.html"><i class="fa fa-chevron-left"></i></a>
+    <a href="/2016/12/04/jianli.html"><i class="fa fa-chevron-left"></i></a>
     
     </span>
     <!-- BEGIN comment icon
@@ -115,7 +158,7 @@ ini_set(“session.use_cookies”,0);</p>
 
     <span>
     
-    <a href="/2016/12/04/jianli.html"><i class="fa fa-chevron-right"></i></a>
+    <i class="fa fa-circle"></i>
     
     </span>
   </div>

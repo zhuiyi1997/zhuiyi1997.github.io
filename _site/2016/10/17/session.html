@@ -72,31 +72,47 @@
   </section>
   <section class="post">
   <p>我们都知道当在session 会话有基于cookie和基于url两种传递SESSIONID的方法。为了实现客户端禁止cookie发送的情况也不影响客户登陆网站，可以设置 php.ini中 session.use_trans_sid=1 ，表示当客户端浏览器禁止cookie的时候，页面上的链接会基于url传递SESSIONID。但是很多人仅仅设置了这一个选项并没有达到效果，本人也 遇到此问题，后来一番研究发现
-php.ini 文件中还有两个选项
-session.use_cookies=1
-session.use_only_cookies=1
-仔细琢磨上面的英文就会发现其意义
-session.use_cookies表示是否开始基于cookies的session会话
-session.use_only_cookies 表示是否只开启基于cookies的session的会话方式</p>
+php.ini 文件中还有两个选项</p>
+
+<p>session.use_cookies=1</p>
+
+<p>session.use_only_cookies=1</p>
+
+<p>仔细琢磨上面的英文就会发现其意义</p>
+
+<p>session.use_cookies表示是否开始基于cookies的session会话</p>
+
+<p>session.use_only_cookies 表示是否只开启基于cookies的session的会话方式</p>
 
 <p>所以如果想要在浏览器开启cookie的时候用基于cookie的方式，在未开启cookie的时候使用url的方式就进行如下设置（最常用的方式，推荐）
-在php.ini文件中
-session.use_trans_sid=1
+在php.ini文件中</p>
+
+<pre><code>session.use_trans_sid=1
 session.use_only_cookies=0
 session.use_cookies=1
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
+</code></pre>
+
+<p>或者 在php程序中</p>
+
+<pre><code>ini_set(“session.use_trans_sid”,”1″);
 ini_set(“session.use_only_cookies”,0);
 ini_set(“session.use_cookies”,1);
-如果不管浏览器是否开启cookie，都使用url的方式就进行如下设置（这个例子主要想说明一下设置session.use_only_cookies 和 session.use_cookies的区别）
-在php.ini文件中
-session.use_trans_sid=1
+</code></pre>
+
+<p>如果不管浏览器是否开启cookie，都使用url的方式就进行如下设置（这个例子主要想说明一下设置session.use_only_cookies 和 session.use_cookies的区别）
+在php.ini文件中</p>
+
+<pre><code>session.use_trans_sid=1
 session.use_only_cookies=0
 session.use_cookies=0
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
+</code></pre>
+
+<p>或者 在php程序中</p>
+
+<pre><code>ini_set(“session.use_trans_sid”,”1″);
 ini_set(“session.use_only_cookies”,0);
-ini_set(“session.use_cookies”,0);</p>
+ini_set(“session.use_cookies”,0);
+</code></pre>
 
 <p>动手自己试一试 你就会明白session.use_only_cookies 和 session.use_cookies的区别。</p>
 

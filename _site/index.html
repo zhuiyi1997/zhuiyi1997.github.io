@@ -69,75 +69,77 @@
     <!-- END this would not work on any other domain -->
     </section>
     <section class="post">
-    <p>确保开启PHP的openssl扩展：extension=php_openssl.dll
-[php]
-&lt;?php
+    <p>确保开启PHP的openssl扩展：extension=php_openssl.dll</p>
+
+<pre><code>&lt;?php
 /**
  * @file
  * 作者：yunke url：http://blog.csdn.net/u011474028
  *
  */
-header(“Content-Type:text/html; charset=utf-8”);</p>
+header("Content-Type:text/html; charset=utf-8");
 
-<p>$key_file = “yunkeserver.key”; //私钥
-$publickey_file = “yunkeserver.crt”; //证书文件
-//$publickey_file=”server.crt”;//和私钥不匹配的证书文件
-$data_file = “msg.txt”; //待加密数据文件</p>
+$key_file = "yunkeserver.key"; //私钥
+$publickey_file = "yunkeserver.crt"; //证书文件
+//$publickey_file="server.crt";//和私钥不匹配的证书文件
+$data_file = "msg.txt"; //待加密数据文件
 
-<p>$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
-echo “私钥为：<br />” . $private_key . “<br /><br />”;
+$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
+echo "私钥为：&lt;br&gt;" . $private_key . "&lt;br&gt;&lt;br&gt;";
 $public_key = openssl_get_publickey(file_get_contents($publickey_file)); //获取公钥 非字符串类型  为资源类型
-echo “公钥为：<br />” . $public_key . “<br /><br />”;</p>
+echo "公钥为：&lt;br&gt;" . $public_key . "&lt;br&gt;&lt;br&gt;";
 
-<p>/*
-$str_key = ‘’; //KEY的字符串表示
+/*
+$str_key = ''; //KEY的字符串表示
 if (openssl_pkey_export($private_key, $str_key)) { //需要正确配置openssl.cnf文件才可以成功
-    echo “密钥的字符串表示为：<br />” . $str_key . “<br /><br />”;
+    echo "密钥的字符串表示为：&lt;br&gt;" . $str_key . "&lt;br&gt;&lt;br&gt;";
 } else {
-    echo “密钥的字符串化失败：<br />”;
+    echo "密钥的字符串化失败：&lt;br&gt;";
     while ($msg = openssl_error_string()) {
-        echo $msg . “<br />\n”;
+        echo $msg . "&lt;br /&gt;\n";
     }
-    echo “<br />”;
+    echo "&lt;br /&gt;";
 }
 */
- //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的</p>
+ //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的
 
-<p>$data = file_get_contents($data_file);
-echo “明码数据为：<br />” . $data . “<br /><br />”;</p>
+$data = file_get_contents($data_file);
+echo "明码数据为：&lt;br&gt;" . $data . "&lt;br&gt;&lt;br&gt;";
 
-<p>$crypted_data = null; //密文
+$crypted_data = null; //密文
 if (openssl_private_encrypt($data, $crypted_data, $private_key)) {
-    echo “以下是私钥加密的密文：<br />” . $crypted_data . “<br /><br />”;
+    echo "以下是私钥加密的密文：&lt;br&gt;" . $crypted_data . "&lt;br&gt;&lt;br&gt;";
 } else {
-    echo “加密失败：<br />”;
+    echo "加密失败：&lt;br&gt;";
     while ($msg = openssl_error_string()) {
-        echo $msg . “<br />\n”;
+        echo $msg . "&lt;br /&gt;\n";
     }
 }
 $decrypted_data = null; //加密还原后的明文
 if (openssl_public_decrypt($crypted_data, $decrypted_data, $public_key)) {
-    echo “以下是经过公钥解密后的明文：<br />” . $decrypted_data . “<br /><br />”;
+    echo "以下是经过公钥解密后的明文：&lt;br&gt;" . $decrypted_data . "&lt;br&gt;&lt;br&gt;";
 } else {
-    echo “解密失败：<br />”;
+    echo "解密失败：&lt;br&gt;";
     while ($msg = openssl_error_string()) {
-        echo $msg . “<br />\n”;
+        echo $msg . "&lt;br /&gt;\n";
     }
-}</p>
+}
+</code></pre>
 
 <p>//以上为非对称加密   以下演示对称加密</p>
 
-<p>$key=”123456”; //设置一个共享密码
-$cipher=’’;//加密算法
+<pre><code>$key="123456"; //设置一个共享密码
+$cipher='';//加密算法
 $arr=openssl_get_cipher_methods(); //获取支持的加密算法 数组的key和值并没有对应关系
 $cipher=$arr[20];
-echo “选择的加密算法是：$cipher <br />\n”;
+echo "选择的加密算法是：$cipher &lt;br&gt;\n";
 $value=openssl_encrypt($data , $cipher,$key); //第四参数OPENSSL_RAW_DATA输出原始数据 
-echo “加密后的密文是：<br />”.$value.”<br /><br />”;
+echo "加密后的密文是：&lt;br&gt;".$value."&lt;br&gt;&lt;br&gt;";
 $old_data=openssl_decrypt ( $value,$cipher, $key);
-echo “解密还原的明文：<br />”.$old_data.”<br /><br />”;</p>
+echo "解密还原的明文：&lt;br&gt;".$old_data."&lt;br&gt;&lt;br&gt;";
 
-<p>//print_r($arr);</p>
+//print_r($arr);
+</code></pre>
 
     </section>
     </article>

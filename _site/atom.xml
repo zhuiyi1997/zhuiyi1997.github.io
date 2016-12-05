@@ -4,7 +4,7 @@
  <title>世间自古有情痴</title>
  <link href="https://zhuiyi1997.github.io//atom.xml" rel="self"/>
  <link href="https://zhuiyi1997.github.io/"/>
- <updated>2016-12-05T10:47:02+08:00</updated>
+ <updated>2016-12-05T11:14:40+08:00</updated>
  <id>https://zhuiyi1997.github.io//</id>
  <author>
    <name>追憶</name>
@@ -16,75 +16,77 @@
    <link href="https://zhuiyi1997.github.io//2016/12/05/jiami.html"/>
    <updated>2016-12-05T00:00:00+08:00</updated>
    <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
-   <content type="html">&lt;p&gt;确保开启PHP的openssl扩展：extension=php_openssl.dll
-[php]
-&amp;lt;?php
+   <content type="html">&lt;p&gt;确保开启PHP的openssl扩展：extension=php_openssl.dll&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;?php
 /**
  * @file
  * 作者：yunke url：http://blog.csdn.net/u011474028
  *
  */
-header(“Content-Type:text/html; charset=utf-8”);&lt;/p&gt;
+header(&quot;Content-Type:text/html; charset=utf-8&quot;);
 
-&lt;p&gt;$key_file = “yunkeserver.key”; //私钥
-$publickey_file = “yunkeserver.crt”; //证书文件
-//$publickey_file=”server.crt”;//和私钥不匹配的证书文件
-$data_file = “msg.txt”; //待加密数据文件&lt;/p&gt;
+$key_file = &quot;yunkeserver.key&quot;; //私钥
+$publickey_file = &quot;yunkeserver.crt&quot;; //证书文件
+//$publickey_file=&quot;server.crt&quot;;//和私钥不匹配的证书文件
+$data_file = &quot;msg.txt&quot;; //待加密数据文件
 
-&lt;p&gt;$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
-echo “私钥为：&lt;br /&gt;” . $private_key . “&lt;br /&gt;&lt;br /&gt;”;
+$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
+echo &quot;私钥为：&amp;lt;br&amp;gt;&quot; . $private_key . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 $public_key = openssl_get_publickey(file_get_contents($publickey_file)); //获取公钥 非字符串类型  为资源类型
-echo “公钥为：&lt;br /&gt;” . $public_key . “&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+echo &quot;公钥为：&amp;lt;br&amp;gt;&quot; . $public_key . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 
-&lt;p&gt;/*
-$str_key = ‘’; //KEY的字符串表示
+/*
+$str_key = &#39;&#39;; //KEY的字符串表示
 if (openssl_pkey_export($private_key, $str_key)) { //需要正确配置openssl.cnf文件才可以成功
-    echo “密钥的字符串表示为：&lt;br /&gt;” . $str_key . “&lt;br /&gt;&lt;br /&gt;”;
+    echo &quot;密钥的字符串表示为：&amp;lt;br&amp;gt;&quot; . $str_key . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 } else {
-    echo “密钥的字符串化失败：&lt;br /&gt;”;
+    echo &quot;密钥的字符串化失败：&amp;lt;br&amp;gt;&quot;;
     while ($msg = openssl_error_string()) {
-        echo $msg . “&lt;br /&gt;\n”;
+        echo $msg . &quot;&amp;lt;br /&amp;gt;\n&quot;;
     }
-    echo “&lt;br /&gt;”;
+    echo &quot;&amp;lt;br /&amp;gt;&quot;;
 }
 */
- //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的&lt;/p&gt;
+ //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的
 
-&lt;p&gt;$data = file_get_contents($data_file);
-echo “明码数据为：&lt;br /&gt;” . $data . “&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+$data = file_get_contents($data_file);
+echo &quot;明码数据为：&amp;lt;br&amp;gt;&quot; . $data . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 
-&lt;p&gt;$crypted_data = null; //密文
+$crypted_data = null; //密文
 if (openssl_private_encrypt($data, $crypted_data, $private_key)) {
-    echo “以下是私钥加密的密文：&lt;br /&gt;” . $crypted_data . “&lt;br /&gt;&lt;br /&gt;”;
+    echo &quot;以下是私钥加密的密文：&amp;lt;br&amp;gt;&quot; . $crypted_data . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 } else {
-    echo “加密失败：&lt;br /&gt;”;
+    echo &quot;加密失败：&amp;lt;br&amp;gt;&quot;;
     while ($msg = openssl_error_string()) {
-        echo $msg . “&lt;br /&gt;\n”;
+        echo $msg . &quot;&amp;lt;br /&amp;gt;\n&quot;;
     }
 }
 $decrypted_data = null; //加密还原后的明文
 if (openssl_public_decrypt($crypted_data, $decrypted_data, $public_key)) {
-    echo “以下是经过公钥解密后的明文：&lt;br /&gt;” . $decrypted_data . “&lt;br /&gt;&lt;br /&gt;”;
+    echo &quot;以下是经过公钥解密后的明文：&amp;lt;br&amp;gt;&quot; . $decrypted_data . &quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 } else {
-    echo “解密失败：&lt;br /&gt;”;
+    echo &quot;解密失败：&amp;lt;br&amp;gt;&quot;;
     while ($msg = openssl_error_string()) {
-        echo $msg . “&lt;br /&gt;\n”;
+        echo $msg . &quot;&amp;lt;br /&amp;gt;\n&quot;;
     }
-}&lt;/p&gt;
+}
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;//以上为非对称加密   以下演示对称加密&lt;/p&gt;
 
-&lt;p&gt;$key=”123456”; //设置一个共享密码
-$cipher=’’;//加密算法
+&lt;pre&gt;&lt;code&gt;$key=&quot;123456&quot;; //设置一个共享密码
+$cipher=&#39;&#39;;//加密算法
 $arr=openssl_get_cipher_methods(); //获取支持的加密算法 数组的key和值并没有对应关系
 $cipher=$arr[20];
-echo “选择的加密算法是：$cipher &lt;br /&gt;\n”;
+echo &quot;选择的加密算法是：$cipher &amp;lt;br&amp;gt;\n&quot;;
 $value=openssl_encrypt($data , $cipher,$key); //第四参数OPENSSL_RAW_DATA输出原始数据 
-echo “加密后的密文是：&lt;br /&gt;”.$value.”&lt;br /&gt;&lt;br /&gt;”;
+echo &quot;加密后的密文是：&amp;lt;br&amp;gt;&quot;.$value.&quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 $old_data=openssl_decrypt ( $value,$cipher, $key);
-echo “解密还原的明文：&lt;br /&gt;”.$old_data.”&lt;br /&gt;&lt;br /&gt;”;&lt;/p&gt;
+echo &quot;解密还原的明文：&amp;lt;br&amp;gt;&quot;.$old_data.&quot;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&quot;;
 
-&lt;p&gt;//print_r($arr);&lt;/p&gt;
+//print_r($arr);
+&lt;/code&gt;&lt;/pre&gt;
 </content>
  </entry>
  
@@ -179,31 +181,47 @@ echo “解密还原的明文：&lt;br /&gt;”.$old_data.”&lt;br /&gt;&lt;br 
    <updated>2016-10-17T00:00:00+08:00</updated>
    <id>urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80</id>
    <content type="html">&lt;p&gt;我们都知道当在session 会话有基于cookie和基于url两种传递SESSIONID的方法。为了实现客户端禁止cookie发送的情况也不影响客户登陆网站，可以设置 php.ini中 session.use_trans_sid=1 ，表示当客户端浏览器禁止cookie的时候，页面上的链接会基于url传递SESSIONID。但是很多人仅仅设置了这一个选项并没有达到效果，本人也 遇到此问题，后来一番研究发现
-php.ini 文件中还有两个选项
-session.use_cookies=1
-session.use_only_cookies=1
-仔细琢磨上面的英文就会发现其意义
-session.use_cookies表示是否开始基于cookies的session会话
-session.use_only_cookies 表示是否只开启基于cookies的session的会话方式&lt;/p&gt;
+php.ini 文件中还有两个选项&lt;/p&gt;
+
+&lt;p&gt;session.use_cookies=1&lt;/p&gt;
+
+&lt;p&gt;session.use_only_cookies=1&lt;/p&gt;
+
+&lt;p&gt;仔细琢磨上面的英文就会发现其意义&lt;/p&gt;
+
+&lt;p&gt;session.use_cookies表示是否开始基于cookies的session会话&lt;/p&gt;
+
+&lt;p&gt;session.use_only_cookies 表示是否只开启基于cookies的session的会话方式&lt;/p&gt;
 
 &lt;p&gt;所以如果想要在浏览器开启cookie的时候用基于cookie的方式，在未开启cookie的时候使用url的方式就进行如下设置（最常用的方式，推荐）
-在php.ini文件中
-session.use_trans_sid=1
+在php.ini文件中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;session.use_trans_sid=1
 session.use_only_cookies=0
 session.use_cookies=1
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者 在php程序中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ini_set(“session.use_trans_sid”,”1″);
 ini_set(“session.use_only_cookies”,0);
 ini_set(“session.use_cookies”,1);
-如果不管浏览器是否开启cookie，都使用url的方式就进行如下设置（这个例子主要想说明一下设置session.use_only_cookies 和 session.use_cookies的区别）
-在php.ini文件中
-session.use_trans_sid=1
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果不管浏览器是否开启cookie，都使用url的方式就进行如下设置（这个例子主要想说明一下设置session.use_only_cookies 和 session.use_cookies的区别）
+在php.ini文件中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;session.use_trans_sid=1
 session.use_only_cookies=0
 session.use_cookies=0
-或者 在php程序中
-ini_set(“session.use_trans_sid”,”1″);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;或者 在php程序中&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ini_set(“session.use_trans_sid”,”1″);
 ini_set(“session.use_only_cookies”,0);
-ini_set(“session.use_cookies”,0);&lt;/p&gt;
+ini_set(“session.use_cookies”,0);
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;动手自己试一试 你就会明白session.use_only_cookies 和 session.use_cookies的区别。&lt;/p&gt;
 </content>

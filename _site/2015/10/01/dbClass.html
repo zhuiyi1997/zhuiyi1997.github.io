@@ -5,7 +5,7 @@
     <meta name="author" content="追憶" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     
-    <title>centos7 安装redis和redis扩展</title>
+    <title>Db类</title>
     
     <link rel="shortcut icon" href="/favicon.ico">
     <link href="/atom.xml" rel="alternate" title="世间自古有情痴" type="application/atom+xml" />
@@ -39,18 +39,16 @@
         <div id="content">
         <article>
   <section class="title">
-    <h2>centos7 安装redis和redis扩展 </h2>
+    <h2>Db类 </h2>
   </section>
   <section class="meta">
   <span class="time">
-    <time datetime="2015-06-16">2015-06-16</time>
+    <time datetime="2015-10-01">2015-10-01</time>
   </span>
   
   <span class="tags">
     
-    <a href="/tags.html#linux" title="linux">#linux</a>
-    
-    <a href="/tags.html#redis" title="redis">#redis</a>
+    <a href="/tags.html#php" title="php">#php</a>
     
   </span>
   <!-- BEGIN this would not work on any other domain -->
@@ -58,9 +56,9 @@
     class           = "like-wrapper"
     like-shortname  = 'gopherwood'
     like-identifier = 'urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80'
-    like-name       = 'centos7 安装redis和redis扩展'
+    like-name       = 'Db类'
     like-btn        = '&#xf087;'
-    like-link       = 'https://zhuiyi1997.github.io//2015/06/16/centos.html'
+    like-link       = 'https://zhuiyi1997.github.io//2015/10/01/dbClass.html'
     ></span>
   <script type="text/javascript">
     var l = document.createElement('script');
@@ -71,54 +69,164 @@
   
   </section>
   <section class="post">
-  <p>安装Redis
-```php
-http://www.redis.NET.cn/download</p>
+  <hr />
+<!-- more -->
 
-<pre><code>$ wget http://download.redis.io/releases/redis-3.0.6.tar.gz
-$ tar xzf redis-3.0.6.tar.gz
-$ cd redis-3.0.6
-$ make #如果make失败,请安装gcc   yum install gcc  重新解压安装 ``` 使用：
+<p>```</p>
+
+<p>class Db{</p>
+
+<pre><code>private $host;
+private $host_name;
+private $host_pwd;
+private $dbname;
+
+/*
+ * 初始化数据
+ */
+function __construct(){
+	$this-&gt;host="127.0.0.1";
+    $this-&gt;host_name="root";
+    $this-&gt;host_pwd="root";
+    $this-&gt;dbname="my_php";
+}
+
+/*
+ * 连接数据库
+ */
+function connect(){
+	mysql_connect($this-&gt;host,$this-&gt;host_name,$this-&gt;host_pwd) or die("连接数据库失败");
+    mysql_select_db($this-&gt;dbname) or die("选择数据库失败");
+    mysql_query("set names utf8");
+}
+
+/*
+ * 执行sql语句
+ */
+function db_query($sql){
+    return mysql_query($sql);
+}
+
+/*
+ * 添加数据
+ * @param string $table 表名
+ * @param array $arr 数据
+ * @return  bool
+ */
+function addData($table,$arr){
+    //对数据进行处理 得到键名串  得到值的串
+    $str_key="";
+    $str_val="";
+    foreach($arr as $k=&gt;$v){
+        $str_key.=$k.",";
+        $str_val.="'$v',";
+    }
+
+    $keys=trim($str_key,',');
+    $vals=trim($str_val,',');
+
+    //写添加sql
+    $sql="insert into $table($keys) values($vals)";
+
+    //调用执行sql语句方法
+    $bool=db_query($sql);
+    if($bool){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+
+/*
+ * 查询多条数据
+ * @param string $table 表名
+ * @param $where 条件 可以不写
+ * @return array或者bool
+ */
+function selectAll($table,$where=1){
+    $sql="select * from $table where $where";
+
+    //调用执行sql语句方法
+    $re=db_query($sql);  //结果集
+
+    //判断结果集中是否有数据
+    if(mysql_num_rows($re)&gt;0){
+        while($arr=mysql_fetch_assoc($re)){
+            $data[]=$arr;
+        }
+        return $data;
+    }else{
+        return false;
+    }
+}
+
+/*
+ * 查询一条数据
+ * @param string $table 表名
+ * @param string $where 条件
+ * @return array或者bool
+ */
+function selectOne($table,$where){
+    $sql="select * from $table where $where";
+
+    //调用执行sql语句方法
+    $re=db_query($sql);
+
+    if(mysql_num_rows($re)&gt;0){
+        //取出数据
+        $arr=mysql_fetch_assoc($re);
+        return $arr;
+    }else{
+        return false;
+    }
+}
+
+/*
+ * 删除
+ * @param string $table 表名
+ * @param string $where 条件
+ * @return bool
+ */
+function del($table,$where){
+    $sql="delete from $table where $where";
+
+    //调用执行sql语句方法
+    $re=db_query($sql);
+    //判断执行删除sql之后受影响的行数  mysql_affacted_rows
+    if(mysql_affected_rows()&gt;0){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+/*
+ * 修改
+ * @param string $table 表名
+ * @param array $data 要修改的数据
+ * @param string $where 条件
+ * @return $bool
+ */
+function upData($table,$data,$where=1){
+    $str="";
+    foreach($data as $k=&gt;$v){
+        $str.=($k."='$v',");
+    }
+    $new_str=rtrim($str,',');
+    $sql="update $table set $new_str where $where";
+
+    //调用执行sql语句方法
+   $re=db_query($sql);
+
+    //判断受影响的行数
+    if(mysql_affected_rows()&gt;0){
+        return true;
+    }else{
+        return false;
+    }
+} }
 </code></pre>
-
-<p>二进制文件是编译完成后在src目录下. 运行如下:
-<code>php
-    $ src/redis-server
-</code>
-你能使用Redis的内置客户端进行进行redis代码的编写:
-```php
-    $ src/redis-cli
-    redis&gt; set foo bar
-    OK
-    redis&gt; get foo
-    “bar”</p>
-
-<p>```
-PHP 使用 redis</p>
-
-<p>下载地址：https://github.com/phpredis/phpredis/releases （最高版本）</p>
-
-<p><code>php
- $ wget https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz
- $ tar zxvf 2.2.7.tar.gz
- $ cd phpredis-2.2.7                      # 进入 phpredis 目录
- $ /usr/bin/phpize              # php安装后的路径
- (如果不成功,请安装php-devel   yum install php-devel )
- $ ./configure --with-php-config=/usr/bin/php-config
- $ make &amp;&amp; make install
-</code></p>
-
-<p>修改php.ini文件
-<code>php
-vi /etc/php.ini
-</code>
-添加
-<code>php
-extension=redis.so
-</code>
-重启apache
-```php
-systemctl restart httpd.service #重启apache</p>
 
 <p>```</p>
 
@@ -127,7 +235,7 @@ systemctl restart httpd.service #重启apache</p>
   <div class="divider">
     <span>
     
-    <a href="/2015/06/15/JavaScript-Object-Oriented.html"><i class="fa fa-chevron-left"></i></a>
+    <a href="/2015/09/12/rtc.html"><i class="fa fa-chevron-left"></i></a>
     
     </span>
     <!-- BEGIN comment icon
@@ -137,7 +245,7 @@ systemctl restart httpd.service #重启apache</p>
 
     <span>
     
-    <a href="/2015/06/16/header.html"><i class="fa fa-chevron-right"></i></a>
+    <a href="/2015/10/03/fileClass.html"><i class="fa fa-chevron-right"></i></a>
     
     </span>
   </div>

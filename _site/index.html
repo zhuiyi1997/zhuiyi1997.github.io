@@ -42,25 +42,23 @@
   
   <article class="content">
     <section class="title">
-      <h2><a href="/2016/12/05/jiami.html">openssl进行非对称加密和对称加密的php示例</a></h2>
+      <h2><a href="/2016/12/20/ubuntu%E5%AE%89%E8%A3%85lnmp.html">ubuntu安装lnmp环境</a></h2>
     </section>
     <section class="meta">
     <span class="time">
-      <time datetime="2016-12-05">2016-12-05</time>
+      <time datetime="2016-12-20">2016-12-20</time>
     </span>
     
     <span class="tags">
       
-      <a href="/tags.html#php" title="php">#php</a>
+      <a href="/tags.html#linux" title="linux">#linux</a>
       
-      <a href="/tags.html#加密" title="加密">#加密</a>
-      
-      <a href="/tags.html#openssl" title="openssl">#openssl</a>
+      <a href="/tags.html#ubuntu" title="ubuntu">#ubuntu</a>
       
     </span>
     
     <!-- BEGIN this would not work on any other domain -->
-    <span class="like-wrapper" like-shortname="gopherwood" like-identifier="urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80" like-name="openssl进行非对称加密和对称加密的php示例" like-link="https://zhuiyi1997.github.io//" like-btn="&#xf087;"></span>
+    <span class="like-wrapper" like-shortname="gopherwood" like-identifier="urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80" like-name="ubuntu安装lnmp环境" like-link="https://zhuiyi1997.github.io//" like-btn="&#xf087;"></span>
     <script type="text/javascript">
       var l = document.createElement('script'); l.type = 'text/javascript'; l.async = true;
       l.src = 'http://www.like-btn.com/javascript/widget.js';
@@ -69,77 +67,127 @@
     <!-- END this would not work on any other domain -->
     </section>
     <section class="post">
-    <p>确保开启PHP的openssl扩展：extension=php_openssl.dll</p>
+    <p>首先ctrl+alt+t打开终端</p>
 
-<pre><code>&lt;?php
-/**
- * @file
- * 作者：yunke url：http://blog.csdn.net/u011474028
- *
- */
-header("Content-Type:text/html; charset=utf-8");
+<p>1.更新软件源:
+    sudo apt-get update
+2.安装nginx
+    sudo apt-get install nginx
+3.启动nginx
+    sudo /etc/init.d/nginx start
+4.安装php5和mysql
+    sudo apt-get install php5-cli php5-cgi mysql-server php5-mysql</p>
 
-$key_file = "yunkeserver.key"; //私钥
-$publickey_file = "yunkeserver.crt"; //证书文件
-//$publickey_file="server.crt";//和私钥不匹配的证书文件
-$data_file = "msg.txt"; //待加密数据文件
+<p>5.修改mysql用户权限
+ 1)从终端进入mysql
+     mysql -u root -p123456
+ 2)更改用户权限: grant 权限 on 数据库对象 to 用户
+   grant all on <em>.</em> to root@’%’ identified by ‘123456’;
+ 3)刷新让权限生效
+   flush privileges;</p>
 
-$private_key = openssl_get_privatekey(file_get_contents($key_file)); //获取私钥 非字符串类型  为资源类型
-echo "私钥为：&lt;br&gt;" . $private_key . "&lt;br&gt;&lt;br&gt;";
-$public_key = openssl_get_publickey(file_get_contents($publickey_file)); //获取公钥 非字符串类型  为资源类型
-echo "公钥为：&lt;br&gt;" . $public_key . "&lt;br&gt;&lt;br&gt;";
+<p>6.修改mysql下配置文件
+ 1)修改mysql的配置文件
+   sudo vi/etc/mysql/my.cnf
+ 2)将bind-address = 127.0.0.1前面加上#注释掉，这样就可以远程连接数据库了。</p>
 
-/*
-$str_key = ''; //KEY的字符串表示
-if (openssl_pkey_export($private_key, $str_key)) { //需要正确配置openssl.cnf文件才可以成功
-    echo "密钥的字符串表示为：&lt;br&gt;" . $str_key . "&lt;br&gt;&lt;br&gt;";
-} else {
-    echo "密钥的字符串化失败：&lt;br&gt;";
-    while ($msg = openssl_error_string()) {
-        echo $msg . "&lt;br /&gt;\n";
-    }
-    echo "&lt;br /&gt;";
-}
-*/
- //print_r(openssl_pkey_get_details ( $public_key )); //输出密钥的详细信息 这里可以看出私钥里面是包含公钥的
+<p>7.安装php5-fpm
+  sudo apt-get install php5-fpm</p>
 
-$data = file_get_contents($data_file);
-echo "明码数据为：&lt;br&gt;" . $data . "&lt;br&gt;&lt;br&gt;";
+<p>8.配置nginx并重启服务
+ 1)然后同样进入vi编辑
+    sudo vi /etc/nginx/sites-enabled/default
+ 2)将里面的内容修改成以下样子
+  (把里面server的listen 80和location ~.php${的注释打开，其他的看着改)</p>
 
-$crypted_data = null; //密文
-if (openssl_private_encrypt($data, $crypted_data, $private_key)) {
-    echo "以下是私钥加密的密文：&lt;br&gt;" . $crypted_data . "&lt;br&gt;&lt;br&gt;";
-} else {
-    echo "加密失败：&lt;br&gt;";
-    while ($msg = openssl_error_string()) {
-        echo $msg . "&lt;br /&gt;\n";
-    }
-}
-$decrypted_data = null; //加密还原后的明文
-if (openssl_public_decrypt($crypted_data, $decrypted_data, $public_key)) {
-    echo "以下是经过公钥解密后的明文：&lt;br&gt;" . $decrypted_data . "&lt;br&gt;&lt;br&gt;";
-} else {
-    echo "解密失败：&lt;br&gt;";
-    while ($msg = openssl_error_string()) {
-        echo $msg . "&lt;br /&gt;\n";
-    }
-}
+<pre><code>server{
+   listen 80;
+   root /usr/share/nginx/www;
+   index index.php index.html index.htm;
+   server_name localhost;
+   location / {
+       try_files $uri $uri/ /index.html;
+   }
+   location ~ \.php$ {
+       fastcgi_pass 127.0.0.1:9000;
+       fastcgi_index index.php;
+       fastcgi_param SCRIPT_FILENAME /usr/share/nginx/www$fastcgi_script_name;
+       include /etc/nginx/fastcgi_params;
+   }    }
 </code></pre>
 
-<p>//以上为非对称加密   以下演示对称加密</p>
+<p>3).改完保存退出</p>
 
-<pre><code>$key="123456"; //设置一个共享密码
-$cipher='';//加密算法
-$arr=openssl_get_cipher_methods(); //获取支持的加密算法 数组的key和值并没有对应关系
-$cipher=$arr[20];
-echo "选择的加密算法是：$cipher &lt;br&gt;\n";
-$value=openssl_encrypt($data , $cipher,$key); //第四参数OPENSSL_RAW_DATA输出原始数据 
-echo "加密后的密文是：&lt;br&gt;".$value."&lt;br&gt;&lt;br&gt;";
-$old_data=openssl_decrypt ( $value,$cipher, $key);
-echo "解密还原的明文：&lt;br&gt;".$old_data."&lt;br&gt;&lt;br&gt;";
+<p>9.启动fastcgi php
+  sudo service php5-fpm start</p>
 
-//print_r($arr);
-</code></pre>
+<p>10.重启nginx服务
+  sudo service nginx restart</p>
+
+<p>11.安装php相关扩展(xdebug,memcache,oauth等)
+ 1）安装curl
+   sudo apt-get install php5-curl
+ 2)安装gettext:
+   sudo apt-get install php-gettext
+ 3)安装gd库：
+   sudo apt-get install php5-gd
+ 4)安装mcrypt:
+   sudo apt-get install php5-mcrypt
+ 5)安装memcache
+   a)安装服务器：
+     sudo apt-get install memcached
+     memcached -d -m 50 -p 11211 -u root
+     -m指定使用多少兆的缓存空间（这里50） -p指定要监听的端口 (11211) -u指定哪个用户使用(root)
+   b)安装php模块
+     sudo apt-get install php5-memcache
+ 6)安装oauth:基于pecl的
+   a)sudo apt-get install php5-dev php-pear libpcre3-dev
+     sudo pecl install oauth(要确保linux系统里可以make)
+   b)修改配置文件
+     sudo vi /etc/php5/fpm/php.ini
+     在最后添加</p>
+
+<p>extension=oauth.so</p>
+
+<p>12)安装ssh2:
+   sudo apt-get install libssh2-php
+ 13)安装xdebug
+   1)sudo apt-get install php5-xdebug
+   2)修改php配置文件
+    sudo vi /etc/php5/fpm/php.ini
+    将display_errors和html_errors都改为On
+ 14)重启php服务:
+   sudo service php5-fpm restart</p>
+
+<p>这时环境搭配就成功了.服务器的文件路径是/usr/share/nginx/www。</p>
+
+<p>打开发现里面有个index.html文件。然后在浏览器输入localhost/index.html  就可以看到亲切的
+Welcome to nginx!</p>
+
+<p>使用终端常用命令:</p>
+
+<p>查看文件权限
+ls -l /dir/files
+以管理员身份执行命令:
+sudo …..
+更改文件权限
+sodu chmod 777 xxxx(777)是开放所有权限  644是管理员有读写，其他人只有读权限</p>
+
+<p>vi编写常用命令:
+从光标所在的地方插入
+i
+从光标之后插入
+a
+退出编辑模式
+esc
+删除光标在内的当前行及其下面的n-1行内容（退出编辑模式才可使用）
+ndd
+删除字符（退出编辑模式才可使用）
+X(大写，删除光标前)    x(小写，删除光标后的)
+保存并退出vi(退出编辑模式才可使用)
+:x
+不保存并退出vi(退出编辑模式才可使用)
+:q!</p>
 
     </section>
     </article>
@@ -149,6 +197,13 @@ echo "解密还原的明文：&lt;br&gt;".$old_data."&lt;br&gt;&lt;br&gt;";
   <ul class="listing main-listing">
     <li class="listing-seperator">Happend earlier this year<li>
   
+  
+    
+    
+    <li class="listing-item">
+      <time datetime="2016-12-05">2016-12-05</time>
+      <a href="/2016/12/05/jiami.html" title="openssl进行非对称加密和对称加密的php示例">openssl进行非对称加密和对称加密的php示例</a>
+    </li>
   
     
     
@@ -196,21 +251,21 @@ echo "解密还原的明文：&lt;br&gt;".$old_data."&lt;br&gt;&lt;br&gt;";
     
     <li class="listing-item">
       <time datetime="2016-09-01">2016-09-01</time>
-      <a href="/2016/09/01/mvc-talk-lightly.html" title="浅谈MVC架构模式分析与设计">浅谈MVC架构模式分析与设计</a>
+      <a href="/2016/09/01/MVC_talk-lightly.html" title="浅谈MVC架构模式分析与设计">浅谈MVC架构模式分析与设计</a>
     </li>
   
     
     
     <li class="listing-item">
       <time datetime="2016-08-05">2016-08-05</time>
-      <a href="/2016/08/05/php-thing.html" title="mysql事物处理">mysql事物处理</a>
+      <a href="/2016/08/05/PHP_thing.html" title="mysql事物处理">mysql事物处理</a>
     </li>
   
     
     
     <li class="listing-item">
       <time datetime="2016-08-03">2016-08-03</time>
-      <a href="/2016/08/03/magic-methods.html" title="PHP魔术方法">PHP魔术方法</a>
+      <a href="/2016/08/03/Magic-methods.html" title="PHP魔术方法">PHP魔术方法</a>
     </li>
   
     
@@ -231,21 +286,21 @@ echo "解密还原的明文：&lt;br&gt;".$old_data."&lt;br&gt;&lt;br&gt;";
     
     <li class="listing-item">
       <time datetime="2016-06-10">2016-06-10</time>
-      <a href="/2016/06/10/javascript-good-parts-note3.html" title="JavaScript 语言精粹笔记3-方法、毒瘤等">JavaScript 语言精粹笔记3-方法、毒瘤等</a>
+      <a href="/2016/06/10/JavaScript-good-parts-note3.html" title="JavaScript 语言精粹笔记3-方法、毒瘤等">JavaScript 语言精粹笔记3-方法、毒瘤等</a>
     </li>
   
     
     
     <li class="listing-item">
       <time datetime="2016-06-08">2016-06-08</time>
-      <a href="/2016/06/08/javascript-good-parts-note2.html" title="JavaScript 语言精粹笔记2-继承、数组、正则表达式">JavaScript 语言精粹笔记2-继承、数组、正则表达式</a>
+      <a href="/2016/06/08/JavaScript-good-parts-note2.html" title="JavaScript 语言精粹笔记2-继承、数组、正则表达式">JavaScript 语言精粹笔记2-继承、数组、正则表达式</a>
     </li>
   
     
     
     <li class="listing-item">
       <time datetime="2016-06-07">2016-06-07</time>
-      <a href="/2016/06/07/javascript-good-parts-note1.html" title="JavaScript 语言精粹笔记1-语法、对象、函数">JavaScript 语言精粹笔记1-语法、对象、函数</a>
+      <a href="/2016/06/07/JavaScript-good-parts-note1.html" title="JavaScript 语言精粹笔记1-语法、对象、函数">JavaScript 语言精粹笔记1-语法、对象、函数</a>
     </li>
   
     

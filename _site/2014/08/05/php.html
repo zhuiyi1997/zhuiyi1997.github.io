@@ -106,9 +106,9 @@ RewriteRule ^(.*)$ index.php/$1 [L]</p>
 <p>在config/routes.php中修改配置且添加正则匹配</p>
 
 <p>$route[‘default_controller’] = ‘welcome’;
-$route[‘404<em>override’] = ‘’;
+$route[‘404_override’] = ‘’;
 $route[‘translate_uri_dashes’] = FALSE;
-$route[‘welcome/lists</em>(:num)_(:num)’] = ‘welcome/lists/$1/$2’;</p>
+$route[‘welcome/lists_(:num)_(:num)’] = ‘welcome/lists/$1/$2’;</p>
 
 <p>具体案例：</p>
 

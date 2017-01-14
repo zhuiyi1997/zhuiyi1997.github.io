@@ -42,23 +42,21 @@
   
   <article class="content">
     <section class="title">
-      <h2><a href="/2016/12/20/ubuntu%E5%AE%89%E8%A3%85lnmp.html">ubuntu安装lnmp环境</a></h2>
+      <h2><a href="/2017/01/14/windows%E5%AE%89%E8%A3%85symfony.html">windows下搭建symfony环境</a></h2>
     </section>
     <section class="meta">
     <span class="time">
-      <time datetime="2016-12-20">2016-12-20</time>
+      <time datetime="2017-01-14">2017-01-14</time>
     </span>
     
     <span class="tags">
       
-      <a href="/tags.html#linux" title="linux">#linux</a>
-      
-      <a href="/tags.html#ubuntu" title="ubuntu">#ubuntu</a>
+      <a href="/tags.html#symfony" title="symfony">#symfony</a>
       
     </span>
     
     <!-- BEGIN this would not work on any other domain -->
-    <span class="like-wrapper" like-shortname="gopherwood" like-identifier="urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80" like-name="ubuntu安装lnmp环境" like-link="https://zhuiyi1997.github.io//" like-btn="&#xf087;"></span>
+    <span class="like-wrapper" like-shortname="gopherwood" like-identifier="urn:uuid:b87da13a-a4dd-402f-b06a-cef7eeee2d80" like-name="windows下搭建symfony环境" like-link="https://zhuiyi1997.github.io//" like-btn="&#xf087;"></span>
     <script type="text/javascript">
       var l = document.createElement('script'); l.type = 'text/javascript'; l.async = true;
       l.src = 'http://www.like-btn.com/javascript/widget.js';
@@ -67,127 +65,33 @@
     <!-- END this would not work on any other domain -->
     </section>
     <section class="post">
-    <p>首先ctrl+alt+t打开终端</p>
+    <p>1.下载安装php,并将php添加到环境变量中</p>
 
-<p>1.更新软件源:
-    sudo apt-get update
-2.安装nginx
-    sudo apt-get install nginx
-3.启动nginx
-    sudo /etc/init.d/nginx start
-4.安装php5和mysql
-    sudo apt-get install php5-cli php5-cgi mysql-server php5-mysql</p>
+<p>2.进入到项目根目录</p>
 
-<p>5.修改mysql用户权限
- 1)从终端进入mysql
-     mysql -u root -p123456
- 2)更改用户权限: grant 权限 on 数据库对象 to 用户
-   grant all on <em>.</em> to root@’%’ identified by ‘123456’;
- 3)刷新让权限生效
-   flush privileges;</p>
-
-<p>6.修改mysql下配置文件
- 1)修改mysql的配置文件
-   sudo vi/etc/mysql/my.cnf
- 2)将bind-address = 127.0.0.1前面加上#注释掉，这样就可以远程连接数据库了。</p>
-
-<p>7.安装php5-fpm
-  sudo apt-get install php5-fpm</p>
-
-<p>8.配置nginx并重启服务
- 1)然后同样进入vi编辑
-    sudo vi /etc/nginx/sites-enabled/default
- 2)将里面的内容修改成以下样子
-  (把里面server的listen 80和location ~.php${的注释打开，其他的看着改)</p>
-
-<pre><code>server{
-   listen 80;
-   root /usr/share/nginx/www;
-   index index.php index.html index.htm;
-   server_name localhost;
-   location / {
-       try_files $uri $uri/ /index.html;
-   }
-   location ~ \.php$ {
-       fastcgi_pass 127.0.0.1:9000;
-       fastcgi_index index.php;
-       fastcgi_param SCRIPT_FILENAME /usr/share/nginx/www$fastcgi_script_name;
-       include /etc/nginx/fastcgi_params;
-   }    }
+<pre><code>php -r "readfile('http://symfony.com/installer');" &gt; symfony.phar
 </code></pre>
 
-<p>3).改完保存退出</p>
+<p>3.等待下载symfony.phar文件</p>
 
-<p>9.启动fastcgi php
-  sudo service php5-fpm start</p>
+<p>4.下载完成之后，在目录下面执行</p>
 
-<p>10.重启nginx服务
-  sudo service nginx restart</p>
+<pre><code>php symfony.phar
+</code></pre>
 
-<p>11.安装php相关扩展(xdebug,memcache,oauth等)
- 1）安装curl
-   sudo apt-get install php5-curl
- 2)安装gettext:
-   sudo apt-get install php-gettext
- 3)安装gd库：
-   sudo apt-get install php5-gd
- 4)安装mcrypt:
-   sudo apt-get install php5-mcrypt
- 5)安装memcache
-   a)安装服务器：
-     sudo apt-get install memcached
-     memcached -d -m 50 -p 11211 -u root
-     -m指定使用多少兆的缓存空间（这里50） -p指定要监听的端口 (11211) -u指定哪个用户使用(root)
-   b)安装php模块
-     sudo apt-get install php5-memcache
- 6)安装oauth:基于pecl的
-   a)sudo apt-get install php5-dev php-pear libpcre3-dev
-     sudo pecl install oauth(要确保linux系统里可以make)
-   b)修改配置文件
-     sudo vi /etc/php5/fpm/php.ini
-     在最后添加</p>
+<p>5.创建新工程</p>
 
-<p>extension=oauth.so</p>
+<pre><code>php symfony.phar new projectName
+</code></pre>
 
-<p>12)安装ssh2:
-   sudo apt-get install libssh2-php
- 13)安装xdebug
-   1)sudo apt-get install php5-xdebug
-   2)修改php配置文件
-    sudo vi /etc/php5/fpm/php.ini
-    将display_errors和html_errors都改为On
- 14)重启php服务:
-   sudo service php5-fpm restart</p>
+<p>6.如果php版本是5.6及以上可能会遇到cUrl error 60的错误</p>
 
-<p>这时环境搭配就成功了.服务器的文件路径是/usr/share/nginx/www。</p>
+<p>7.访问https://curl.haxx.se/ca/cacert.pem 将页面的内容拷贝复制到本地路径“路径/cacert.pem”</p>
 
-<p>打开发现里面有个index.html文件。然后在浏览器输入localhost/index.html  就可以看到亲切的
-Welcome to nginx!</p>
+<p>8.修改php.ini 配置文件</p>
 
-<p>使用终端常用命令:</p>
-
-<p>查看文件权限
-ls -l /dir/files
-以管理员身份执行命令:
-sudo …..
-更改文件权限
-sodu chmod 777 xxxx(777)是开放所有权限  644是管理员有读写，其他人只有读权限</p>
-
-<p>vi编写常用命令:
-从光标所在的地方插入
-i
-从光标之后插入
-a
-退出编辑模式
-esc
-删除光标在内的当前行及其下面的n-1行内容（退出编辑模式才可使用）
-ndd
-删除字符（退出编辑模式才可使用）
-X(大写，删除光标前)    x(小写，删除光标后的)
-保存并退出vi(退出编辑模式才可使用)
-:x
-不保存并退出vi(退出编辑模式才可使用)
-:q!</p>
+<pre><code>curl.cainfo = "路径\cacert.pem"
+</code></pre>
 
     </section>
     </article>
@@ -200,118 +104,6 @@ X(大写，删除光标前)    x(小写，删除光标后的)
   
     
     
-    <li class="listing-item">
-      <time datetime="2016-12-05">2016-12-05</time>
-      <a href="/2016/12/05/jiami.html" title="openssl进行非对称加密和对称加密的php示例">openssl进行非对称加密和对称加密的php示例</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-17">2016-10-17</time>
-      <a href="/2016/10/17/session.html" title="禁用cookie后session是如何设置的">禁用cookie后session是如何设置的</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-16">2016-10-16</time>
-      <a href="/2016/10/16/psr4.html" title="PSR1代码规范4">PSR1代码规范4</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-16">2016-10-16</time>
-      <a href="/2016/10/16/psr3.html" title="PSR1代码规范3">PSR1代码规范3</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-16">2016-10-16</time>
-      <a href="/2016/10/16/psr2.html" title="PSR1代码规范2">PSR1代码规范2</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-16">2016-10-16</time>
-      <a href="/2016/10/16/psr1.html" title="PSR1代码规范1">PSR1代码规范1</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-10-16">2016-10-16</time>
-      <a href="/2016/10/16/psr0.html" title="PSR1代码规范0">PSR1代码规范0</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-09-01">2016-09-01</time>
-      <a href="/2016/09/01/MVC_talk-lightly.html" title="浅谈MVC架构模式分析与设计">浅谈MVC架构模式分析与设计</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-08-05">2016-08-05</time>
-      <a href="/2016/08/05/PHP_thing.html" title="mysql事物处理">mysql事物处理</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-08-03">2016-08-03</time>
-      <a href="/2016/08/03/Magic-methods.html" title="PHP魔术方法">PHP魔术方法</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-07-07">2016-07-07</time>
-      <a href="/2016/07/07/php.html" title="php7所具有的特色">php7所具有的特色</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-07-07">2016-07-07</time>
-      <a href="/2016/07/07/git-clone-not-master-branch.html" title="Git 如何 clone 非 master 分支的代码">Git 如何 clone 非 master 分支的代码</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-06-10">2016-06-10</time>
-      <a href="/2016/06/10/JavaScript-good-parts-note3.html" title="JavaScript 语言精粹笔记3-方法、毒瘤等">JavaScript 语言精粹笔记3-方法、毒瘤等</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-06-08">2016-06-08</time>
-      <a href="/2016/06/08/JavaScript-good-parts-note2.html" title="JavaScript 语言精粹笔记2-继承、数组、正则表达式">JavaScript 语言精粹笔记2-继承、数组、正则表达式</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-06-07">2016-06-07</time>
-      <a href="/2016/06/07/JavaScript-good-parts-note1.html" title="JavaScript 语言精粹笔记1-语法、对象、函数">JavaScript 语言精粹笔记1-语法、对象、函数</a>
-    </li>
-  
-    
-    
-    <li class="listing-item">
-      <time datetime="2016-05-06">2016-05-06</time>
-      <a href="/2016/05/06/regular-expression-group.html" title="浅谈正则表达式中的分组和引用">浅谈正则表达式中的分组和引用</a>
-    </li>
-  
-    
-    
     
     <li class="listing-seperator"><a href="/archive.html">Long long ago</a></li>
 </li></li></ul></div>
@@ -320,7 +112,7 @@ X(大写，删除光标前)    x(小写，删除光标后的)
         <footer>
           <div>
             
-            &copy; 2013 ~ 2016 追憶 | powered by jekyll | themed by <a href="http://www.tianhui.site" title="sext vi">sext vi</a> | fork <a href="https://github.com/zhuiyi1997" title="fork me">me</a>
+            &copy; 2013 ~ 2017 追憶 | powered by jekyll | themed by <a href="http://www.tianhui.site" title="sext vi">sext vi</a> | fork <a href="https://github.com/zhuiyi1997" title="fork me">me</a>
           </div>
         </footer>
       </div> <!-- main -->
